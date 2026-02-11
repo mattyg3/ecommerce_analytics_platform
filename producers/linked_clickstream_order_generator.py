@@ -209,17 +209,24 @@ def generate_session(simulated_now=None):
 
     return session_dict, events, order_generated, ordered_products, order_session_id
 
-def generate_order(session_dict, product_id, order_session_id, simulated_now=None):
+def generate_order(session_dict, ordered_products, order_session_id, simulated_now=None):
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
     order_time = simulated_now - timedelta(seconds=event_delay(scale=10, max_delay=900))
+    items_ordered = []
+    for product_id in ordered_products:
+        item = {
+            "product_id": product_id,
+            "quantity": random.randint(1,6),
+            "price": PRODUCT_INDEX[product_id]["price_usd"],
+        }
+        items_ordered.append(item)
+
     return {
         "session_id": order_session_id,
         "order_id": str(uuid.uuid4()),
         "user_id": session_dict["user_id"],
-        "product_id": product_id,
-        "quantity": random.randint(1,6),
-        "price": PRODUCT_INDEX[product_id]["price_usd"],
+        "items": items_ordered,
         "order_status": random.choice(ORDER_STATUSES),
         "order_time": order_time.isoformat(),
         "ingest_time": simulated_now.isoformat()
@@ -261,8 +268,7 @@ if __name__ == "__main__":
             session_dict, session_events, order_generated, ordered_products, order_session_id = generate_session(simulated_now)
             batch_clickstream.extend(session_events)
             if order_generated:
-                for product_id in ordered_products:
-                    batch_orders.append(generate_order(session_dict, product_id, order_session_id, simulated_now))
+                batch_orders.append(generate_order(session_dict, ordered_products, order_session_id, simulated_now))
 
         #Add duplicates
         if random.random() < 0.05 and batch_clickstream:
