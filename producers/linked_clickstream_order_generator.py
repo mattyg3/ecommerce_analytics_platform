@@ -21,7 +21,6 @@ TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
 ORDER_STATUSES = ["pending", "completed", "cancelled"]
-# PRODUCTS = [f"SKU-{i:05d}" for i in range(1, 1501)]
 DEVICES = ["mobile", "desktop", "tablet"]
 COUNTRIES = ["US", "CA", "MX", "GB", "DE", "ES", "FR", "BR", "AR"]
 USER_AGENTS = ["Mozilla/5.0 (iPhone)", "Mozilla/5.0 (Android)", "Mozilla/5.0 (Windows NT 10.0)"]
@@ -77,7 +76,6 @@ def maybe_force_late(event_time):
 def generate_event(event_type, session_dict, product_id=None, simulated_now=None, session_time=None):
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
-    # event_time = simulated_now - timedelta(seconds=event_delay(scale=5, max_delay=300))
 
     event = {
         "event_id": str(uuid.uuid4()),
