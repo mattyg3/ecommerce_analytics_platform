@@ -16,7 +16,7 @@ ORDERS_DIR = Path("data/orders/raw")
 ORDERS_DIR.mkdir(parents=True, exist_ok=True)
 
 BATCH_INTERVAL_SECONDS = 2         # interval between batches (simulated)
-SIMULATION_HOURS = 672 #24              # simulate 28 days
+SIMULATION_HOURS = 168 #24              # simulate 7 days
 TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
@@ -48,6 +48,9 @@ RETURNING_USER_PROB = 0.3
 MAX_KNOWN_USERS = 50000
 known_users = []
 
+SESSION_SPLIT_PROB = 0.2
+
+
 def load_products(filename="data\products.json"):
     with open(filename, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -68,6 +71,11 @@ def get_user_id():
     if len(known_users) > MAX_KNOWN_USERS:
         known_users = known_users[-MAX_KNOWN_USERS:]
     return user_id, False
+
+def maybe_new_session(current_session_id):
+    if random.random() < SESSION_SPLIT_PROB:
+        return str(uuid.uuid4())
+    return current_session_id
 
 def event_delay(scale=30, max_delay=14400):
     """
@@ -146,6 +154,7 @@ def generate_session(simulated_now=None):
     events = []
     def emit(event_type, product_id=None):
         nonlocal session_time, session_dict, simulated_now
+        session_dict["session_id"] = maybe_new_session(session_dict["session_id"])
         session_time = advance_time(session_time)
         true_event_time = maybe_force_late(session_time)
         events.append(generate_event(event_type, session_dict, product_id, simulated_now, true_event_time))
@@ -155,6 +164,7 @@ def generate_session(simulated_now=None):
     products = random.sample(PRODUCTS, num_products)
     order_generated = False
     ordered_products = []
+    order_session_id = None
 
     for product in products:
         #View Product
@@ -176,6 +186,7 @@ def generate_session(simulated_now=None):
             true_event_time = maybe_force_late(session_time)
             events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
             order_generated = True
+            order_session_id = session_dict["session_id"]
 
     if not order_generated:
         ordered_products = []
@@ -183,14 +194,14 @@ def generate_session(simulated_now=None):
     # Shuffle arrival order slightly (network jitter) 
     random.shuffle(events)
 
-    return session_dict, events, order_generated, ordered_products
+    return session_dict, events, order_generated, ordered_products, order_session_id
 
-def generate_order(session_dict, product_id, simulated_now=None):
+def generate_order(session_dict, product_id, order_session_id, simulated_now=None):
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
     order_time = simulated_now - timedelta(seconds=event_delay(scale=10, max_delay=900))
     return {
-        "session_id": session_dict["session_id"],
+        "session_id": order_session_id,
         "order_id": str(uuid.uuid4()),
         "user_id": session_dict["user_id"],
         "product_id": product_id,
@@ -234,11 +245,11 @@ if __name__ == "__main__":
         batch_clickstream = []
         batch_orders = []
         for _ in range(num_sessions):
-            session_dict, session_events, order_generated, ordered_products = generate_session(simulated_now)
+            session_dict, session_events, order_generated, ordered_products, order_session_id = generate_session(simulated_now)
             batch_clickstream.extend(session_events)
             if order_generated:
                 for product_id in ordered_products:
-                    batch_orders.append(generate_order(session_dict, product_id, simulated_now))
+                    batch_orders.append(generate_order(session_dict, product_id, order_session_id, simulated_now))
 
         #Add duplicates
         if random.random() < 0.05 and batch_clickstream:
