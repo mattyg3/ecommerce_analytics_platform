@@ -159,18 +159,28 @@ def generate_session(simulated_now=None):
     funnel_probs = (FUNNEL_STEP_PROB_RETURNING if is_returning else FUNNEL_STEP_PROB)
     # Returning users are quicker
     min_gap, max_gap = (5, 45) if is_returning else (10, 90)
+
     def advance_time(current_time):
         """
         Advance simulated event time
         """
         return current_time + timedelta(seconds=random.randint(min_gap, max_gap))
+    
     events = []
+
     def emit(event_type, product_id=None):
         nonlocal session_time, session_dict, simulated_now
         session_dict["session_id"] = maybe_new_session(session_dict["session_id"])
         session_time = advance_time(session_time)
         true_event_time = maybe_force_late(session_time)
         events.append(generate_event(event_type, session_dict, product_id, simulated_now, true_event_time))
+    
+    def conversion_multiplier(hour):
+        if 0 <= hour < 6:
+            return 0.6
+        elif 18 <= hour < 22:
+            return 1.2
+        return 1.0
     
     emit("page_view")
     num_products = random.randint(1,5)
@@ -184,8 +194,11 @@ def generate_session(simulated_now=None):
         if random.random() > funnel_probs["view_product"]:
             continue
         emit("view_product", product["product_id"])
-        #Add to Cart
-        if random.random() > funnel_probs["add_to_cart"]:
+        #Add to Cart with dynamic prob
+        price = PRODUCT_INDEX[product["product_id"]]["price_usd"]
+        price_factor = min(1.0, 50 / price)
+        effective_add_to_cart = funnel_probs["add_to_cart"] * price_factor
+        if random.random() > effective_add_to_cart:
             continue
         emit("add_to_cart", product["product_id"])
         ordered_products.append(product["product_id"])
@@ -193,8 +206,9 @@ def generate_session(simulated_now=None):
         if random.random() > funnel_probs["checkout_start"]:
             continue
         emit("checkout_start", product["product_id"])
-        #Purchase
-        if random.random() < funnel_probs["purchase"]:
+        #Purchase with dynamic prob
+        conversion_factor = conversion_multiplier(session_time.hour)
+        if random.random() < funnel_probs["purchase"] * conversion_factor:
             session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait for purchase
             true_event_time = maybe_force_late(session_time)
             events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
