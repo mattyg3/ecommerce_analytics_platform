@@ -5,6 +5,7 @@ import math
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import json
 
 # ----------------------------------------
 # Configuration
@@ -20,7 +21,7 @@ TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
 ORDER_STATUSES = ["pending", "completed", "cancelled"]
-PRODUCTS = [f"SKU-{i:05d}" for i in range(1, 1501)]
+# PRODUCTS = [f"SKU-{i:05d}" for i in range(1, 1501)]
 DEVICES = ["mobile", "desktop", "tablet"]
 COUNTRIES = ["US", "CA", "MX", "GB", "DE", "ES", "FR", "BR", "AR"]
 USER_AGENTS = ["Mozilla/5.0 (iPhone)", "Mozilla/5.0 (Android)", "Mozilla/5.0 (Windows NT 10.0)"]
@@ -37,6 +38,11 @@ FUNNEL_STEP_PROB = {
 LATE_EVENT_PROB = 0.15
 LATE_EVENT_MAX_DELAY = 10 #minutes
 
+def load_products(filename="data\products.json"):
+    with open(filename, "r", encoding="utf-8") as f:
+        return json.load(f)
+PRODUCTS = load_products()
+PRODUCT_INDEX = {p["product_id"]: p for p in PRODUCTS}
 # ----------------------------------------
 # Helper Functions
 # ----------------------------------------
@@ -125,25 +131,25 @@ def generate_session(simulated_now=None):
     order_generated = False
     ordered_products = []
 
-    for product_id in products:
+    for product in products:
         #View Product
         if random.random() > FUNNEL_STEP_PROB["view_product"]:
             continue
-        emit("view_product", product_id)
+        emit("view_product", product["product_id"])
         #Add to Cart
         if random.random() > FUNNEL_STEP_PROB["add_to_cart"]:
             continue
-        emit("add_to_cart", product_id)
-        ordered_products.append(product_id)
+        emit("add_to_cart", product["product_id"])
+        ordered_products.append(product["product_id"])
         #Start Checkout
         if random.random() > FUNNEL_STEP_PROB["checkout_start"]:
             continue
-        emit("checkout_start", product_id)
+        emit("checkout_start", product["product_id"])
         #Purchase
         if random.random() < FUNNEL_STEP_PROB["purchase"]:
             session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait
             true_event_time = maybe_force_late(session_time)
-            events.append(generate_event("purchase", session_dict, product_id, simulated_now, true_event_time))
+            events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
             order_generated = True
 
     if not order_generated:
@@ -163,8 +169,8 @@ def generate_order(session_dict, product_id, simulated_now=None):
         "order_id": str(uuid.uuid4()),
         "user_id": session_dict["user_id"],
         "product_id": product_id,
-        "quantity": random.randint(1,5),
-        "price": round(random.uniform(5,500),2),
+        "quantity": random.randint(1,6),
+        "price": PRODUCT_INDEX[product_id]["price_usd"],
         "order_status": random.choice(ORDER_STATUSES),
         "order_time": order_time.isoformat(),
         "ingest_time": simulated_now.isoformat()

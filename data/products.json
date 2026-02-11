@@ -1,0 +1,6002 @@
+[
+  {
+    "product_id": "SKU-00001",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00002",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00003",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00004",
+    "price_usd": 116.49
+  },
+  {
+    "product_id": "SKU-00005",
+    "price_usd": 245
+  },
+  {
+    "product_id": "SKU-00006",
+    "price_usd": 81.49
+  },
+  {
+    "product_id": "SKU-00007",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00008",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00009",
+    "price_usd": 219
+  },
+  {
+    "product_id": "SKU-00010",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00011",
+    "price_usd": 98.49
+  },
+  {
+    "product_id": "SKU-00012",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00013",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00014",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00015",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-00016",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00017",
+    "price_usd": 90.49
+  },
+  {
+    "product_id": "SKU-00018",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00019",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-00020",
+    "price_usd": 124.49
+  },
+  {
+    "product_id": "SKU-00021",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-00022",
+    "price_usd": 84.49
+  },
+  {
+    "product_id": "SKU-00023",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00024",
+    "price_usd": 138.49
+  },
+  {
+    "product_id": "SKU-00025",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00026",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00027",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00028",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00029",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00030",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00031",
+    "price_usd": 106.49
+  },
+  {
+    "product_id": "SKU-00032",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00033",
+    "price_usd": 93.49
+  },
+  {
+    "product_id": "SKU-00034",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00035",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00036",
+    "price_usd": 89.49
+  },
+  {
+    "product_id": "SKU-00037",
+    "price_usd": 92.49
+  },
+  {
+    "product_id": "SKU-00038",
+    "price_usd": 116.49
+  },
+  {
+    "product_id": "SKU-00039",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00040",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00041",
+    "price_usd": 100.49
+  },
+  {
+    "product_id": "SKU-00042",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00043",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00044",
+    "price_usd": 68.49
+  },
+  {
+    "product_id": "SKU-00045",
+    "price_usd": 182
+  },
+  {
+    "product_id": "SKU-00046",
+    "price_usd": 147.49
+  },
+  {
+    "product_id": "SKU-00047",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00048",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00049",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00050",
+    "price_usd": 90.49
+  },
+  {
+    "product_id": "SKU-00051",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00052",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00053",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00054",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00055",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00056",
+    "price_usd": 69.49
+  },
+  {
+    "product_id": "SKU-00057",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00058",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00059",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00060",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00061",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00062",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00063",
+    "price_usd": 94.49
+  },
+  {
+    "product_id": "SKU-00064",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00065",
+    "price_usd": 131.49
+  },
+  {
+    "product_id": "SKU-00066",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00067",
+    "price_usd": 73.49
+  },
+  {
+    "product_id": "SKU-00068",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00069",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00070",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00071",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00072",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00073",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00074",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00075",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00076",
+    "price_usd": 68.49
+  },
+  {
+    "product_id": "SKU-00077",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00078",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00079",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00080",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00081",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00082",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00083",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00084",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00085",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00086",
+    "price_usd": 85.49
+  },
+  {
+    "product_id": "SKU-00087",
+    "price_usd": 117.49
+  },
+  {
+    "product_id": "SKU-00088",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00089",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00090",
+    "price_usd": 396
+  },
+  {
+    "product_id": "SKU-00091",
+    "price_usd": 137.49
+  },
+  {
+    "product_id": "SKU-00092",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00093",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00094",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00095",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00096",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00097",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00098",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00099",
+    "price_usd": 88.49
+  },
+  {
+    "product_id": "SKU-00100",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00101",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00102",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00103",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00104",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00105",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00106",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00107",
+    "price_usd": 144.49
+  },
+  {
+    "product_id": "SKU-00108",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00109",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00110",
+    "price_usd": 114.49
+  },
+  {
+    "product_id": "SKU-00111",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-00112",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00113",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00114",
+    "price_usd": 126.49
+  },
+  {
+    "product_id": "SKU-00115",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00116",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00117",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-00118",
+    "price_usd": 98.49
+  },
+  {
+    "product_id": "SKU-00119",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00120",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00121",
+    "price_usd": 60.49
+  },
+  {
+    "product_id": "SKU-00122",
+    "price_usd": 91.49
+  },
+  {
+    "product_id": "SKU-00123",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00124",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00125",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00126",
+    "price_usd": 43.95
+  },
+  {
+    "product_id": "SKU-00127",
+    "price_usd": 43.95
+  },
+  {
+    "product_id": "SKU-00128",
+    "price_usd": 61.49
+  },
+  {
+    "product_id": "SKU-00129",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00130",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00131",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00132",
+    "price_usd": 129.49
+  },
+  {
+    "product_id": "SKU-00133",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00134",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00135",
+    "price_usd": 130.49
+  },
+  {
+    "product_id": "SKU-00136",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00137",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00138",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-00139",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00140",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-00141",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00142",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00143",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00144",
+    "price_usd": 90.49
+  },
+  {
+    "product_id": "SKU-00145",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00146",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00147",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00148",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00149",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00150",
+    "price_usd": 76.49
+  },
+  {
+    "product_id": "SKU-00151",
+    "price_usd": 359
+  },
+  {
+    "product_id": "SKU-00152",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-00153",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00154",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00155",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00156",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00157",
+    "price_usd": 118.49
+  },
+  {
+    "product_id": "SKU-00158",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00159",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00160",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00161",
+    "price_usd": 71.49
+  },
+  {
+    "product_id": "SKU-00162",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00163",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00164",
+    "price_usd": 97.49
+  },
+  {
+    "product_id": "SKU-00165",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00166",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00167",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00168",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00169",
+    "price_usd": 332
+  },
+  {
+    "product_id": "SKU-00170",
+    "price_usd": 279
+  },
+  {
+    "product_id": "SKU-00171",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00172",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-00173",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00174",
+    "price_usd": 91.49
+  },
+  {
+    "product_id": "SKU-00175",
+    "price_usd": 108.49
+  },
+  {
+    "product_id": "SKU-00176",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00177",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00178",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00179",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00180",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00181",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00182",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00183",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00184",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00185",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00186",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00187",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00188",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00189",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00190",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00191",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00192",
+    "price_usd": 43.95
+  },
+  {
+    "product_id": "SKU-00193",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00194",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00195",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00196",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00197",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00198",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00199",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00200",
+    "price_usd": 67.49
+  },
+  {
+    "product_id": "SKU-00201",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00202",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00203",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00204",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00205",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00206",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00207",
+    "price_usd": 225
+  },
+  {
+    "product_id": "SKU-00208",
+    "price_usd": 80.49
+  },
+  {
+    "product_id": "SKU-00209",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-00210",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00211",
+    "price_usd": 63.49
+  },
+  {
+    "product_id": "SKU-00212",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00213",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00214",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00215",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00216",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00217",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00218",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-00219",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00220",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00221",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00222",
+    "price_usd": 117.49
+  },
+  {
+    "product_id": "SKU-00223",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00224",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00225",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00226",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00227",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00228",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00229",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00230",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-00231",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00232",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00233",
+    "price_usd": 60.49
+  },
+  {
+    "product_id": "SKU-00234",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00235",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00236",
+    "price_usd": 359
+  },
+  {
+    "product_id": "SKU-00237",
+    "price_usd": 61.49
+  },
+  {
+    "product_id": "SKU-00238",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00239",
+    "price_usd": 114.49
+  },
+  {
+    "product_id": "SKU-00240",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00241",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-00242",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-00243",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00244",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00245",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00246",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00247",
+    "price_usd": 134.49
+  },
+  {
+    "product_id": "SKU-00248",
+    "price_usd": 117.49
+  },
+  {
+    "product_id": "SKU-00249",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00250",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00251",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00252",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00253",
+    "price_usd": 124.49
+  },
+  {
+    "product_id": "SKU-00254",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00255",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00256",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00257",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00258",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00259",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00260",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00261",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00262",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00263",
+    "price_usd": 75.49
+  },
+  {
+    "product_id": "SKU-00264",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00265",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00266",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00267",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00268",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00269",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00270",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00271",
+    "price_usd": 118.49
+  },
+  {
+    "product_id": "SKU-00272",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00273",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00274",
+    "price_usd": 73.49
+  },
+  {
+    "product_id": "SKU-00275",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00276",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00277",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00278",
+    "price_usd": 78.49
+  },
+  {
+    "product_id": "SKU-00279",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00280",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00281",
+    "price_usd": 147.49
+  },
+  {
+    "product_id": "SKU-00282",
+    "price_usd": 123.49
+  },
+  {
+    "product_id": "SKU-00283",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00284",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00285",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-00286",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00287",
+    "price_usd": 147.49
+  },
+  {
+    "product_id": "SKU-00288",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00289",
+    "price_usd": 174
+  },
+  {
+    "product_id": "SKU-00290",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00291",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00292",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00293",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00294",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00295",
+    "price_usd": 81.49
+  },
+  {
+    "product_id": "SKU-00296",
+    "price_usd": 100.49
+  },
+  {
+    "product_id": "SKU-00297",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00298",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-00299",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00300",
+    "price_usd": 149.49
+  },
+  {
+    "product_id": "SKU-00301",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00302",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-00303",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00304",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00305",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00306",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00307",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00308",
+    "price_usd": 377
+  },
+  {
+    "product_id": "SKU-00309",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00310",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00311",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00312",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-00313",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-00314",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00315",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00316",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00317",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-00318",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00319",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00320",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00321",
+    "price_usd": 344
+  },
+  {
+    "product_id": "SKU-00322",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00323",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00324",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00325",
+    "price_usd": 67.49
+  },
+  {
+    "product_id": "SKU-00326",
+    "price_usd": 73.49
+  },
+  {
+    "product_id": "SKU-00327",
+    "price_usd": 112.49
+  },
+  {
+    "product_id": "SKU-00328",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00329",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00330",
+    "price_usd": 60.49
+  },
+  {
+    "product_id": "SKU-00331",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00332",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00333",
+    "price_usd": 60.49
+  },
+  {
+    "product_id": "SKU-00334",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00335",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00336",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-00337",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00338",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00339",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00340",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00341",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00342",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00343",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00344",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00345",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00346",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00347",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00348",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00349",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00350",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00351",
+    "price_usd": 95.49
+  },
+  {
+    "product_id": "SKU-00352",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00353",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00354",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00355",
+    "price_usd": 100.49
+  },
+  {
+    "product_id": "SKU-00356",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00357",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00358",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00359",
+    "price_usd": 67.49
+  },
+  {
+    "product_id": "SKU-00360",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00361",
+    "price_usd": 142.49
+  },
+  {
+    "product_id": "SKU-00362",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00363",
+    "price_usd": 128.49
+  },
+  {
+    "product_id": "SKU-00364",
+    "price_usd": 144.49
+  },
+  {
+    "product_id": "SKU-00365",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00366",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-00367",
+    "price_usd": 388
+  },
+  {
+    "product_id": "SKU-00368",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00369",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00370",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00371",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00372",
+    "price_usd": 80.49
+  },
+  {
+    "product_id": "SKU-00373",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00374",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00375",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-00376",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00377",
+    "price_usd": 114.49
+  },
+  {
+    "product_id": "SKU-00378",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-00379",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00380",
+    "price_usd": 43.95
+  },
+  {
+    "product_id": "SKU-00381",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-00382",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00383",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00384",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00385",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00386",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00387",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00388",
+    "price_usd": 70.49
+  },
+  {
+    "product_id": "SKU-00389",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00390",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00391",
+    "price_usd": 388
+  },
+  {
+    "product_id": "SKU-00392",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00393",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-00394",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00395",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00396",
+    "price_usd": 54.49
+  },
+  {
+    "product_id": "SKU-00397",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00398",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00399",
+    "price_usd": 117.49
+  },
+  {
+    "product_id": "SKU-00400",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00401",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00402",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00403",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00404",
+    "price_usd": 123.49
+  },
+  {
+    "product_id": "SKU-00405",
+    "price_usd": 80.49
+  },
+  {
+    "product_id": "SKU-00406",
+    "price_usd": 109.49
+  },
+  {
+    "product_id": "SKU-00407",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00408",
+    "price_usd": 63.49
+  },
+  {
+    "product_id": "SKU-00409",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00410",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00411",
+    "price_usd": 135.49
+  },
+  {
+    "product_id": "SKU-00412",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00413",
+    "price_usd": 113.49
+  },
+  {
+    "product_id": "SKU-00414",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00415",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00416",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00417",
+    "price_usd": 302
+  },
+  {
+    "product_id": "SKU-00418",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00419",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00420",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00421",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00422",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00423",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00424",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00425",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00426",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00427",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00428",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00429",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00430",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00431",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00432",
+    "price_usd": 296
+  },
+  {
+    "product_id": "SKU-00433",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00434",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00435",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00436",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00437",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00438",
+    "price_usd": 214
+  },
+  {
+    "product_id": "SKU-00439",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00440",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00441",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00442",
+    "price_usd": 129.49
+  },
+  {
+    "product_id": "SKU-00443",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00444",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00445",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00446",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00447",
+    "price_usd": 121.49
+  },
+  {
+    "product_id": "SKU-00448",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-00449",
+    "price_usd": 132.49
+  },
+  {
+    "product_id": "SKU-00450",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00451",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00452",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00453",
+    "price_usd": 68.49
+  },
+  {
+    "product_id": "SKU-00454",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00455",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00456",
+    "price_usd": 112.49
+  },
+  {
+    "product_id": "SKU-00457",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00458",
+    "price_usd": 149.49
+  },
+  {
+    "product_id": "SKU-00459",
+    "price_usd": 269
+  },
+  {
+    "product_id": "SKU-00460",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00461",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00462",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00463",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00464",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00465",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00466",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00467",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00468",
+    "price_usd": 393
+  },
+  {
+    "product_id": "SKU-00469",
+    "price_usd": 139.49
+  },
+  {
+    "product_id": "SKU-00470",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-00471",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00472",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00473",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00474",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00475",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00476",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00477",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00478",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00479",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00480",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00481",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00482",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00483",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00484",
+    "price_usd": 400
+  },
+  {
+    "product_id": "SKU-00485",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00486",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00487",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00488",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00489",
+    "price_usd": 80.49
+  },
+  {
+    "product_id": "SKU-00490",
+    "price_usd": 113.49
+  },
+  {
+    "product_id": "SKU-00491",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00492",
+    "price_usd": 69.49
+  },
+  {
+    "product_id": "SKU-00493",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00494",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00495",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00496",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00497",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00498",
+    "price_usd": 139.49
+  },
+  {
+    "product_id": "SKU-00499",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00500",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00501",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-00502",
+    "price_usd": 124.49
+  },
+  {
+    "product_id": "SKU-00503",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00504",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00505",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00506",
+    "price_usd": 95.49
+  },
+  {
+    "product_id": "SKU-00507",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00508",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00509",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00510",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00511",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00512",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00513",
+    "price_usd": 146.49
+  },
+  {
+    "product_id": "SKU-00514",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00515",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00516",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00517",
+    "price_usd": 71.49
+  },
+  {
+    "product_id": "SKU-00518",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00519",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00520",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00521",
+    "price_usd": 70.49
+  },
+  {
+    "product_id": "SKU-00522",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00523",
+    "price_usd": 75.49
+  },
+  {
+    "product_id": "SKU-00524",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-00525",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00526",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00527",
+    "price_usd": 69.49
+  },
+  {
+    "product_id": "SKU-00528",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00529",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00530",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00531",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00532",
+    "price_usd": 149.49
+  },
+  {
+    "product_id": "SKU-00533",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-00534",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00535",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00536",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00537",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00538",
+    "price_usd": 128.49
+  },
+  {
+    "product_id": "SKU-00539",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00540",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00541",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00542",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00543",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00544",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00545",
+    "price_usd": 243
+  },
+  {
+    "product_id": "SKU-00546",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00547",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00548",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00549",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00550",
+    "price_usd": 43.95
+  },
+  {
+    "product_id": "SKU-00551",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00552",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00553",
+    "price_usd": 116.49
+  },
+  {
+    "product_id": "SKU-00554",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00555",
+    "price_usd": 43.95
+  },
+  {
+    "product_id": "SKU-00556",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00557",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00558",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00559",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00560",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00561",
+    "price_usd": 102.49
+  },
+  {
+    "product_id": "SKU-00562",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00563",
+    "price_usd": 103.49
+  },
+  {
+    "product_id": "SKU-00564",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-00565",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00566",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00567",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00568",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00569",
+    "price_usd": 74.49
+  },
+  {
+    "product_id": "SKU-00570",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00571",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00572",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00573",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00574",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00575",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00576",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00577",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00578",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00579",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00580",
+    "price_usd": 43.95
+  },
+  {
+    "product_id": "SKU-00581",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00582",
+    "price_usd": 81.49
+  },
+  {
+    "product_id": "SKU-00583",
+    "price_usd": 138.49
+  },
+  {
+    "product_id": "SKU-00584",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00585",
+    "price_usd": 145.49
+  },
+  {
+    "product_id": "SKU-00586",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-00587",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00588",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00589",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00590",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00591",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00592",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00593",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00594",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00595",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00596",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-00597",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00598",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00599",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-00600",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00601",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00602",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00603",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00604",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00605",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00606",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00607",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00608",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00609",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00610",
+    "price_usd": 92.49
+  },
+  {
+    "product_id": "SKU-00611",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00612",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00613",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00614",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00615",
+    "price_usd": 118.49
+  },
+  {
+    "product_id": "SKU-00616",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00617",
+    "price_usd": 134.49
+  },
+  {
+    "product_id": "SKU-00618",
+    "price_usd": 81.49
+  },
+  {
+    "product_id": "SKU-00619",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00620",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00621",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00622",
+    "price_usd": 149.49
+  },
+  {
+    "product_id": "SKU-00623",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00624",
+    "price_usd": 140.49
+  },
+  {
+    "product_id": "SKU-00625",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00626",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00627",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00628",
+    "price_usd": 83.49
+  },
+  {
+    "product_id": "SKU-00629",
+    "price_usd": 120.49
+  },
+  {
+    "product_id": "SKU-00630",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00631",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00632",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00633",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00634",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00635",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00636",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00637",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-00638",
+    "price_usd": 130.49
+  },
+  {
+    "product_id": "SKU-00639",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00640",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00641",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00642",
+    "price_usd": 374
+  },
+  {
+    "product_id": "SKU-00643",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00644",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00645",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-00646",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00647",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00648",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-00649",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-00650",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00651",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00652",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00653",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00654",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00655",
+    "price_usd": 201
+  },
+  {
+    "product_id": "SKU-00656",
+    "price_usd": 84.49
+  },
+  {
+    "product_id": "SKU-00657",
+    "price_usd": 76.49
+  },
+  {
+    "product_id": "SKU-00658",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00659",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00660",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00661",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00662",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00663",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00664",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00665",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00666",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00667",
+    "price_usd": 288
+  },
+  {
+    "product_id": "SKU-00668",
+    "price_usd": 107.49
+  },
+  {
+    "product_id": "SKU-00669",
+    "price_usd": 143.49
+  },
+  {
+    "product_id": "SKU-00670",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00671",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00672",
+    "price_usd": 283
+  },
+  {
+    "product_id": "SKU-00673",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00674",
+    "price_usd": 76.49
+  },
+  {
+    "product_id": "SKU-00675",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-00676",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00677",
+    "price_usd": 342
+  },
+  {
+    "product_id": "SKU-00678",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00679",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00680",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00681",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00682",
+    "price_usd": 105.49
+  },
+  {
+    "product_id": "SKU-00683",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00684",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00685",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00686",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00687",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00688",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00689",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00690",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00691",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00692",
+    "price_usd": 72.49
+  },
+  {
+    "product_id": "SKU-00693",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00694",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00695",
+    "price_usd": 147.49
+  },
+  {
+    "product_id": "SKU-00696",
+    "price_usd": 116.49
+  },
+  {
+    "product_id": "SKU-00697",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00698",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00699",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00700",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00701",
+    "price_usd": 136.49
+  },
+  {
+    "product_id": "SKU-00702",
+    "price_usd": 144.49
+  },
+  {
+    "product_id": "SKU-00703",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00704",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-00705",
+    "price_usd": 139.49
+  },
+  {
+    "product_id": "SKU-00706",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00707",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00708",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00709",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00710",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00711",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00712",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00713",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00714",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00715",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00716",
+    "price_usd": 68.49
+  },
+  {
+    "product_id": "SKU-00717",
+    "price_usd": 129.49
+  },
+  {
+    "product_id": "SKU-00718",
+    "price_usd": 159
+  },
+  {
+    "product_id": "SKU-00719",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00720",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00721",
+    "price_usd": 88.49
+  },
+  {
+    "product_id": "SKU-00722",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-00723",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00724",
+    "price_usd": 140.49
+  },
+  {
+    "product_id": "SKU-00725",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00726",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-00727",
+    "price_usd": 98.49
+  },
+  {
+    "product_id": "SKU-00728",
+    "price_usd": 291
+  },
+  {
+    "product_id": "SKU-00729",
+    "price_usd": 70.49
+  },
+  {
+    "product_id": "SKU-00730",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00731",
+    "price_usd": 148.49
+  },
+  {
+    "product_id": "SKU-00732",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00733",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00734",
+    "price_usd": 374
+  },
+  {
+    "product_id": "SKU-00735",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00736",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00737",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00738",
+    "price_usd": 93.49
+  },
+  {
+    "product_id": "SKU-00739",
+    "price_usd": 63.49
+  },
+  {
+    "product_id": "SKU-00740",
+    "price_usd": 390
+  },
+  {
+    "product_id": "SKU-00741",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00742",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00743",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00744",
+    "price_usd": 77.49
+  },
+  {
+    "product_id": "SKU-00745",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00746",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00747",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00748",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00749",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00750",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00751",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00752",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-00753",
+    "price_usd": 122.49
+  },
+  {
+    "product_id": "SKU-00754",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00755",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00756",
+    "price_usd": 54.49
+  },
+  {
+    "product_id": "SKU-00757",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-00758",
+    "price_usd": 394
+  },
+  {
+    "product_id": "SKU-00759",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00760",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00761",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00762",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00763",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-00764",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00765",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00766",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00767",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00768",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00769",
+    "price_usd": 109.49
+  },
+  {
+    "product_id": "SKU-00770",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00771",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00772",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00773",
+    "price_usd": 225
+  },
+  {
+    "product_id": "SKU-00774",
+    "price_usd": 91.49
+  },
+  {
+    "product_id": "SKU-00775",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00776",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00777",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-00778",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-00779",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-00780",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00781",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00782",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00783",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00784",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00785",
+    "price_usd": 330
+  },
+  {
+    "product_id": "SKU-00786",
+    "price_usd": 99.49
+  },
+  {
+    "product_id": "SKU-00787",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00788",
+    "price_usd": 62.49
+  },
+  {
+    "product_id": "SKU-00789",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00790",
+    "price_usd": 107.49
+  },
+  {
+    "product_id": "SKU-00791",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00792",
+    "price_usd": 141.49
+  },
+  {
+    "product_id": "SKU-00793",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00794",
+    "price_usd": 70.49
+  },
+  {
+    "product_id": "SKU-00795",
+    "price_usd": 127.49
+  },
+  {
+    "product_id": "SKU-00796",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00797",
+    "price_usd": 54.49
+  },
+  {
+    "product_id": "SKU-00798",
+    "price_usd": 140.49
+  },
+  {
+    "product_id": "SKU-00799",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00800",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00801",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00802",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-00803",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00804",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00805",
+    "price_usd": 110.49
+  },
+  {
+    "product_id": "SKU-00806",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00807",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-00808",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00809",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00810",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00811",
+    "price_usd": 77.49
+  },
+  {
+    "product_id": "SKU-00812",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00813",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00814",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00815",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00816",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00817",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-00818",
+    "price_usd": 306
+  },
+  {
+    "product_id": "SKU-00819",
+    "price_usd": 113.49
+  },
+  {
+    "product_id": "SKU-00820",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00821",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00822",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00823",
+    "price_usd": 117.49
+  },
+  {
+    "product_id": "SKU-00824",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-00825",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00826",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00827",
+    "price_usd": 118.49
+  },
+  {
+    "product_id": "SKU-00828",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00829",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00830",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00831",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00832",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00833",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00834",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00835",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00836",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00837",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00838",
+    "price_usd": 87.49
+  },
+  {
+    "product_id": "SKU-00839",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-00840",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-00841",
+    "price_usd": 101.49
+  },
+  {
+    "product_id": "SKU-00842",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00843",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-00844",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00845",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-00846",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00847",
+    "price_usd": 284
+  },
+  {
+    "product_id": "SKU-00848",
+    "price_usd": 79.49
+  },
+  {
+    "product_id": "SKU-00849",
+    "price_usd": 96.49
+  },
+  {
+    "product_id": "SKU-00850",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00851",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00852",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00853",
+    "price_usd": 123.49
+  },
+  {
+    "product_id": "SKU-00854",
+    "price_usd": 109.49
+  },
+  {
+    "product_id": "SKU-00855",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00856",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00857",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00858",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00859",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00860",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00861",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00862",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-00863",
+    "price_usd": 101.49
+  },
+  {
+    "product_id": "SKU-00864",
+    "price_usd": 67.49
+  },
+  {
+    "product_id": "SKU-00865",
+    "price_usd": 387
+  },
+  {
+    "product_id": "SKU-00866",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00867",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00868",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00869",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00870",
+    "price_usd": 76.49
+  },
+  {
+    "product_id": "SKU-00871",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00872",
+    "price_usd": 146.49
+  },
+  {
+    "product_id": "SKU-00873",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00874",
+    "price_usd": 333
+  },
+  {
+    "product_id": "SKU-00875",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00876",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00877",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-00878",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00879",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00880",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00881",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00882",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00883",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00884",
+    "price_usd": 140.49
+  },
+  {
+    "product_id": "SKU-00885",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00886",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00887",
+    "price_usd": 73.49
+  },
+  {
+    "product_id": "SKU-00888",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00889",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00890",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00891",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00892",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00893",
+    "price_usd": 128.49
+  },
+  {
+    "product_id": "SKU-00894",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-00895",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00896",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00897",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00898",
+    "price_usd": 394
+  },
+  {
+    "product_id": "SKU-00899",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-00900",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00901",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00902",
+    "price_usd": 64.49
+  },
+  {
+    "product_id": "SKU-00903",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-00904",
+    "price_usd": 147.49
+  },
+  {
+    "product_id": "SKU-00905",
+    "price_usd": 99.49
+  },
+  {
+    "product_id": "SKU-00906",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00907",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00908",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00909",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-00910",
+    "price_usd": 128.49
+  },
+  {
+    "product_id": "SKU-00911",
+    "price_usd": 345
+  },
+  {
+    "product_id": "SKU-00912",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-00913",
+    "price_usd": 76.49
+  },
+  {
+    "product_id": "SKU-00914",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00915",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-00916",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00917",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00918",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-00919",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-00920",
+    "price_usd": 168
+  },
+  {
+    "product_id": "SKU-00921",
+    "price_usd": 234
+  },
+  {
+    "product_id": "SKU-00922",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-00923",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-00924",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00925",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-00926",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00927",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00928",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00929",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-00930",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-00931",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00932",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-00933",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00934",
+    "price_usd": 142.49
+  },
+  {
+    "product_id": "SKU-00935",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00936",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00937",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-00938",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00939",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00940",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00941",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00942",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00943",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00944",
+    "price_usd": 363
+  },
+  {
+    "product_id": "SKU-00945",
+    "price_usd": 304
+  },
+  {
+    "product_id": "SKU-00946",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00947",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-00948",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-00949",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-00950",
+    "price_usd": 222
+  },
+  {
+    "product_id": "SKU-00951",
+    "price_usd": 148.49
+  },
+  {
+    "product_id": "SKU-00952",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-00953",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00954",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-00955",
+    "price_usd": 132.49
+  },
+  {
+    "product_id": "SKU-00956",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-00957",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-00958",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00959",
+    "price_usd": 78.49
+  },
+  {
+    "product_id": "SKU-00960",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00961",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-00962",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00963",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-00964",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-00965",
+    "price_usd": 173
+  },
+  {
+    "product_id": "SKU-00966",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-00967",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00968",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-00969",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-00970",
+    "price_usd": 91.49
+  },
+  {
+    "product_id": "SKU-00971",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-00972",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-00973",
+    "price_usd": 64.49
+  },
+  {
+    "product_id": "SKU-00974",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00975",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-00976",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-00977",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00978",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00979",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-00980",
+    "price_usd": 111.49
+  },
+  {
+    "product_id": "SKU-00981",
+    "price_usd": 369
+  },
+  {
+    "product_id": "SKU-00982",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-00983",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-00984",
+    "price_usd": 141.49
+  },
+  {
+    "product_id": "SKU-00985",
+    "price_usd": 248
+  },
+  {
+    "product_id": "SKU-00986",
+    "price_usd": 189
+  },
+  {
+    "product_id": "SKU-00987",
+    "price_usd": 232
+  },
+  {
+    "product_id": "SKU-00988",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-00989",
+    "price_usd": 93.49
+  },
+  {
+    "product_id": "SKU-00990",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-00991",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-00992",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-00993",
+    "price_usd": 187
+  },
+  {
+    "product_id": "SKU-00994",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-00995",
+    "price_usd": 106.49
+  },
+  {
+    "product_id": "SKU-00996",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-00997",
+    "price_usd": 148.49
+  },
+  {
+    "product_id": "SKU-00998",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-00999",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01000",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-01001",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01002",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01003",
+    "price_usd": 112.49
+  },
+  {
+    "product_id": "SKU-01004",
+    "price_usd": 121.49
+  },
+  {
+    "product_id": "SKU-01005",
+    "price_usd": 259
+  },
+  {
+    "product_id": "SKU-01006",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-01007",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01008",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01009",
+    "price_usd": 291
+  },
+  {
+    "product_id": "SKU-01010",
+    "price_usd": 71.49
+  },
+  {
+    "product_id": "SKU-01011",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-01012",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-01013",
+    "price_usd": 78.49
+  },
+  {
+    "product_id": "SKU-01014",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01015",
+    "price_usd": 235
+  },
+  {
+    "product_id": "SKU-01016",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01017",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-01018",
+    "price_usd": 74.49
+  },
+  {
+    "product_id": "SKU-01019",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01020",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01021",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01022",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01023",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-01024",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01025",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01026",
+    "price_usd": 82.49
+  },
+  {
+    "product_id": "SKU-01027",
+    "price_usd": 92.49
+  },
+  {
+    "product_id": "SKU-01028",
+    "price_usd": 260
+  },
+  {
+    "product_id": "SKU-01029",
+    "price_usd": 155
+  },
+  {
+    "product_id": "SKU-01030",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01031",
+    "price_usd": 83.49
+  },
+  {
+    "product_id": "SKU-01032",
+    "price_usd": 101.49
+  },
+  {
+    "product_id": "SKU-01033",
+    "price_usd": 146.49
+  },
+  {
+    "product_id": "SKU-01034",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01035",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-01036",
+    "price_usd": 102.49
+  },
+  {
+    "product_id": "SKU-01037",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01038",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-01039",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01040",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-01041",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-01042",
+    "price_usd": 73.49
+  },
+  {
+    "product_id": "SKU-01043",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01044",
+    "price_usd": 367
+  },
+  {
+    "product_id": "SKU-01045",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-01046",
+    "price_usd": 61.49
+  },
+  {
+    "product_id": "SKU-01047",
+    "price_usd": 108.49
+  },
+  {
+    "product_id": "SKU-01048",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-01049",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01050",
+    "price_usd": 105.49
+  },
+  {
+    "product_id": "SKU-01051",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01052",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01053",
+    "price_usd": 99.49
+  },
+  {
+    "product_id": "SKU-01054",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-01055",
+    "price_usd": 74.49
+  },
+  {
+    "product_id": "SKU-01056",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-01057",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01058",
+    "price_usd": 86.49
+  },
+  {
+    "product_id": "SKU-01059",
+    "price_usd": 54.49
+  },
+  {
+    "product_id": "SKU-01060",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01061",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-01062",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01063",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01064",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-01065",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-01066",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01067",
+    "price_usd": 87.49
+  },
+  {
+    "product_id": "SKU-01068",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01069",
+    "price_usd": 328
+  },
+  {
+    "product_id": "SKU-01070",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-01071",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01072",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01073",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-01074",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01075",
+    "price_usd": 147.49
+  },
+  {
+    "product_id": "SKU-01076",
+    "price_usd": 228
+  },
+  {
+    "product_id": "SKU-01077",
+    "price_usd": 90.49
+  },
+  {
+    "product_id": "SKU-01078",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-01079",
+    "price_usd": 54.49
+  },
+  {
+    "product_id": "SKU-01080",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-01081",
+    "price_usd": 118.49
+  },
+  {
+    "product_id": "SKU-01082",
+    "price_usd": 96.49
+  },
+  {
+    "product_id": "SKU-01083",
+    "price_usd": 90.49
+  },
+  {
+    "product_id": "SKU-01084",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01085",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-01086",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-01087",
+    "price_usd": 102.49
+  },
+  {
+    "product_id": "SKU-01088",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-01089",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-01090",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-01091",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-01092",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01093",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01094",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01095",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-01096",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-01097",
+    "price_usd": 275
+  },
+  {
+    "product_id": "SKU-01098",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-01099",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01100",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01101",
+    "price_usd": 143.49
+  },
+  {
+    "product_id": "SKU-01102",
+    "price_usd": 63.49
+  },
+  {
+    "product_id": "SKU-01103",
+    "price_usd": 137.49
+  },
+  {
+    "product_id": "SKU-01104",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-01105",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01106",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-01107",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01108",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-01109",
+    "price_usd": 122.49
+  },
+  {
+    "product_id": "SKU-01110",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-01111",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01112",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-01113",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-01114",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-01115",
+    "price_usd": 139.49
+  },
+  {
+    "product_id": "SKU-01116",
+    "price_usd": 70.49
+  },
+  {
+    "product_id": "SKU-01117",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01118",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-01119",
+    "price_usd": 118.49
+  },
+  {
+    "product_id": "SKU-01120",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01121",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-01122",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01123",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01124",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01125",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01126",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-01127",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01128",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-01129",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-01130",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01131",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01132",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-01133",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-01134",
+    "price_usd": 65.49
+  },
+  {
+    "product_id": "SKU-01135",
+    "price_usd": 71.49
+  },
+  {
+    "product_id": "SKU-01136",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-01137",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-01138",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-01139",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-01140",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-01141",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01142",
+    "price_usd": 152
+  },
+  {
+    "product_id": "SKU-01143",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01144",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01145",
+    "price_usd": 130.49
+  },
+  {
+    "product_id": "SKU-01146",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01147",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01148",
+    "price_usd": 63.49
+  },
+  {
+    "product_id": "SKU-01149",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-01150",
+    "price_usd": 144.49
+  },
+  {
+    "product_id": "SKU-01151",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01152",
+    "price_usd": 219
+  },
+  {
+    "product_id": "SKU-01153",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01154",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-01155",
+    "price_usd": 241
+  },
+  {
+    "product_id": "SKU-01156",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-01157",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01158",
+    "price_usd": 203
+  },
+  {
+    "product_id": "SKU-01159",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-01160",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-01161",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01162",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-01163",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-01164",
+    "price_usd": 113.49
+  },
+  {
+    "product_id": "SKU-01165",
+    "price_usd": 131.49
+  },
+  {
+    "product_id": "SKU-01166",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-01167",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01168",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-01169",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-01170",
+    "price_usd": 123.49
+  },
+  {
+    "product_id": "SKU-01171",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01172",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-01173",
+    "price_usd": 145.49
+  },
+  {
+    "product_id": "SKU-01174",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-01175",
+    "price_usd": 105.49
+  },
+  {
+    "product_id": "SKU-01176",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-01177",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01178",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01179",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01180",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01181",
+    "price_usd": 126.49
+  },
+  {
+    "product_id": "SKU-01182",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-01183",
+    "price_usd": 99.49
+  },
+  {
+    "product_id": "SKU-01184",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-01185",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01186",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-01187",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01188",
+    "price_usd": 129.49
+  },
+  {
+    "product_id": "SKU-01189",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01190",
+    "price_usd": 105.49
+  },
+  {
+    "product_id": "SKU-01191",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01192",
+    "price_usd": 72.49
+  },
+  {
+    "product_id": "SKU-01193",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-01194",
+    "price_usd": 70.49
+  },
+  {
+    "product_id": "SKU-01195",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01196",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01197",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01198",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01199",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-01200",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01201",
+    "price_usd": 121.49
+  },
+  {
+    "product_id": "SKU-01202",
+    "price_usd": 86.49
+  },
+  {
+    "product_id": "SKU-01203",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01204",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-01205",
+    "price_usd": 88.49
+  },
+  {
+    "product_id": "SKU-01206",
+    "price_usd": 96.49
+  },
+  {
+    "product_id": "SKU-01207",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01208",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-01209",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-01210",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01211",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01212",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01213",
+    "price_usd": 99.49
+  },
+  {
+    "product_id": "SKU-01214",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-01215",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01216",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01217",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01218",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01219",
+    "price_usd": 64.49
+  },
+  {
+    "product_id": "SKU-01220",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01221",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-01222",
+    "price_usd": 81.49
+  },
+  {
+    "product_id": "SKU-01223",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-01224",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01225",
+    "price_usd": 142.49
+  },
+  {
+    "product_id": "SKU-01226",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01227",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-01228",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01229",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01230",
+    "price_usd": 175
+  },
+  {
+    "product_id": "SKU-01231",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-01232",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01233",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01234",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01235",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-01236",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-01237",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01238",
+    "price_usd": 65.49
+  },
+  {
+    "product_id": "SKU-01239",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-01240",
+    "price_usd": 144.49
+  },
+  {
+    "product_id": "SKU-01241",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-01242",
+    "price_usd": 98.49
+  },
+  {
+    "product_id": "SKU-01243",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-01244",
+    "price_usd": 173
+  },
+  {
+    "product_id": "SKU-01245",
+    "price_usd": 251
+  },
+  {
+    "product_id": "SKU-01246",
+    "price_usd": 88.49
+  },
+  {
+    "product_id": "SKU-01247",
+    "price_usd": 92.49
+  },
+  {
+    "product_id": "SKU-01248",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-01249",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-01250",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-01251",
+    "price_usd": 160
+  },
+  {
+    "product_id": "SKU-01252",
+    "price_usd": 63.49
+  },
+  {
+    "product_id": "SKU-01253",
+    "price_usd": 21.95
+  },
+  {
+    "product_id": "SKU-01254",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-01255",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-01256",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-01257",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-01258",
+    "price_usd": 58.49
+  },
+  {
+    "product_id": "SKU-01259",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-01260",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01261",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01262",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01263",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01264",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01265",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01266",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-01267",
+    "price_usd": 69.49
+  },
+  {
+    "product_id": "SKU-01268",
+    "price_usd": 213
+  },
+  {
+    "product_id": "SKU-01269",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-01270",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01271",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-01272",
+    "price_usd": 69.49
+  },
+  {
+    "product_id": "SKU-01273",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-01274",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-01275",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-01276",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-01277",
+    "price_usd": 181
+  },
+  {
+    "product_id": "SKU-01278",
+    "price_usd": 76.49
+  },
+  {
+    "product_id": "SKU-01279",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-01280",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01281",
+    "price_usd": 85.49
+  },
+  {
+    "product_id": "SKU-01282",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-01283",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01284",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-01285",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01286",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-01287",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-01288",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-01289",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01290",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-01291",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01292",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-01293",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01294",
+    "price_usd": 148.49
+  },
+  {
+    "product_id": "SKU-01295",
+    "price_usd": 55.49
+  },
+  {
+    "product_id": "SKU-01296",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-01297",
+    "price_usd": 99.49
+  },
+  {
+    "product_id": "SKU-01298",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-01299",
+    "price_usd": 94.49
+  },
+  {
+    "product_id": "SKU-01300",
+    "price_usd": 149.49
+  },
+  {
+    "product_id": "SKU-01301",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01302",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01303",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01304",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-01305",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01306",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-01307",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-01308",
+    "price_usd": 88.49
+  },
+  {
+    "product_id": "SKU-01309",
+    "price_usd": 128.49
+  },
+  {
+    "product_id": "SKU-01310",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-01311",
+    "price_usd": 93.49
+  },
+  {
+    "product_id": "SKU-01312",
+    "price_usd": 142.49
+  },
+  {
+    "product_id": "SKU-01313",
+    "price_usd": 279
+  },
+  {
+    "product_id": "SKU-01314",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-01315",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-01316",
+    "price_usd": 90.49
+  },
+  {
+    "product_id": "SKU-01317",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01318",
+    "price_usd": 102.49
+  },
+  {
+    "product_id": "SKU-01319",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01320",
+    "price_usd": 97.49
+  },
+  {
+    "product_id": "SKU-01321",
+    "price_usd": 41.95
+  },
+  {
+    "product_id": "SKU-01322",
+    "price_usd": 74.49
+  },
+  {
+    "product_id": "SKU-01323",
+    "price_usd": 291
+  },
+  {
+    "product_id": "SKU-01324",
+    "price_usd": 77.49
+  },
+  {
+    "product_id": "SKU-01325",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-01326",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01327",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01328",
+    "price_usd": 68.49
+  },
+  {
+    "product_id": "SKU-01329",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01330",
+    "price_usd": 67.49
+  },
+  {
+    "product_id": "SKU-01331",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01332",
+    "price_usd": 37.95
+  },
+  {
+    "product_id": "SKU-01333",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-01334",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-01335",
+    "price_usd": 20.95
+  },
+  {
+    "product_id": "SKU-01336",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-01337",
+    "price_usd": 104.49
+  },
+  {
+    "product_id": "SKU-01338",
+    "price_usd": 139.49
+  },
+  {
+    "product_id": "SKU-01339",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-01340",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-01341",
+    "price_usd": 293
+  },
+  {
+    "product_id": "SKU-01342",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-01343",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01344",
+    "price_usd": 134.49
+  },
+  {
+    "product_id": "SKU-01345",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01346",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-01347",
+    "price_usd": 47.95
+  },
+  {
+    "product_id": "SKU-01348",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-01349",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-01350",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01351",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01352",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01353",
+    "price_usd": 117.49
+  },
+  {
+    "product_id": "SKU-01354",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-01355",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-01356",
+    "price_usd": 137.49
+  },
+  {
+    "product_id": "SKU-01357",
+    "price_usd": 132.49
+  },
+  {
+    "product_id": "SKU-01358",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01359",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01360",
+    "price_usd": 143.49
+  },
+  {
+    "product_id": "SKU-01361",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-01362",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-01363",
+    "price_usd": 40.95
+  },
+  {
+    "product_id": "SKU-01364",
+    "price_usd": 8.99
+  },
+  {
+    "product_id": "SKU-01365",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01366",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-01367",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01368",
+    "price_usd": 360
+  },
+  {
+    "product_id": "SKU-01369",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01370",
+    "price_usd": 122.49
+  },
+  {
+    "product_id": "SKU-01371",
+    "price_usd": 67.49
+  },
+  {
+    "product_id": "SKU-01372",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01373",
+    "price_usd": 95.49
+  },
+  {
+    "product_id": "SKU-01374",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01375",
+    "price_usd": 24.95
+  },
+  {
+    "product_id": "SKU-01376",
+    "price_usd": 53.49
+  },
+  {
+    "product_id": "SKU-01377",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01378",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01379",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01380",
+    "price_usd": 22.95
+  },
+  {
+    "product_id": "SKU-01381",
+    "price_usd": 45.95
+  },
+  {
+    "product_id": "SKU-01382",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01383",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01384",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-01385",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-01386",
+    "price_usd": 256
+  },
+  {
+    "product_id": "SKU-01387",
+    "price_usd": 132.49
+  },
+  {
+    "product_id": "SKU-01388",
+    "price_usd": 23.95
+  },
+  {
+    "product_id": "SKU-01389",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01390",
+    "price_usd": 110.49
+  },
+  {
+    "product_id": "SKU-01391",
+    "price_usd": 6.99
+  },
+  {
+    "product_id": "SKU-01392",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-01393",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01394",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01395",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01396",
+    "price_usd": 34.95
+  },
+  {
+    "product_id": "SKU-01397",
+    "price_usd": 137.49
+  },
+  {
+    "product_id": "SKU-01398",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-01399",
+    "price_usd": 36.95
+  },
+  {
+    "product_id": "SKU-01400",
+    "price_usd": 42.95
+  },
+  {
+    "product_id": "SKU-01401",
+    "price_usd": 11.95
+  },
+  {
+    "product_id": "SKU-01402",
+    "price_usd": 137.49
+  },
+  {
+    "product_id": "SKU-01403",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-01404",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01405",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01406",
+    "price_usd": 71.49
+  },
+  {
+    "product_id": "SKU-01407",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01408",
+    "price_usd": 108.49
+  },
+  {
+    "product_id": "SKU-01409",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01410",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01411",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-01412",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01413",
+    "price_usd": 48.95
+  },
+  {
+    "product_id": "SKU-01414",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01415",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01416",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-01417",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-01418",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01419",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-01420",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01421",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01422",
+    "price_usd": 51.49
+  },
+  {
+    "product_id": "SKU-01423",
+    "price_usd": 9.99
+  },
+  {
+    "product_id": "SKU-01424",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01425",
+    "price_usd": 136.49
+  },
+  {
+    "product_id": "SKU-01426",
+    "price_usd": 10.95
+  },
+  {
+    "product_id": "SKU-01427",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01428",
+    "price_usd": 32.95
+  },
+  {
+    "product_id": "SKU-01429",
+    "price_usd": 54.49
+  },
+  {
+    "product_id": "SKU-01430",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-01431",
+    "price_usd": 357
+  },
+  {
+    "product_id": "SKU-01432",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01433",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-01434",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-01435",
+    "price_usd": 26.95
+  },
+  {
+    "product_id": "SKU-01436",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01437",
+    "price_usd": 39.95
+  },
+  {
+    "product_id": "SKU-01438",
+    "price_usd": 49.95
+  },
+  {
+    "product_id": "SKU-01439",
+    "price_usd": 46.95
+  },
+  {
+    "product_id": "SKU-01440",
+    "price_usd": 149.49
+  },
+  {
+    "product_id": "SKU-01441",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01442",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-01443",
+    "price_usd": 30.95
+  },
+  {
+    "product_id": "SKU-01444",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-01445",
+    "price_usd": 35.95
+  },
+  {
+    "product_id": "SKU-01446",
+    "price_usd": 7.99
+  },
+  {
+    "product_id": "SKU-01447",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01448",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01449",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-01450",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-01451",
+    "price_usd": 57.49
+  },
+  {
+    "product_id": "SKU-01452",
+    "price_usd": 126.49
+  },
+  {
+    "product_id": "SKU-01453",
+    "price_usd": 210
+  },
+  {
+    "product_id": "SKU-01454",
+    "price_usd": 112.49
+  },
+  {
+    "product_id": "SKU-01455",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-01456",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-01457",
+    "price_usd": 12.95
+  },
+  {
+    "product_id": "SKU-01458",
+    "price_usd": 102.49
+  },
+  {
+    "product_id": "SKU-01459",
+    "price_usd": 110.49
+  },
+  {
+    "product_id": "SKU-01460",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01461",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01462",
+    "price_usd": 141.49
+  },
+  {
+    "product_id": "SKU-01463",
+    "price_usd": 44.95
+  },
+  {
+    "product_id": "SKU-01464",
+    "price_usd": 115.49
+  },
+  {
+    "product_id": "SKU-01465",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01466",
+    "price_usd": 14.95
+  },
+  {
+    "product_id": "SKU-01467",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01468",
+    "price_usd": 33.95
+  },
+  {
+    "product_id": "SKU-01469",
+    "price_usd": 50.49
+  },
+  {
+    "product_id": "SKU-01470",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-01471",
+    "price_usd": 38.95
+  },
+  {
+    "product_id": "SKU-01472",
+    "price_usd": 192
+  },
+  {
+    "product_id": "SKU-01473",
+    "price_usd": 171
+  },
+  {
+    "product_id": "SKU-01474",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01475",
+    "price_usd": 13.95
+  },
+  {
+    "product_id": "SKU-01476",
+    "price_usd": 19.95
+  },
+  {
+    "product_id": "SKU-01477",
+    "price_usd": 17.95
+  },
+  {
+    "product_id": "SKU-01478",
+    "price_usd": 5.99
+  },
+  {
+    "product_id": "SKU-01479",
+    "price_usd": 52.49
+  },
+  {
+    "product_id": "SKU-01480",
+    "price_usd": 355
+  },
+  {
+    "product_id": "SKU-01481",
+    "price_usd": 72.49
+  },
+  {
+    "product_id": "SKU-01482",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01483",
+    "price_usd": 25.95
+  },
+  {
+    "product_id": "SKU-01484",
+    "price_usd": 97.49
+  },
+  {
+    "product_id": "SKU-01485",
+    "price_usd": 93.49
+  },
+  {
+    "product_id": "SKU-01486",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01487",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01488",
+    "price_usd": 18.95
+  },
+  {
+    "product_id": "SKU-01489",
+    "price_usd": 331
+  },
+  {
+    "product_id": "SKU-01490",
+    "price_usd": 27.95
+  },
+  {
+    "product_id": "SKU-01491",
+    "price_usd": 59.49
+  },
+  {
+    "product_id": "SKU-01492",
+    "price_usd": 98.49
+  },
+  {
+    "product_id": "SKU-01493",
+    "price_usd": 29.95
+  },
+  {
+    "product_id": "SKU-01494",
+    "price_usd": 15.95
+  },
+  {
+    "product_id": "SKU-01495",
+    "price_usd": 56.49
+  },
+  {
+    "product_id": "SKU-01496",
+    "price_usd": 16.95
+  },
+  {
+    "product_id": "SKU-01497",
+    "price_usd": 241
+  },
+  {
+    "product_id": "SKU-01498",
+    "price_usd": 31.95
+  },
+  {
+    "product_id": "SKU-01499",
+    "price_usd": 28.95
+  },
+  {
+    "product_id": "SKU-01500",
+    "price_usd": 5.99
+  }
+]
