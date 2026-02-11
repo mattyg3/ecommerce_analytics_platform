@@ -1,0 +1,225 @@
+import json
+import uuid
+import random
+import math
+import time
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+# ----------------------------------------
+# Configuration
+# ----------------------------------------
+CLICKSTREAM_DIR = Path("data/clickstream/raw")
+CLICKSTREAM_DIR.mkdir(parents=True, exist_ok=True)
+ORDERS_DIR = Path("data/orders/raw")
+ORDERS_DIR.mkdir(parents=True, exist_ok=True)
+
+BATCH_INTERVAL_SECONDS = 2         # interval between batches (simulated)
+SIMULATION_HOURS = 672 #24              # simulate 28 days
+TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
+
+EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
+ORDER_STATUSES = ["pending", "completed", "cancelled"]
+PRODUCTS = [f"SKU-{i:05d}" for i in range(1, 1501)]
+DEVICES = ["mobile", "desktop", "tablet"]
+COUNTRIES = ["US", "CA", "MX", "GB", "DE", "ES", "FR", "BR", "AR"]
+USER_AGENTS = ["Mozilla/5.0 (iPhone)", "Mozilla/5.0 (Android)", "Mozilla/5.0 (Windows NT 10.0)"]
+REFERRERS = ["google.com", "facebook.com", "email_campaign", None]
+EXPERIMENTS = [None, "checkout_redesign", "pricing_test"]
+
+FUNNEL_STEP_PROB = {
+    "view_product":0.95,
+    "add_to_cart":0.25,
+    "checkout_start":0.6,
+    "purchase":0.85,
+}
+
+LATE_EVENT_PROB = 0.15
+LATE_EVENT_MAX_DELAY = 10 #minutes
+
+# ----------------------------------------
+# Helper Functions
+# ----------------------------------------
+def event_delay(scale=30, max_delay=14400):
+    """
+    Return a realistic delay in seconds using an exponential-like distribution.
+
+    scale: controls the "typical" delay (mean ~ scale seconds)
+    max_delay: maximum allowed delay in seconds (default 4 hours)
+    """
+    u = random.random()
+    delay_seconds = -scale * math.log(1 - u) # 1-u to avoid ln(0)
+    delay_seconds = min(delay_seconds, max_delay) # Clip to maximum delay
+    return delay_seconds
+
+def advance_time(current_time):
+    """
+    Advance simulated event time by 10–90 seconds
+    """
+    return current_time + timedelta(seconds=random.randint(10,90))
+
+def maybe_force_late(event_time):
+    """
+    With some probability, shift event_time backwards
+    while keeping ingest_time near simulated_now.
+    """
+    if random.random() < LATE_EVENT_PROB:
+        delay_minutes = random.randint(1, LATE_EVENT_MAX_DELAY)
+        return event_time - timedelta(minutes=delay_minutes)
+    return event_time
+
+def generate_event(event_type, session_dict, product_id=None, simulated_now=None, session_time=None):
+    if simulated_now is None:
+        simulated_now = datetime.now(timezone.utc)
+    # event_time = simulated_now - timedelta(seconds=event_delay(scale=5, max_delay=300))
+
+    event = {
+        "event_id": str(uuid.uuid4()),
+        "event_type": event_type,
+        "version": session_dict["version"],
+        "user_id": session_dict["user_id"],
+        "session_id": session_dict["session_id"],
+        "product_id": product_id,
+        "event_time": session_time.isoformat(),
+        "ingest_time": simulated_now.isoformat(),
+        "device": session_dict["device"],
+        "country": session_dict["country"],
+    }
+
+    if session_dict["version"] == 2:
+        event.update({
+            "user_agent": session_dict["user_agent"],
+            "referrer": session_dict["referrer"],
+            "experiment_id": session_dict["experiment_id"],
+        })
+
+    return event
+
+def generate_session(simulated_now=None):
+    if simulated_now is None:
+        simulated_now = datetime.now(timezone.utc)
+    session_time = simulated_now - timedelta(seconds=random.randint(30, 90))
+    session_dict = {
+        "version": 2 if random.random() < 0.3 else 1, #30% are version 2
+        "user_id": str(uuid.uuid4()),
+        "session_id": str(uuid.uuid4()),
+        "device": random.choice(DEVICES),
+        "country": random.choice(COUNTRIES)
+    }
+    if session_dict["version"] == 2:
+        session_dict.update({
+            "user_agent": random.choice(USER_AGENTS),
+            "referrer": random.choice(REFERRERS),
+            "experiment_id": random.choice(EXPERIMENTS)
+        })
+    events = []
+    def emit(event_type, product_id=None):
+        nonlocal session_time, session_dict, simulated_now
+        session_time = advance_time(session_time)
+        true_event_time = maybe_force_late(session_time)
+        events.append(generate_event(event_type, session_dict, product_id, simulated_now, true_event_time))
+    
+    emit("page_view")
+    num_products = random.randint(1,5)
+    products = random.sample(PRODUCTS, num_products)
+    order_generated = False
+    ordered_products = []
+
+    for product_id in products:
+        #View Product
+        if random.random() > FUNNEL_STEP_PROB["view_product"]:
+            continue
+        emit("view_product", product_id)
+        #Add to Cart
+        if random.random() > FUNNEL_STEP_PROB["add_to_cart"]:
+            continue
+        emit("add_to_cart", product_id)
+        ordered_products.append(product_id)
+        #Start Checkout
+        if random.random() > FUNNEL_STEP_PROB["checkout_start"]:
+            continue
+        emit("checkout_start", product_id)
+        #Purchase
+        if random.random() < FUNNEL_STEP_PROB["purchase"]:
+            session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait
+            true_event_time = maybe_force_late(session_time)
+            events.append(generate_event("purchase", session_dict, product_id, simulated_now, true_event_time))
+            order_generated = True
+
+    if not order_generated:
+        ordered_products = []
+
+    # Shuffle arrival order slightly (network jitter) 
+    random.shuffle(events)
+
+    return session_dict, events, order_generated, ordered_products
+
+def generate_order(session_dict, product_id, simulated_now=None):
+    if simulated_now is None:
+        simulated_now = datetime.now(timezone.utc)
+    order_time = simulated_now - timedelta(seconds=event_delay(scale=10, max_delay=900))
+    return {
+        "session_id": session_dict["session_id"],
+        "order_id": str(uuid.uuid4()),
+        "user_id": session_dict["user_id"],
+        "product_id": product_id,
+        "quantity": random.randint(1,5),
+        "price": round(random.uniform(5,500),2),
+        "order_status": random.choice(ORDER_STATUSES),
+        "order_time": order_time.isoformat(),
+        "ingest_time": simulated_now.isoformat()
+    }
+
+def write_events(events, directory, filename_prefix):
+    timestamp_ms = int(time.time() * 1000)
+    filename = directory / f"{filename_prefix}_{timestamp_ms}.json"
+    with open(filename, "w") as f:
+        for event in events:
+            f.write(json.dumps(event) + "\n")
+
+def sessions_per_batch(sim_hour):
+    if 0 <= sim_hour < 6:
+        return random.randint(2, 5)
+    elif 6 <= sim_hour < 12:
+        return random.randint(5, 15)
+    elif 12 <= sim_hour < 18:
+        return random.randint(15, 30)
+    else:
+        return random.randint(10, 20)
+
+# ----------------------------------------
+# MAIN
+# ----------------------------------------
+if __name__ == "__main__":
+    start_time = time.time()
+    end_time = start_time + SIMULATION_HOURS * 3600 / TIME_MULTIPLIER
+    print(f"Starting simulated clickstream & orders for {SIMULATION_HOURS} hours...")
+
+    while time.time() < end_time:
+        simulated_seconds = (time.time() - start_time) * TIME_MULTIPLIER
+        simulated_now = datetime.now(timezone.utc) + timedelta(seconds=simulated_seconds)
+        num_sessions = sessions_per_batch(simulated_now.hour)
+
+        batch_clickstream = []
+        batch_orders = []
+        for _ in range(num_sessions):
+            session_dict, session_events, order_generated, ordered_products = generate_session(simulated_now)
+            batch_clickstream.extend(session_events)
+            if order_generated:
+                for product_id in ordered_products:
+                    batch_orders.append(generate_order(session_dict, product_id, simulated_now))
+
+        #Add duplicates
+        if random.random() < 0.05 and batch_clickstream:
+            batch_clickstream.append(random.choice(batch_clickstream))
+        if random.random() < 0.02 and batch_orders:
+            batch_orders.append(random.choice(batch_orders))
+
+        write_events(batch_clickstream, CLICKSTREAM_DIR, "clickstream")
+        write_events(batch_orders, ORDERS_DIR, "orders")
+        print(f"Wrote Clickstream: {len(batch_clickstream)} and Orders: {len(batch_orders)} for simulated {simulated_now.hour}:{simulated_now.minute}:{simulated_now.second}")
+
+        # Sleep scaled by TIME_MULTIPLIER
+        time.sleep(BATCH_INTERVAL_SECONDS / TIME_MULTIPLIER)
+
+    print("Simulation complete!")
