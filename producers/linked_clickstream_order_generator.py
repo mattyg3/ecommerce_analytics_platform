@@ -31,11 +31,22 @@ FUNNEL_STEP_PROB = {
     "view_product":0.95,
     "add_to_cart":0.25,
     "checkout_start":0.6,
-    "purchase":0.85,
+    "purchase":0.80,
+}
+
+FUNNEL_STEP_PROB_RETURNING = {
+    "view_product":0.95,
+    "add_to_cart": 0.45,
+    "checkout_start": 0.75,
+    "purchase": 0.90
 }
 
 LATE_EVENT_PROB = 0.15
 LATE_EVENT_MAX_DELAY = 10 #minutes
+
+RETURNING_USER_PROB = 0.3
+MAX_KNOWN_USERS = 50000
+known_users = []
 
 def load_products(filename="data\products.json"):
     with open(filename, "r", encoding="utf-8") as f:
@@ -45,6 +56,19 @@ PRODUCT_INDEX = {p["product_id"]: p for p in PRODUCTS}
 # ----------------------------------------
 # Helper Functions
 # ----------------------------------------
+def get_user_id():
+    global known_users
+    # Returning user
+    if known_users and random.random() < RETURNING_USER_PROB:
+        return random.choice(known_users), True
+    # New user
+    user_id = str(uuid.uuid4())
+    known_users.append(user_id)
+    # Prevent unbounded growth
+    if len(known_users) > MAX_KNOWN_USERS:
+        known_users = known_users[-MAX_KNOWN_USERS:]
+    return user_id, False
+
 def event_delay(scale=30, max_delay=14400):
     """
     Return a realistic delay in seconds using an exponential-like distribution.
@@ -56,12 +80,6 @@ def event_delay(scale=30, max_delay=14400):
     delay_seconds = -scale * math.log(1 - u) # 1-u to avoid ln(0)
     delay_seconds = min(delay_seconds, max_delay) # Clip to maximum delay
     return delay_seconds
-
-def advance_time(current_time):
-    """
-    Advance simulated event time by 10–90 seconds
-    """
-    return current_time + timedelta(seconds=random.randint(10,90))
 
 def maybe_force_late(event_time):
     """
@@ -102,10 +120,11 @@ def generate_event(event_type, session_dict, product_id=None, simulated_now=None
 def generate_session(simulated_now=None):
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
+    user_id, is_returning = get_user_id()
     session_time = simulated_now - timedelta(seconds=random.randint(30, 90))
     session_dict = {
         "version": 2 if random.random() < 0.3 else 1, #30% are version 2
-        "user_id": str(uuid.uuid4()),
+        "user_id": user_id,
         "session_id": str(uuid.uuid4()),
         "device": random.choice(DEVICES),
         "country": random.choice(COUNTRIES)
@@ -116,6 +135,14 @@ def generate_session(simulated_now=None):
             "referrer": random.choice(REFERRERS),
             "experiment_id": random.choice(EXPERIMENTS)
         })
+    funnel_probs = (FUNNEL_STEP_PROB_RETURNING if is_returning else FUNNEL_STEP_PROB)
+    # Returning users are quicker
+    min_gap, max_gap = (5, 45) if is_returning else (10, 90)
+    def advance_time(current_time):
+        """
+        Advance simulated event time
+        """
+        return current_time + timedelta(seconds=random.randint(min_gap, max_gap))
     events = []
     def emit(event_type, product_id=None):
         nonlocal session_time, session_dict, simulated_now
@@ -131,21 +158,21 @@ def generate_session(simulated_now=None):
 
     for product in products:
         #View Product
-        if random.random() > FUNNEL_STEP_PROB["view_product"]:
+        if random.random() > funnel_probs["view_product"]:
             continue
         emit("view_product", product["product_id"])
         #Add to Cart
-        if random.random() > FUNNEL_STEP_PROB["add_to_cart"]:
+        if random.random() > funnel_probs["add_to_cart"]:
             continue
         emit("add_to_cart", product["product_id"])
         ordered_products.append(product["product_id"])
         #Start Checkout
-        if random.random() > FUNNEL_STEP_PROB["checkout_start"]:
+        if random.random() > funnel_probs["checkout_start"]:
             continue
         emit("checkout_start", product["product_id"])
         #Purchase
-        if random.random() < FUNNEL_STEP_PROB["purchase"]:
-            session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait
+        if random.random() < funnel_probs["purchase"]:
+            session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait for purchase
             true_event_time = maybe_force_late(session_time)
             events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
             order_generated = True
