@@ -184,8 +184,11 @@ def generate_session(simulated_now=None):
         if random.random() > funnel_probs["view_product"]:
             continue
         emit("view_product", product["product_id"])
-        #Add to Cart
-        if random.random() > funnel_probs["add_to_cart"]:
+        #Add to Cart with dynamic prob
+        price = PRODUCT_INDEX[product["product_id"]]["price_usd"]
+        price_factor = min(1.0, 25 / price)
+        effective_add_to_cart = funnel_probs["add_to_cart"] * price_factor
+        if random.random() > effective_add_to_cart:
             continue
         emit("add_to_cart", product["product_id"])
         ordered_products.append(product["product_id"])
