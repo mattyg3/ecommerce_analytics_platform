@@ -21,9 +21,20 @@ TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
 ORDER_STATUSES = ["pending", "completed", "cancelled"]
-DEVICES = ["mobile", "desktop", "tablet"]
-COUNTRIES = ["US", "CA", "MX", "GB", "DE", "ES", "FR", "BR", "AR"]
-USER_AGENTS = ["Mozilla/5.0 (iPhone)", "Mozilla/5.0 (Android)", "Mozilla/5.0 (Windows NT 10.0)"]
+DEVICE_PROFILES = {
+    "mobile": {
+        "user_agents": ["Mozilla/5.0 (iPhone)", "Mozilla/5.0 (Android)"],
+        "countries": ["US", "CA", "MX", "BR", "AR"]
+    },
+    "desktop": {
+        "user_agents": ["Mozilla/5.0 (Windows NT 10.0)"],
+        "countries": ["US", "CA", "GB", "DE", "FR"]
+    },
+    "tablet": {
+        "user_agents": ["Mozilla/5.0 (iPad)"],
+        "countries": ["US", "GB"]
+    }
+}
 REFERRERS = ["google.com", "facebook.com", "email_campaign", None]
 EXPERIMENTS = [None, "checkout_redesign", "pricing_test"]
 
@@ -130,16 +141,18 @@ def generate_session(simulated_now=None):
         simulated_now = datetime.now(timezone.utc)
     user_id, is_returning = get_user_id()
     session_time = simulated_now - timedelta(seconds=random.randint(30, 90))
+    device_type = random.choices(list(DEVICE_PROFILES.keys()), [0.7, 0.25, 0.05], k=1)[0] #mobile: 70%, desktop: 25%, tablet: 5%
+    profile = DEVICE_PROFILES[device_type]
     session_dict = {
         "version": 2 if random.random() < 0.3 else 1, #30% are version 2
         "user_id": user_id,
         "session_id": str(uuid.uuid4()),
-        "device": random.choice(DEVICES),
-        "country": random.choice(COUNTRIES)
+        "device": device_type,
+        "country": random.choice(profile["countries"])
     }
     if session_dict["version"] == 2:
         session_dict.update({
-            "user_agent": random.choice(USER_AGENTS),
+            "user_agent": random.choice(profile["user_agents"]),
             "referrer": random.choice(REFERRERS),
             "experiment_id": random.choice(EXPERIMENTS)
         })
