@@ -16,11 +16,11 @@ ORDERS_DIR = Path("data/orders/raw")
 ORDERS_DIR.mkdir(parents=True, exist_ok=True)
 
 BATCH_INTERVAL_SECONDS = 2         # interval between batches (simulated)
-SIMULATION_HOURS = 168 #24              # simulate 7 days
+SIMULATION_HOURS = 24 #168 #24              # simulate 7 days
 TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
-ORDER_STATUSES = ["pending", "completed", "cancelled"]
+ORDER_STATUSES = ["completed", "cancelled"] #"pending", 
 DEVICE_PROFILES = {
     "mobile": {
         "user_agents": ["Mozilla/5.0 (iPhone)", "Mozilla/5.0 (Android)"],
@@ -54,6 +54,7 @@ FUNNEL_STEP_PROB_RETURNING = {
 
 LATE_EVENT_PROB = 0.15
 LATE_EVENT_MAX_DELAY = 10 #minutes
+MAX_SESSION_SECONDS = 1800  # 30 minutes
 
 RETURNING_USER_PROB = 0.3
 MAX_KNOWN_USERS = 50000
@@ -114,6 +115,10 @@ def generate_event(event_type, session_dict, product_id=None, simulated_now=None
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
 
+    #Network jitter
+    ingest_delay = random.randint(0,20) #seconds
+    ingest_time = simulated_now + timedelta(seconds=ingest_delay)
+
     event = {
         "event_id": str(uuid.uuid4()),
         "event_type": event_type,
@@ -122,7 +127,7 @@ def generate_event(event_type, session_dict, product_id=None, simulated_now=None
         "session_id": session_dict["session_id"],
         "product_id": product_id,
         "event_time": session_time.isoformat(),
-        "ingest_time": simulated_now.isoformat(),
+        "ingest_time": ingest_time.isoformat(),
         "device": session_dict["device"],
         "country": session_dict["country"],
     }
@@ -141,6 +146,7 @@ def generate_session(simulated_now=None):
         simulated_now = datetime.now(timezone.utc)
     user_id, is_returning = get_user_id()
     session_time = simulated_now - timedelta(seconds=random.randint(30, 90))
+    session_start = session_time
     device_type = random.choices(list(DEVICE_PROFILES.keys()), [0.7, 0.25, 0.05], k=1)[0] #mobile: 70%, desktop: 25%, tablet: 5%
     profile = DEVICE_PROFILES[device_type]
     session_dict = {
@@ -169,9 +175,13 @@ def generate_session(simulated_now=None):
     events = []
 
     def emit(event_type, product_id=None):
-        nonlocal session_time, session_dict, simulated_now
+        nonlocal session_time, session_dict, simulated_now, session_start
         session_dict["session_id"] = maybe_new_session(session_dict["session_id"])
         session_time = advance_time(session_time)
+        if (session_time-session_start).total_seconds() > MAX_SESSION_SECONDS:
+            # session_dict["session_id"] = str(uuid.uuid4())
+            # session_start = session_time
+            return #abandoned session
         true_event_time = maybe_force_late(session_time)
         events.append(generate_event(event_type, session_dict, product_id, simulated_now, true_event_time))
     
@@ -182,44 +192,47 @@ def generate_session(simulated_now=None):
             return 1.2
         return 1.0
     
-    emit("page_view")
-    num_products = random.randint(1,5)
-    products = random.sample(PRODUCTS, num_products)
-    order_generated = False
-    ordered_products = []
-    order_session_id = None
+    try:
+        emit("page_view")
+        # only attach referrer to initial page view
+        if session_dict["version"] == 2:
+            session_dict["referrer"] = None 
+        num_products = random.randint(1,5)
+        products = random.sample(PRODUCTS, num_products)
+        order_generated = False
+        ordered_products = []
+        order_session_id = None
 
-    for product in products:
-        #View Product
-        if random.random() > funnel_probs["view_product"]:
-            continue
-        emit("view_product", product["product_id"])
-        #Add to Cart with dynamic prob
-        price = PRODUCT_INDEX[product["product_id"]]["price_usd"]
-        price_factor = min(1.0, 50 / price)
-        effective_add_to_cart = funnel_probs["add_to_cart"] * price_factor
-        if random.random() > effective_add_to_cart:
-            continue
-        emit("add_to_cart", product["product_id"])
-        ordered_products.append(product["product_id"])
-        #Start Checkout
-        if random.random() > funnel_probs["checkout_start"]:
-            continue
-        emit("checkout_start", product["product_id"])
-        #Purchase with dynamic prob
-        conversion_factor = conversion_multiplier(session_time.hour)
-        if random.random() < funnel_probs["purchase"] * conversion_factor:
-            session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait for purchase
-            true_event_time = maybe_force_late(session_time)
-            events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
-            order_generated = True
-            order_session_id = session_dict["session_id"]
+        for product in products:
+            #View Product
+            if random.random() > funnel_probs["view_product"]:
+                continue
+            emit("view_product", product["product_id"])
+            #Add to Cart with dynamic prob
+            price = PRODUCT_INDEX[product["product_id"]]["price_usd"]
+            price_factor = min(1.0, 50 / price)
+            effective_add_to_cart = funnel_probs["add_to_cart"] * price_factor
+            if random.random() > effective_add_to_cart:
+                continue
+            emit("add_to_cart", product["product_id"])
+            ordered_products.append(product["product_id"])
+            #Start Checkout
+            if random.random() > funnel_probs["checkout_start"]:
+                continue
+            emit("checkout_start", product["product_id"])
+            #Purchase with dynamic prob
+            conversion_factor = conversion_multiplier(session_time.hour)
+            if random.random() < funnel_probs["purchase"] * conversion_factor:
+                session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait for purchase
+                true_event_time = maybe_force_late(session_time)
+                events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
+                order_generated = True
+                order_session_id = session_dict["session_id"]
+    except StopIteration:
+        pass
 
     if not order_generated:
         ordered_products = []
-
-    # Shuffle arrival order slightly (network jitter) 
-    random.shuffle(events)
 
     return session_dict, events, order_generated, ordered_products, order_session_id
 
@@ -235,13 +248,18 @@ def generate_order(session_dict, ordered_products, order_session_id, simulated_n
             "price": PRODUCT_INDEX[product_id]["price_usd"],
         }
         items_ordered.append(item)
+    
+    if random.random() < 0.97:
+        status = "completed"
+    else:
+        status = "cancelled"
 
     return {
         "session_id": order_session_id,
         "order_id": str(uuid.uuid4()),
         "user_id": session_dict["user_id"],
         "items": items_ordered,
-        "order_status": random.choice(ORDER_STATUSES),
+        "order_status": status,
         "order_time": order_time.isoformat(),
         "ingest_time": simulated_now.isoformat()
     }
