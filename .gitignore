@@ -212,4 +212,4 @@ data/orders/*
 data/landing/*
 checkpoints
 pipeline.log
-pipeline.pid
+*.pid

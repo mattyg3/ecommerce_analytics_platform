@@ -19,6 +19,24 @@ VENV_PATH="$REPO_ROOT/.venv"
 CONTROL_DIR="$REPO_ROOT/control"
 mkdir -p "$CONTROL_DIR"
 STOP_FILE="$CONTROL_DIR/clickstream.stop"
+PID_FILE="$CONTROL_DIR/streaming_ingest.pid"
+
+# ----------------------------------------
+# Prevent double-start
+# ----------------------------------------
+if [ -f "$PID_FILE" ]; then
+  OLD_PID=$(cat "$PID_FILE")
+  if kill -0 "$OLD_PID" 2>/dev/null; then
+    echo "❌ Streaming ingest already running (PID $OLD_PID). Exiting."
+    exit 1
+  else
+    echo "⚠️ Stale PID file found. Cleaning up."
+    rm -f "$PID_FILE"
+  fi
+fi
+
+echo $$ > "$PID_FILE"
+echo "🧷 PID locked: $$"
 
 # ----------------------------------------
 # Activate Python environment
@@ -61,6 +79,8 @@ graceful_shutdown() {
     echo "⏳ Waiting for streaming ingest ($SPARK_PID)..."
     wait "$SPARK_PID"
   fi
+
+  rm -f "$PID_FILE"
 
   echo "✅ Graceful shutdown complete."
   exit 0
@@ -105,7 +125,8 @@ echo "✅ Streaming ingest stopped."
 # ----------------------------------------
 if [ -f "$STOP_FILE" ]; then
     rm "$STOP_FILE"
-    echo "🧹 Stop file cleaned up."
+    rm -f "$PID_FILE"
+    echo "✅ Clean shutdown complete"
 fi
 
 # ----------------------------------------
