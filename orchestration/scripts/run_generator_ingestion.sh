@@ -120,4 +120,4 @@ echo "✅ Batch ingest completed."
 # ----------------------------------------
 # Optionally wait a few seconds to ensure all files are picked up
 sleep 5
-echo "✅ Pipeline completed. All streams landed."
+echo "✅ Pipeline completed. All streams landed." 

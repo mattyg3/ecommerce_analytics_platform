@@ -30,7 +30,6 @@ ORDER_SCHEMA = StructType([
 ])
 
 def main(
-        # input_path: Path = BASE_DIR / 'data' / 'orders' / 'raw', 
         input_path  = Path("/home/surff/spark_data/orders/raw"),
         output_path: Path = BASE_DIR / 'data' / 'landing' / 'orders',
         source_system: str = "order_generator"

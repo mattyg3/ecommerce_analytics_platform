@@ -35,10 +35,8 @@ CLICKSTREAM_SCHEMA = StructType([
 ])
 
 def main(
-    # input_path = BASE_DIR / "data" / "clickstream" / "raw",
     input_path  = Path("/home/surff/spark_data/clickstream/raw"),
     output_path: Path = BASE_DIR / "data" / "landing" / "clickstream",
-    # checkpoint_path: Path = BASE_DIR / "checkpoints" / "clickstream_ingest",
     checkpoint_path = Path("/home/surff/spark_data/checkpoints/clickstream_ingest"),
     source_system: str = "order_generator"
 ):

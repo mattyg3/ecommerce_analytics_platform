@@ -12,10 +12,8 @@ import signal
 # Configuration
 # ----------------------------------------
 BASE_DIR = Path(__file__).resolve().parents[1]
-# CLICKSTREAM_DIR = BASE_DIR / "data" / "clickstream" / "raw"
 CLICKSTREAM_DIR = Path("/home/surff/spark_data/clickstream/raw") #WSL path
 CLICKSTREAM_DIR.mkdir(parents=True, exist_ok=True)
-# ORDERS_DIR = BASE_DIR /  "data" / "orders" / "raw"
 ORDERS_DIR = Path("/home/surff/spark_data/orders/raw") #WSL path
 ORDERS_DIR.mkdir(parents=True, exist_ok=True)
 PRODUCTS = BASE_DIR / "data" / "products.json"
