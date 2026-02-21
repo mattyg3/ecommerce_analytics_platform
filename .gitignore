@@ -209,3 +209,5 @@ __marimo__/
 # Data Files
 data/clickstream/*
 data/orders/*
+data/landing/*
+checkpoints
