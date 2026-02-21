@@ -1,28 +1,22 @@
 from pathlib import Path
 import os
+import time
 BASE_DIR = Path(__file__).resolve().parents[1]
-
-# os.environ["JAVA_HOME"] = r"C:\Program Files\Eclipse Adoptium\jdk-11.0.30.7-hotspot"
-# os.environ["HADOOP_HOME"] = r"C:\hadoop"
-# os.environ["PYSPARK_PYTHON"] = str(BASE_DIR / ".venv" / "Scripts" / "python.exe")
-# os.environ["PYSPARK_DRIVER_PYTHON"] = str(BASE_DIR / ".venv" / "Scripts" / "python.exe")
-# os.environ["PATH"] += ";" + str(Path(os.environ["HADOOP_HOME"]) / "bin")
-# os.environ["PATH"] += ";" + str(Path(os.environ["JAVA_HOME"]) / "bin")
-# os.environ["HADOOP_OPTS"] = ""
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
-# os.environ["HADOOP_HOME"] = r"C:\hadoop"
+os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")
 os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
 os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
-# os.environ["PATH"] += ";" + str(Path(os.environ["HADOOP_HOME"]) / "bin")
-os.environ["PATH"] += ";" + str(Path(os.environ["JAVA_HOME"]) / "bin")
+
+STOP_FILE = BASE_DIR / "control" / "clickstream.stop"
+STOP_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+NO_NEW_FILES_TIMEOUT = 15  # seconds with no new data before stopping
+CHECK_INTERVAL = 1         # polling frequency
 
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_date, current_timestamp, lit
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType
-
-# import glob
-# files = glob.glob(str(BASE_DIR / "data" / "clickstream" / "raw" / "*.json"))
 
 CLICKSTREAM_SCHEMA = StructType([
     StructField("event_id", StringType(), False),
@@ -41,10 +35,11 @@ CLICKSTREAM_SCHEMA = StructType([
 ])
 
 def main(
-    # input_path: Path = BASE_DIR / "data" / "clickstream" / "raw",
-    input_path = Path.home() / "spark_data" / "clickstream" / "raw",
+    # input_path = BASE_DIR / "data" / "clickstream" / "raw",
+    input_path  = Path("/home/surff/spark_data/clickstream/raw"),
     output_path: Path = BASE_DIR / "data" / "landing" / "clickstream",
-    checkpoint_path: Path = BASE_DIR / "checkpoints" / "clickstream_ingest",
+    # checkpoint_path: Path = BASE_DIR / "checkpoints" / "clickstream_ingest",
+    checkpoint_path = Path("/home/surff/spark_data/checkpoints/clickstream_ingest"),
     source_system: str = "order_generator"
 ):
     builder = (
@@ -53,14 +48,10 @@ def main(
         .config("spark.master", "local[1]")
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
-        # .config("spark.driver.host", "127.0.0.1")
-        # .config("spark.driver.bindAddress", "127.0.0.1")
-        # .config("spark.executor.host", "127.0.0.1")
         .config("spark.sql.shuffle.partitions", "1")
         .config("spark.default.parallelism", "1")
         .config("spark.hadoop.fs.defaultFS", "file:///")
         .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
-        # .config("spark.hadoop.native.lib", "false")
     )
 
     spark = configure_spark_with_delta_pip(builder).getOrCreate()
@@ -71,9 +62,6 @@ def main(
         .option("maxFilesPerTrigger", 10)
         .format("json")
         .load(str(input_path))
-        # .load([f"file:///{f.replace(os.sep, '/')}" for f in files])
-        # .load(f"file:///{input_path.as_posix()}")
-        # .json(f"file:///{input_path.replace(os.sep, '/')}")
     )
 
     landed = (
@@ -90,17 +78,39 @@ def main(
         .outputMode("append")
         .option("checkpointLocation", str(checkpoint_path))
         .partitionBy("ingest_date")
-        .trigger(once=True)   # process current files then exit
+        .trigger(processingTime="5 seconds")
         .start(str(output_path))
-        .awaitTermination()
     )
+    last_data_time = time.time()
+    stop_requested = False
 
-        
-    print("Streaming query started")
-    print("Status:", query.status)
-    print("Recent progress:", query.recentProgress)
+    while query.isActive:
+        # Check for external stop signal
+        if STOP_FILE.exists():
+            if not stop_requested:
+                print("🟡 Stop file detected. Entering drain mode...")
+                stop_requested = True
 
-    query.awaitTermination()
+        progress = query.lastProgress
+
+        if progress:
+            input_rows = progress.get("numInputRows", 0)
+
+            if input_rows > 0:
+                last_data_time = time.time()
+                print(f"📥 Processed {input_rows} rows")
+
+        # If stopping AND no new data for timeout window → stop
+        if stop_requested:
+            idle_time = time.time() - last_data_time
+            if idle_time >= NO_NEW_FILES_TIMEOUT:
+                print(f"🛑 No new files for {NO_NEW_FILES_TIMEOUT}s. Stopping stream.")
+                query.stop()
+                break
+
+        time.sleep(CHECK_INTERVAL)
+
+    
 
 if __name__ == "__main__":
     main()

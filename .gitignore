@@ -211,3 +211,5 @@ data/clickstream/*
 data/orders/*
 data/landing/*
 checkpoints
+pipeline.log
+pipeline.pid

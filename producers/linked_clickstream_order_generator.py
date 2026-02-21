@@ -5,18 +5,35 @@ import math
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import json
+import os
+import signal
 
 # ----------------------------------------
 # Configuration
 # ----------------------------------------
-CLICKSTREAM_DIR = Path("data/clickstream/raw")
+BASE_DIR = Path(__file__).resolve().parents[1]
+# CLICKSTREAM_DIR = BASE_DIR / "data" / "clickstream" / "raw"
+CLICKSTREAM_DIR = Path("/home/surff/spark_data/clickstream/raw") #WSL path
 CLICKSTREAM_DIR.mkdir(parents=True, exist_ok=True)
-ORDERS_DIR = Path("data/orders/raw")
+# ORDERS_DIR = BASE_DIR /  "data" / "orders" / "raw"
+ORDERS_DIR = Path("/home/surff/spark_data/orders/raw") #WSL path
 ORDERS_DIR.mkdir(parents=True, exist_ok=True)
+PRODUCTS = BASE_DIR / "data" / "products.json"
+
+STOP_FILE = BASE_DIR / "control" / "clickstream.stop"
+STOP_FILE.parent.mkdir(parents=True, exist_ok=True)
+stop_requested = False
+
+def handle_stop_signal(signum, frame):
+    global stop_requested
+    stop_requested = True
+    print("⚠️ Stop signal received. Ending generator gracefully...")
+
+signal.signal(signal.SIGINT, handle_stop_signal)
+signal.signal(signal.SIGTERM, handle_stop_signal)
 
 BATCH_INTERVAL_SECONDS = 2         # interval between batches (simulated)
-SIMULATION_HOURS = 24 #168 #24              # simulate 7 days
+SIMULATION_HOURS = int(os.getenv("SIMULATION_HOURS", 24))  # default 24h if not set
 TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
@@ -63,7 +80,7 @@ known_users = []
 SESSION_SPLIT_PROB = 0.2
 
 
-def load_products(filename="data\products.json"):
+def load_products(filename=PRODUCTS):
     with open(filename, "r", encoding="utf-8") as f:
         return json.load(f)
 PRODUCTS = load_products()
@@ -289,7 +306,12 @@ if __name__ == "__main__":
     end_time = start_time + SIMULATION_HOURS * 3600 / TIME_MULTIPLIER
     print(f"Starting simulated clickstream & orders for {SIMULATION_HOURS} hours...")
 
-    while time.time() < end_time:
+    while time.time() < end_time  and not stop_requested:
+        # Check for stop signal at the start of each loop
+        if STOP_FILE.exists():
+            print("🛑 Stop file detected. Exiting generator gracefully.")
+            break
+
         simulated_seconds = (time.time() - start_time) * TIME_MULTIPLIER
         simulated_now = datetime.now(timezone.utc) + timedelta(seconds=simulated_seconds)
         num_sessions = sessions_per_batch(simulated_now.hour)
