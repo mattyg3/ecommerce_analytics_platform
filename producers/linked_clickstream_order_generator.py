@@ -302,8 +302,10 @@ if __name__ == "__main__":
     start_time = time.time()
     end_time = start_time + SIMULATION_HOURS * 3600 / TIME_MULTIPLIER
     print(f"Starting simulated clickstream & orders for {SIMULATION_HOURS} hours...")
-    last_printed_hour = None
 
+    last_printed_hour = None
+    total_clickstream = 0
+    total_orders = 0
     while time.time() < end_time  and not stop_requested:
         # Check for stop signal at the start of each loop
         if STOP_FILE.exists():
@@ -338,5 +340,7 @@ if __name__ == "__main__":
 
         # Sleep scaled by TIME_MULTIPLIER
         time.sleep(BATCH_INTERVAL_SECONDS / TIME_MULTIPLIER)
+        total_clickstream += len(batch_clickstream)
+        total_orders += len(batch_orders)
 
-    print("Simulation complete!")
+    print(f"✅ Simulation complete!\nTotal Clickstreams: {total_clickstream}\nTotal Orders: {total_orders}")

@@ -211,7 +211,7 @@ data/clickstream/*
 data/orders/*
 data/landing/*
 data/bronze/*
-# logs/*
+logs/*
 
 # Controls
 checkpoints

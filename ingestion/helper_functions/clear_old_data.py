@@ -9,8 +9,17 @@ def delete_folder(filepath):
     else:
         print(f"Folder does not exist: {filepath}")
 
+def find_repo_root(start_path: Path = None) -> Path:
+    """
+    Walks up from start_path to find the repository root (contains .git)
+    """
+    path = start_path or Path(__file__).resolve()
+    for parent in [path] + list(path.parents):
+        if (parent / ".git").exists():
+            return parent
+    raise FileNotFoundError("Cannot find repository root (no .git folder found).")
 
-BASE_DIR = Path(__file__).resolve().parents[1]
+BASE_DIR = find_repo_root()
 
 CLICKSTREAM_DIR = Path("/home/surff/spark_data/clickstream/raw") #WSL path
 delete_folder(CLICKSTREAM_DIR)

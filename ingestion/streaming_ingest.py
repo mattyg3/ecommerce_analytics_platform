@@ -6,7 +6,7 @@ from delta import configure_spark_with_delta_pip # type: ignore
 from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql.functions import col, to_date, current_timestamp, lit # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType # type: ignore
-
+from helper_functions.backfill_progress import log_backfill_progress
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
 os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")
 os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
@@ -101,6 +101,7 @@ def main(
             .trigger(availableNow=True)
             .start(str(output_path))
         )
+        log_backfill_progress(query)
         query.awaitTermination()
         print("✅ Backfill complete")
 
@@ -108,7 +109,7 @@ def main(
         print("🔁 Running in STREAM mode (continuous)")
         query = (
             writer
-            .trigger(processingTime="5 seconds")
+            .trigger(processingTime="30 seconds")
             .start(str(output_path))
         )
 

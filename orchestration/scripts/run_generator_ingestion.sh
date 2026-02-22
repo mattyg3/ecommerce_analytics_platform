@@ -86,7 +86,7 @@ trap cleanup SIGINT SIGTERM
 # PHASE 0 — Full Refresh
 # ======================================================
 echo "🗑️ Full Refresh"
-python ingestion/clear_old_data.py
+python ingestion/helper_functions/clear_old_data.py
 
 # ======================================================
 # PHASE 1 — Start generator + STREAM ingest
@@ -94,7 +94,7 @@ python ingestion/clear_old_data.py
 PHASE_START=$(date +%s)
 echo "🟢 PHASE 1: Starting generator + STREAM ingest"
 
-python producers/linked_clickstream_order_generator.py &
+python -u producers/linked_clickstream_order_generator.py &
 GENERATOR_PID=$!
 echo "   Generator PID: $GENERATOR_PID"
 
