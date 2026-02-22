@@ -1,15 +1,16 @@
 from pathlib import Path
 import os
+import shutil
 BASE_DIR = Path(__file__).resolve().parents[1]
 os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
 os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
 
-from delta import configure_spark_with_delta_pip
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, to_date, current_timestamp, lit
-from pyspark.sql.types import (
-    ArrayType, StructType, StructField, StringType, IntegerType, DoubleType, TimestampType
-)
+from delta import configure_spark_with_delta_pip # type: ignore
+from pyspark.sql import SparkSession # type: ignore
+from pyspark.sql.functions import col, to_date, current_timestamp, lit # type: ignore
+from pyspark.sql.types import ( # type: ignore
+    ArrayType, StructType, StructField, StringType, IntegerType, DoubleType, TimestampType 
+) 
 
 CART_SCHEMA = ArrayType(
     StructType([

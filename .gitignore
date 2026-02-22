@@ -210,6 +210,10 @@ __marimo__/
 data/clickstream/*
 data/orders/*
 data/landing/*
+data/bronze/*
+# logs/*
+
+# Controls
 checkpoints
-pipeline.log
 *.pid
+nohup.out

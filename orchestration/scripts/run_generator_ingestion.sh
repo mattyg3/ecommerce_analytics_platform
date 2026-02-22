@@ -1,144 +1,152 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # ----------------------------------------
 # Usage:
-#   ./run_pipeline.sh [SIM_HOURS] [LOG_FILE]
-# Example:
-#   ./run_pipeline.sh 24 pipeline.log
+#   ./run_pipeline.sh [SIM_HOURS]
 # ----------------------------------------
-SIM_HOURS=${1:-24}  # default to 24 hours
-LOG_FILE=${2:-pipeline.log}
+SIM_HOURS=${1:-24}
 
 # ----------------------------------------
-# Determine repo root and paths
+# Paths
 # ----------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(realpath "$SCRIPT_DIR/../..")"
-VENV_PATH="$REPO_ROOT/.venv"
+
+LOG_DIR="$REPO_ROOT/logs"
 CONTROL_DIR="$REPO_ROOT/control"
-mkdir -p "$CONTROL_DIR"
+VENV_PATH="$REPO_ROOT/.venv"
+
 STOP_FILE="$CONTROL_DIR/clickstream.stop"
-PID_FILE="$CONTROL_DIR/streaming_ingest.pid"
+PID_FILE="$CONTROL_DIR/pipeline.pid"
+LOG_FILE="$LOG_DIR/ingestion_pipeline.log"
+
+mkdir -p "$LOG_DIR" "$CONTROL_DIR"
+
+exec > "$LOG_FILE" 2>&1
+
+echo "========================================"
+echo "🚀 Starting pipeline"
+echo "⏱️  Simulation hours: $SIM_HOURS"
+echo "========================================"
 
 # ----------------------------------------
 # Prevent double-start
 # ----------------------------------------
-if [ -f "$PID_FILE" ]; then
+if [[ -f "$PID_FILE" ]]; then
   OLD_PID=$(cat "$PID_FILE")
   if kill -0 "$OLD_PID" 2>/dev/null; then
-    echo "❌ Streaming ingest already running (PID $OLD_PID). Exiting."
+    echo "❌ Pipeline already running (PID $OLD_PID)"
     exit 1
   else
-    echo "⚠️ Stale PID file found. Cleaning up."
+    echo "⚠️ Stale PID file found, cleaning up"
     rm -f "$PID_FILE"
   fi
 fi
 
 echo $$ > "$PID_FILE"
-echo "🧷 PID locked: $$"
 
 # ----------------------------------------
-# Activate Python environment
+# Activate virtualenv
 # ----------------------------------------
-if [ ! -f "$VENV_PATH/bin/activate" ]; then
-    echo "❌ .venv not found. Create it first with: python3 -m venv .venv && pip install -r requirements.txt"
-    exit 1
+if [[ ! -f "$VENV_PATH/bin/activate" ]]; then
+  echo "❌ .venv not found. Create it first."
+  exit 1
 fi
 
 source "$VENV_PATH/bin/activate"
 
 # ----------------------------------------
-# Clean stop file at start
+# Cleanup control files
 # ----------------------------------------
-if [ -f "$STOP_FILE" ]; then
-    echo "🧹 Removing old stop file..."
-    rm "$STOP_FILE"
-fi
+rm -f "$STOP_FILE"
+
+export SIMULATION_HOURS="$SIM_HOURS"
 
 # ----------------------------------------
-# Export simulation hours for generator
+# Graceful shutdown handler
 # ----------------------------------------
-export SIMULATION_HOURS=$SIM_HOURS
-echo "⏱️ Simulation set for $SIM_HOURS hours."
+cleanup() {
+  echo "🛑 Shutdown requested"
 
-# ----------------------------------------
-# Graceful shutdown trap
-# ----------------------------------------
-graceful_shutdown() {
-  echo "🛑 Shutdown signal received"
-  echo "📄 Creating stop file: $STOP_FILE"
   touch "$STOP_FILE"
 
-  if [[ -n "$GENERATOR_PID" ]]; then
-    echo "⏳ Waiting for generator ($GENERATOR_PID)..."
-    wait "$GENERATOR_PID"
-  fi
+  [[ -n "${GENERATOR_PID:-}" ]] && wait "$GENERATOR_PID"
+  [[ -n "${STREAM_PID:-}" ]] && wait "$STREAM_PID"
 
-  if [[ -n "$SPARK_PID" ]]; then
-    echo "⏳ Waiting for streaming ingest ($SPARK_PID)..."
-    wait "$SPARK_PID"
-  fi
+  rm -f "$STOP_FILE" "$PID_FILE"
 
-  rm -f "$PID_FILE"
-
-  echo "✅ Graceful shutdown complete."
+  echo "✅ Pipeline shutdown complete"
   exit 0
 }
 
-trap graceful_shutdown SIGINT SIGTERM
+trap cleanup SIGINT SIGTERM
 
-# ----------------------------------------
-# Start clickstream & order session generator
-# ----------------------------------------
-echo "🟢 Starting streaming session generator..."
+# ======================================================
+# PHASE 0 — Full Refresh
+# ======================================================
+echo "🗑️ Full Refresh"
+python ingestion/clear_old_data.py
+
+# ======================================================
+# PHASE 1 — Start generator + STREAM ingest
+# ======================================================
+PHASE_START=$(date +%s)
+echo "🟢 PHASE 1: Starting generator + STREAM ingest"
+
 python producers/linked_clickstream_order_generator.py &
 GENERATOR_PID=$!
-echo "💡 Generator PID: $GENERATOR_PID"
+echo "   Generator PID: $GENERATOR_PID"
+
+python ingestion/streaming_ingest.py --mode stream &
+STREAM_PID=$!
+echo "   Stream PID: $STREAM_PID"
+
+PHASE_END=$(date +%s)
+echo "⏱️ PHASE 1 started: $(date -d @$PHASE_START) | Generator + Stream launched"
+
+# ======================================================
+# PHASE 2 — Wait for generator to finish
+# ======================================================
+PHASE_START=$(date +%s)
+echo "⏳ PHASE 2: Waiting for generator to finish"
+wait "$GENERATOR_PID"
+PHASE_END=$(date +%s)
+echo "✅ PHASE 2: Generator finished | Duration: $((PHASE_END - PHASE_START)) seconds"
+
+# ======================================================
+# PHASE 3 — Stop STREAM ingest
+# ======================================================
+PHASE_START=$(date +%s)
+echo "🛑 PHASE 3: Stopping STREAM ingest"
+touch "$STOP_FILE"
+wait "$STREAM_PID"
+PHASE_END=$(date +%s)
+echo "✅ PHASE 3: STREAM ingest stopped | Duration: $((PHASE_END - PHASE_START)) seconds"
+
+# ======================================================
+# PHASE 4 — BACKFILL ingest (fast)
+# ======================================================
+PHASE_START=$(date +%s)
+echo "🚀 PHASE 4: Running BACKFILL ingest"
+python ingestion/streaming_ingest.py --mode backfill
+PHASE_END=$(date +%s)
+echo "✅ PHASE 4: BACKFILL ingest complete | Duration: $((PHASE_END - PHASE_START)) seconds"
+
+# ======================================================
+# PHASE 5 — Batch ingest (Silver / Orders)
+# ======================================================
+PHASE_START=$(date +%s)
+echo "🟢 PHASE 5: Running batch ingest"
+python ingestion/batch_ingest.py
+PHASE_END=$(date +%s)
+echo "✅ PHASE 5: Batch ingest complete | Duration: $((PHASE_END - PHASE_START)) seconds"
 
 # ----------------------------------------
-# Start streaming ingest
+# Final cleanup
 # ----------------------------------------
-echo "🟢 Starting streaming ingest..."
-python ingestion/streaming_ingest.py &
-SPARK_PID=$!
-echo "💡 Spark PID: $SPARK_PID"
+rm -f "$STOP_FILE" "$PID_FILE"
 
-# ----------------------------------------
-# Wait for generator to finish
-# ----------------------------------------
-wait $GENERATOR_PID
-echo "✅ Generator finished."
-
-# ----------------------------------------
-# Signal streaming ingest to stop (if not already)
-# ----------------------------------------
-if [ ! -f "$STOP_FILE" ]; then
-    touch "$STOP_FILE"
-    echo "🛑 Stop file created to terminate streaming ingest."
-fi
-wait $SPARK_PID
-echo "✅ Streaming ingest stopped."
-
-# ----------------------------------------
-# Clean stop file after streaming ends
-# ----------------------------------------
-if [ -f "$STOP_FILE" ]; then
-    rm "$STOP_FILE"
-    rm -f "$PID_FILE"
-    echo "✅ Clean shutdown complete"
-fi
-
-# ----------------------------------------
-# Batch Ingest Orders
-# ----------------------------------------
-echo "🟢 Starting batch ingest..."
-python ingestion/batch_ingest.py 
-echo "✅ Batch ingest completed."
-
-# ----------------------------------------
-# Spark job auto-stops via inactivity_timeout
-# ----------------------------------------
-# Optionally wait a few seconds to ensure all files are picked up
-sleep 5
-echo "✅ Pipeline completed. All streams landed." 
+echo "========================================"
+echo "🎉 Pipeline completed successfully"
+echo "========================================"

@@ -1,22 +1,25 @@
 from pathlib import Path
 import os
 import time
-BASE_DIR = Path(__file__).resolve().parents[1]
+import argparse
+from delta import configure_spark_with_delta_pip # type: ignore
+from pyspark.sql import SparkSession # type: ignore
+from pyspark.sql.functions import col, to_date, current_timestamp, lit # type: ignore
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType # type: ignore
+
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
 os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")
 os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
 os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
+
+BASE_DIR = Path(__file__).resolve().parents[1]
+CLICKSTREAM_CHECKPOINT = Path("/home/surff/spark_data/checkpoints/clickstream_ingest") #WSL path
 
 STOP_FILE = BASE_DIR / "control" / "clickstream.stop"
 STOP_FILE.parent.mkdir(parents=True, exist_ok=True)
 
 NO_NEW_FILES_TIMEOUT = 15  # seconds with no new data before stopping
 CHECK_INTERVAL = 1         # polling frequency
-
-from delta import configure_spark_with_delta_pip
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, to_date, current_timestamp, lit
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 
 CLICKSTREAM_SCHEMA = StructType([
     StructField("event_id", StringType(), False),
@@ -34,7 +37,18 @@ CLICKSTREAM_SCHEMA = StructType([
     StructField("experiment_id", StringType(), True),
 ])
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--mode",
+        choices=["stream", "backfill"],
+        required=True,
+        help="stream = continuous ingest, backfill = process all available files and exit",
+    )
+    return parser.parse_args()
+
 def main(
+    mode: str,
     input_path  = Path("/home/surff/spark_data/clickstream/raw"),
     output_path: Path = BASE_DIR / "data" / "landing" / "clickstream",
     checkpoint_path = Path("/home/surff/spark_data/checkpoints/clickstream_ingest"),
@@ -43,13 +57,15 @@ def main(
     builder = (
         SparkSession.builder
         .appName("StreamingIngestClickstream")
-        .config("spark.master", "local[1]")
+        .config("spark.master", "local[10]")
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
-        .config("spark.sql.shuffle.partitions", "1")
-        .config("spark.default.parallelism", "1")
+        .config("spark.sql.shuffle.partitions", "10")
+        .config("spark.default.parallelism", "10")
         .config("spark.hadoop.fs.defaultFS", "file:///")
         .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "4g")
     )
 
     spark = configure_spark_with_delta_pip(builder).getOrCreate()
@@ -57,7 +73,7 @@ def main(
     raw_events = (
         spark.readStream
         .schema(CLICKSTREAM_SCHEMA)
-        .option("maxFilesPerTrigger", 10)
+        .option("maxFilesPerTrigger", 50)
         .format("json")
         .load(str(input_path))
     )
@@ -70,46 +86,39 @@ def main(
         .withColumn("source_system", lit(source_system))
     )
 
-    query = (
+    writer = (
         landed.writeStream
         .format("delta")
         .outputMode("append")
         .option("checkpointLocation", str(checkpoint_path))
         .partitionBy("ingest_date")
-        # .trigger(processingTime="5 seconds")
-        .trigger(availableNow=True)
-        .start(str(output_path))
     )
-    last_data_time = time.time()
-    stop_requested = False
 
-    while query.isActive:
-        # Check for external stop signal
-        if STOP_FILE.exists():
-            if not stop_requested:
-                print("🟡 Stop file detected. Entering drain mode...")
-                stop_requested = True
+    if mode == "backfill":
+        print("🚀 Running in BACKFILL mode (availableNow)")
+        query = (
+            writer
+            .trigger(availableNow=True)
+            .start(str(output_path))
+        )
+        query.awaitTermination()
+        print("✅ Backfill complete")
 
-        progress = query.lastProgress
+    else:
+        print("🔁 Running in STREAM mode (continuous)")
+        query = (
+            writer
+            .trigger(processingTime="5 seconds")
+            .start(str(output_path))
+        )
 
-        if progress:
-            input_rows = progress.get("numInputRows", 0)
-
-            if input_rows > 0:
-                last_data_time = time.time()
-                print(f"📥 Processed {input_rows} rows")
-
-        # If stopping AND no new data for timeout window → stop
-        if stop_requested:
-            idle_time = time.time() - last_data_time
-            if idle_time >= NO_NEW_FILES_TIMEOUT:
-                print(f"🛑 No new files for {NO_NEW_FILES_TIMEOUT}s. Stopping stream.")
-                query.stop()
+        while query.isActive:
+            if STOP_FILE.exists():
+                print("🛑 Stop file detected. Stopping streaming immediately")
+                query.stop()  # Gracefully stops after finishing the current batch
                 break
-
-        time.sleep(CHECK_INTERVAL)
-
-    
+            time.sleep(1)
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    main(mode=args.mode)

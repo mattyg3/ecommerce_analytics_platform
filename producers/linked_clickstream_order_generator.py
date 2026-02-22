@@ -17,7 +17,6 @@ CLICKSTREAM_DIR.mkdir(parents=True, exist_ok=True)
 ORDERS_DIR = Path("/home/surff/spark_data/orders/raw") #WSL path
 ORDERS_DIR.mkdir(parents=True, exist_ok=True)
 PRODUCTS = BASE_DIR / "data" / "products.json"
-
 STOP_FILE = BASE_DIR / "control" / "clickstream.stop"
 STOP_FILE.parent.mkdir(parents=True, exist_ok=True)
 stop_requested = False
@@ -303,6 +302,7 @@ if __name__ == "__main__":
     start_time = time.time()
     end_time = start_time + SIMULATION_HOURS * 3600 / TIME_MULTIPLIER
     print(f"Starting simulated clickstream & orders for {SIMULATION_HOURS} hours...")
+    last_printed_hour = None
 
     while time.time() < end_time  and not stop_requested:
         # Check for stop signal at the start of each loop
@@ -312,6 +312,7 @@ if __name__ == "__main__":
 
         simulated_seconds = (time.time() - start_time) * TIME_MULTIPLIER
         simulated_now = datetime.now(timezone.utc) + timedelta(seconds=simulated_seconds)
+        current_hour = (simulated_now.date(), simulated_now.hour)  # tuple of (date, hour)
         num_sessions = sessions_per_batch(simulated_now.hour)
 
         batch_clickstream = []
@@ -330,7 +331,10 @@ if __name__ == "__main__":
 
         write_events(batch_clickstream, CLICKSTREAM_DIR, "clickstream")
         write_events(batch_orders, ORDERS_DIR, "orders")
-        print(f"Wrote Clickstream: {len(batch_clickstream)} and Orders: {len(batch_orders)} for simulated {simulated_now.hour}:{simulated_now.minute}:{simulated_now.second}")
+        # print(f"Wrote Clickstream: {len(batch_clickstream)} and Orders: {len(batch_orders)} for simulated {simulated_now.date()} {simulated_now.hour}:{simulated_now.minute}:{simulated_now.second}")
+        if current_hour != last_printed_hour:
+            print(f"🕒 New simulated hour: {simulated_now.strftime('%Y-%m-%d %H:00')}")
+            last_printed_hour = current_hour
 
         # Sleep scaled by TIME_MULTIPLIER
         time.sleep(BATCH_INTERVAL_SECONDS / TIME_MULTIPLIER)
