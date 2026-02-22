@@ -52,7 +52,7 @@ def main(
     input_path  = Path("/home/surff/spark_data/clickstream/raw"),
     output_path: Path = BASE_DIR / "data" / "landing" / "clickstream",
     checkpoint_path = Path("/home/surff/spark_data/checkpoints/clickstream_ingest"),
-    source_system: str = "order_generator"
+    source_system: str = "clickstream_generator"
 ):
     builder = (
         SparkSession.builder
