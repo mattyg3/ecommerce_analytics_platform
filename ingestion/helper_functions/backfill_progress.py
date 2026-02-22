@@ -30,4 +30,4 @@ def log_backfill_progress(query, poll_seconds: int = 2):
 
         time.sleep(poll_seconds)
 
-    print("✅ Backfill complete (availableNow finished)")
+    # print("✅ Backfill complete (availableNow finished)")

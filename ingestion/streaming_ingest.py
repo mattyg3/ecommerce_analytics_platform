@@ -70,10 +70,19 @@ def main(
 
     spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
+    read_options = {}
+
+    if mode == "stream":
+        read_options["maxFilesPerTrigger"] = 50
+    else:
+        # backfill: let Spark go wide, no maxFilesPerTrigger
+        spark.conf.set("spark.sql.shuffle.partitions", "200")
+        spark.conf.set("spark.default.parallelism", "200")
+
     raw_events = (
         spark.readStream
         .schema(CLICKSTREAM_SCHEMA)
-        .option("maxFilesPerTrigger", 50)
+        .options(**read_options)
         .format("json")
         .load(str(input_path))
     )

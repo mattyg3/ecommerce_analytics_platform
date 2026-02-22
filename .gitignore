@@ -211,6 +211,8 @@ data/clickstream/*
 data/orders/*
 data/landing/*
 data/bronze/*
+data/silver/*
+data/gold/*
 logs/*
 
 # Controls
