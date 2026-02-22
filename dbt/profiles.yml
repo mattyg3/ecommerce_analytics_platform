@@ -1,0 +1,13 @@
+clickstream:
+  target: dev
+  outputs:
+    dev:
+      type: spark
+      method: session
+      schema: analytics
+      host: localhost
+      port: 443
+      threads: 8
+      spark_conf:
+        spark.sql.extensions: io.delta.sql.DeltaSparkSessionExtension
+        spark.sql.catalog.spark_catalog: org.apache.spark.sql.delta.catalog.DeltaCatalog

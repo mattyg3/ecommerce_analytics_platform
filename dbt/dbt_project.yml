@@ -1,0 +1,38 @@
+name: clickstream_analytics
+version: "1.0"
+config-version: 2
+
+profile: clickstream
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  clickstream_analytics:
+    bronze:
+      +materialized: view
+      +schema: bronze
+      +tags: ["bronze"]
+
+    silver:
+      +materialized: incremental
+      +schema: silver
+      +file_format: delta
+      +incremental_strategy: merge
+      +on_schema_change: append_new_columns
+      +tags: ["silver"]
+
+    gold:
+      +materialized: table
+      +schema: gold
+      +file_format: delta
+      +tags: ["gold"]
