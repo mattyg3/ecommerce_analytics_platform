@@ -31,7 +31,7 @@ source "$VENV_PATH/bin/activate"
 # ----------------------------------------
 # Safety checks
 # ----------------------------------------
-if [ ! -d "data/landing" ]; then
+if [ ! -d "data-lake/landing" ]; then
   echo "❌ Landing data not found. Run ingestion first."
   exit 1
 fi

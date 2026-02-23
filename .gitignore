@@ -207,12 +207,7 @@ marimo/_lsp/
 __marimo__/
 
 # Data Files
-data/clickstream/*
-data/orders/*
-data/landing/*
-data/bronze/*
-data/silver/*
-data/gold/*
+data-lake
 logs/*
 metastore_db
 dbt/spark-warehouse
@@ -227,3 +222,6 @@ nohup.out
 profiles.yml
 dbt_packages
 package-lock.yml
+
+#Development Files
+DEV

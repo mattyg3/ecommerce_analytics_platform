@@ -9,9 +9,8 @@ from helper_functions import validate_delta
 BASE_DIR = Path(__file__).resolve().parents[1]
 DBT_DIR = BASE_DIR / "dbt"
 env_vars = os.environ.copy()
-env_vars["DBT_TARGET_PATH"] = str(BASE_DIR / "data" / "silver")
-env_vars["DBT_TARGET_SCHEMA"] = "silver"
-env_vars["DBT_BRONZE_PATH"] = str((BASE_DIR / "data" / "bronze").resolve())
+env_vars["DBT_TARGET_PATH"] = str(BASE_DIR / "data-lake" / "silver")
+env_vars["DBT_BRONZE_PATH"] = str((BASE_DIR / "data-lake" / "bronze").resolve())
 
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
 os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")
@@ -60,7 +59,7 @@ def main():
         
         run_dbt([
             "dbt", "run",
-            "--select", "staging+"
+            "--select", "staging+", "--full-refresh" #only needed if first run, or want to refresh data completely
         ])
 
         run_dbt([

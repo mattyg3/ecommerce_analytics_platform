@@ -7,9 +7,9 @@ from delta import configure_spark_with_delta_pip # type: ignore
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
-LANDING = BASE_DIR / "data" / "landing"
-BRONZE = BASE_DIR / "data" / "bronze"
-CHECKPOINTS = BASE_DIR / "checkpoints" / "bronze"
+LANDING = BASE_DIR / "data-lake" / "landing"
+BRONZE = BASE_DIR / "data-lake" / "bronze"
+# CHECKPOINTS = BASE_DIR / "checkpoints" / "bronze"
 
 # VALIDATE = os.getenv("BRONZE_VALIDATE", "true").lower() == "true"
 

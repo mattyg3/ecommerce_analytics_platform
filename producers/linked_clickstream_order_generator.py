@@ -16,7 +16,7 @@ CLICKSTREAM_DIR = Path("/home/surff/spark_data/clickstream/raw") #WSL path
 CLICKSTREAM_DIR.mkdir(parents=True, exist_ok=True)
 ORDERS_DIR = Path("/home/surff/spark_data/orders/raw") #WSL path
 ORDERS_DIR.mkdir(parents=True, exist_ok=True)
-PRODUCTS = BASE_DIR / "data" / "products.json"
+PRODUCTS = BASE_DIR / "producers" / "products.json"
 STOP_FILE = BASE_DIR / "control" / "clickstream.stop"
 STOP_FILE.parent.mkdir(parents=True, exist_ok=True)
 stop_requested = False

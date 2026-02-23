@@ -31,7 +31,7 @@ source "$VENV_PATH/bin/activate"
 # ----------------------------------------
 # Safety checks
 # ----------------------------------------
-if [ ! -d "data/bronze" ]; then
+if [ ! -d "data-lake/bronze" ]; then
   echo "❌ Bronze data not found. Run ingestion and bronze layer first."
   exit 1
 fi

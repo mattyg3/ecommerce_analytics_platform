@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
     unique_key = 'event_id',
-    incremental_strategy = 'merge'
+    incremental_strategy = 'merge',
+    on_schema_change='append_new_columns'
 ) }}
 
 with ranked_events as (
@@ -13,6 +14,13 @@ with ranked_events as (
         ) as rn
     from {{ source('bronze', 'clickstream') }}
     where event_time is not null
+
+    {% if is_incremental() %}
+        and pipeline_ingested_at >= (
+            select coalesce(date_sub(max(pipeline_ingested_at), 1), timestamp('1900-01-01')) --sliding window
+            from {{ this }}
+            )
+    {% endif %}
 ),
 
 deduped as (
@@ -36,7 +44,3 @@ select
   source_system,
   pipeline_ingested_at
 from deduped
-{% if is_incremental() %}
-where pipeline_ingested_at >
-    (select max(pipeline_ingested_at) from {{ this }})
-{% endif %}
