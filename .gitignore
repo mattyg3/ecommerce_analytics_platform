@@ -225,3 +225,4 @@ nohup.out
 # dbt
 .user.yml
 dbt_packages
+package-lock.yml
