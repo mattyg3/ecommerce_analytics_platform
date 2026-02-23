@@ -214,8 +214,13 @@ data/bronze/*
 data/silver/*
 data/gold/*
 logs/*
+metastore_db
+dbt/spark-warehouse
 
 # Controls
 checkpoints
 *.pid
 nohup.out
+
+# bdt
+.user.yml

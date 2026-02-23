@@ -10,6 +10,7 @@ DBT_DIR = BASE_DIR / "dbt"
 env_vars = os.environ.copy()
 env_vars["DBT_TARGET_PATH"] = str(BASE_DIR / "data" / "silver")
 env_vars["DBT_TARGET_SCHEMA"] = "silver"
+env_vars["DBT_BRONZE_PATH"] = str((BASE_DIR / "data" / "bronze").resolve())
 
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
 os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")

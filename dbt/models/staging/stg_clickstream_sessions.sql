@@ -10,10 +10,8 @@ with events as (
     user_id,
     event_ts
   from {{ ref('stg_clickstream_events') }}
-
   {% if is_incremental() %}
-  where pipeline_ingested_at >
-    (select max(pipeline_ingested_at) from {{ this }})
+  where event_ts > (select max(session_end_ts) from {{ this }})
   {% endif %}
 ),
 

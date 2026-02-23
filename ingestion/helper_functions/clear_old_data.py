@@ -35,3 +35,6 @@ delete_folder(LANDING_OUTPUT)
 
 BRONZE = BASE_DIR / "data" / "bronze"
 delete_folder(BRONZE)
+
+SILVER = BASE_DIR / "data" / "silver"
+delete_folder(SILVER)

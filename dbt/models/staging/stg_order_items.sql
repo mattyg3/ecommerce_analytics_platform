@@ -18,6 +18,6 @@ from {{ ref('stg_orders') }} o
 lateral view explode(o.items) as item
 
 {% if is_incremental() %}
-and pipeline_ingested_at >
+where pipeline_ingested_at >
     (select max(pipeline_ingested_at) from {{ this }})
 {% endif %}

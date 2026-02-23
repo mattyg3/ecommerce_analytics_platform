@@ -37,8 +37,7 @@ select
   source_system,
   pipeline_ingested_at
 from deduped
-
 {% if is_incremental() %}
-and pipeline_ingested_at >
+where pipeline_ingested_at >
     (select max(pipeline_ingested_at) from {{ this }})
 {% endif %}
