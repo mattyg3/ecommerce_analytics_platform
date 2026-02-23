@@ -28,7 +28,7 @@ models:
       - name: session_duration_sec
         tests:
           - dbt_utils.expression_is_true:
-              expression: "session_duration_sec >= 0"
+              expression: ">= 0"
 
   - name: stg_orders
     columns:
@@ -40,7 +40,7 @@ models:
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "order_total_amount >= 0"
+              expression: ">= 0"
 
   - name: stg_order_items
     columns:
@@ -51,4 +51,4 @@ models:
       - name: quantity
         tests:
           - dbt_utils.expression_is_true:
-              expression: "quantity > 0"
+              expression: "> 0"

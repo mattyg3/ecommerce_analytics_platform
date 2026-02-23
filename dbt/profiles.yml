@@ -4,7 +4,8 @@ clickstream:
     dev:
       type: spark
       method: session
-      schema: default
+      schema: "{{ env_var('DBT_TARGET_SCHEMA') }}"
+      warehouse: "{{ env_var('DBT_TARGET_PATH') }}"
       host: localhost
       port: 443
       threads: 8

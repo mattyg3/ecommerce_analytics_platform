@@ -11,9 +11,9 @@ LANDING = BASE_DIR / "data" / "landing"
 BRONZE = BASE_DIR / "data" / "bronze"
 CHECKPOINTS = BASE_DIR / "checkpoints" / "bronze"
 
-VALIDATE = os.getenv("BRONZE_VALIDATE", "true").lower() == "true"
+# VALIDATE = os.getenv("BRONZE_VALIDATE", "true").lower() == "true"
 
-def get_spark(app_name: str):
+def build_spark(app_name: str):
     builder = (
         SparkSession.builder
         .appName(app_name)
@@ -62,7 +62,7 @@ def bronze_orders(spark):
     )
 
 if __name__ == "__main__":
-    spark = get_spark("BronzeLayer")
+    spark = build_spark("BronzeLayer")
 
     bronze_clickstream(spark)
     validate_delta(spark, str(BRONZE / "clickstream"), "Bronze Clickstream")

@@ -222,5 +222,6 @@ checkpoints
 *.pid
 nohup.out
 
-# bdt
+# dbt
 .user.yml
+dbt_packages

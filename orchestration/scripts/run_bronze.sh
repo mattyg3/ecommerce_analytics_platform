@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-export BRONZE_VALIDATE=true #python spark_jobs/bronze.py #dev
-# BRONZE_VALIDATE=false python spark_jobs/bronze.py #prod
-
 # ----------------------------------------
 # Define repo root and log file
 # ----------------------------------------

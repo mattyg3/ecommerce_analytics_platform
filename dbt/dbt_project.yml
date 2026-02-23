@@ -27,7 +27,8 @@ models:
     # Only paths that have model files get config; add bronze/silver/gold when you add those folders
     staging:
       +materialized: incremental
-      +schema: silver
+      # +schema: silver
+      +location_root: "{{ env_var('DBT_TARGET_PATH') }}"
       +file_format: delta
       +incremental_strategy: merge
       +on_schema_change: append_new_columns
