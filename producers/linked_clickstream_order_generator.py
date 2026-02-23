@@ -136,7 +136,7 @@ def generate_event(event_type, session_dict, product_id=None, simulated_now=None
     event = {
         "event_id": str(uuid.uuid4()),
         "event_type": event_type,
-        "version": session_dict["version"],
+        "version": str(session_dict["version"]),  # schema expects string
         "user_id": session_dict["user_id"],
         "session_id": session_dict["session_id"],
         "product_id": product_id,
@@ -278,12 +278,28 @@ def generate_order(session_dict, ordered_products, order_session_id, simulated_n
         "ingest_time": simulated_now.isoformat()
     }
 
-def write_events(events, directory, filename_prefix):
+# def write_events(events, directory, filename_prefix):
+#     timestamp_ms = int(time.time() * 1000)
+#     filename = directory / f"{filename_prefix}_{timestamp_ms}.json"
+#     with open(filename, "w") as f:
+#         for event in events:
+#             f.write(json.dumps(event) + "\n")
+
+def write_events_counted(events, directory, filename_prefix):
     timestamp_ms = int(time.time() * 1000)
-    filename = directory / f"{filename_prefix}_{timestamp_ms}.json"
+    filename = directory / f"{filename_prefix}_{timestamp_ms}_{uuid.uuid4().hex}.json"
+
+    written = 0
     with open(filename, "w") as f:
         for event in events:
             f.write(json.dumps(event) + "\n")
+            written += 1
+
+    # fsync for durability (important on WSL)
+    f = open(filename, "a")
+    os.fsync(f.fileno())
+    f.close()
+    return written
 
 def sessions_per_batch(sim_hour):
     if 0 <= sim_hour < 6:
@@ -331,8 +347,8 @@ if __name__ == "__main__":
         if random.random() < 0.02 and batch_orders:
             batch_orders.append(random.choice(batch_orders))
 
-        write_events(batch_clickstream, CLICKSTREAM_DIR, "clickstream")
-        write_events(batch_orders, ORDERS_DIR, "orders")
+        written_clicks = write_events_counted(batch_clickstream, CLICKSTREAM_DIR, "clickstream")
+        written_orders = write_events_counted(batch_orders, ORDERS_DIR, "orders")
         # print(f"Wrote Clickstream: {len(batch_clickstream)} and Orders: {len(batch_orders)} for simulated {simulated_now.date()} {simulated_now.hour}:{simulated_now.minute}:{simulated_now.second}")
         if current_hour != last_printed_hour:
             print(f"🕒 New simulated hour: {simulated_now.strftime('%Y-%m-%d %H:00')}")
@@ -340,7 +356,7 @@ if __name__ == "__main__":
 
         # Sleep scaled by TIME_MULTIPLIER
         time.sleep(BATCH_INTERVAL_SECONDS / TIME_MULTIPLIER)
-        total_clickstream += len(batch_clickstream)
-        total_orders += len(batch_orders)
+        total_clickstream += written_clicks
+        total_orders += written_orders
 
     print(f"✅ Simulation complete!\nTotal Clickstreams: {total_clickstream}\nTotal Orders: {total_orders}")

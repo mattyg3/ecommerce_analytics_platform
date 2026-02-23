@@ -214,8 +214,15 @@ data/bronze/*
 data/silver/*
 data/gold/*
 logs/*
+metastore_db
+dbt/spark-warehouse
 
 # Controls
 checkpoints
 *.pid
 nohup.out
+
+# dbt
+.user.yml
+dbt_packages
+package-lock.yml

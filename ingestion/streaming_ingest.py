@@ -52,7 +52,7 @@ def main(
     input_path  = Path("/home/surff/spark_data/clickstream/raw"),
     output_path: Path = BASE_DIR / "data" / "landing" / "clickstream",
     checkpoint_path = Path("/home/surff/spark_data/checkpoints/clickstream_ingest"),
-    source_system: str = "order_generator"
+    source_system: str = "clickstream_generator"
 ):
     builder = (
         SparkSession.builder
@@ -70,12 +70,16 @@ def main(
 
     spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
-    read_options = {}
+    read_options = {
+        "recursiveFileLookup": "true",  # include all JSON under path so no files (rows) are missed
+        "mode": "PERMISSIVE",  # keep rows; invalid fields become null instead of dropping
+    }
 
     if mode == "stream":
         read_options["maxFilesPerTrigger"] = 50
     else:
         # backfill: let Spark go wide, no maxFilesPerTrigger
+        # Run backfill only after the generator has stopped so all files exist when the stream lists the directory.
         spark.conf.set("spark.sql.shuffle.partitions", "200")
         spark.conf.set("spark.default.parallelism", "200")
 

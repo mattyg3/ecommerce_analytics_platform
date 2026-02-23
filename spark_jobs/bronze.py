@@ -11,14 +11,16 @@ LANDING = BASE_DIR / "data" / "landing"
 BRONZE = BASE_DIR / "data" / "bronze"
 CHECKPOINTS = BASE_DIR / "checkpoints" / "bronze"
 
-VALIDATE = os.getenv("BRONZE_VALIDATE", "true").lower() == "true"
+# VALIDATE = os.getenv("BRONZE_VALIDATE", "true").lower() == "true"
 
-def get_spark(app_name: str):
+def build_spark(app_name: str):
     builder = (
         SparkSession.builder
         .appName(app_name)
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "4g")
     )
     return configure_spark_with_delta_pip(builder).getOrCreate()
 
@@ -55,11 +57,12 @@ def bronze_orders(spark):
         .write
         .format("delta")
         .mode("append")
+        .partitionBy("ingest_date")
         .save(str(BRONZE / "orders"))
     )
 
 if __name__ == "__main__":
-    spark = get_spark("BronzeLayer")
+    spark = build_spark("BronzeLayer")
 
     bronze_clickstream(spark)
     validate_delta(spark, str(BRONZE / "clickstream"), "Bronze Clickstream")

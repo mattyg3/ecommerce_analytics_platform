@@ -1,0 +1,35 @@
+name: clickstream_analytics
+version: "1.0"
+config-version: 2
+
+profile: clickstream
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Register bronze Delta tables in Spark so source() can find them (dbt uses a fresh session)
+on-run-start:
+  - "CREATE SCHEMA IF NOT EXISTS bronze"
+  - "CREATE TABLE IF NOT EXISTS bronze.clickstream USING delta LOCATION '{{ env_var(\"DBT_BRONZE_PATH\") }}/clickstream'"
+  - "CREATE TABLE IF NOT EXISTS bronze.orders USING delta LOCATION '{{ env_var(\"DBT_BRONZE_PATH\") }}/orders'"
+
+models:
+  clickstream_analytics:
+    # Only paths that have model files get config; add bronze/silver/gold when you add those folders
+    staging:
+      +materialized: incremental
+      # +schema: silver
+      +location_root: "{{ env_var('DBT_TARGET_PATH') }}"
+      +file_format: delta
+      +incremental_strategy: merge
+      +on_schema_change: append_new_columns
+      +tags: ["silver", "staging"]

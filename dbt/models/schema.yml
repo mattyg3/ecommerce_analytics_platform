@@ -1,0 +1,54 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: clickstream
+        description: "Raw clickstream events from streaming ingest"
+      - name: orders
+        description: "Raw orders from streaming ingest"
+
+models:
+  - name: stg_clickstream_events
+    columns:
+      - name: event_id
+        tests: [not_null, unique]
+      - name: event_ts
+        tests: [not_null]
+
+  - name: stg_clickstream_sessions
+    columns:
+      - name: session_id
+        tests: [not_null, unique]
+      - name: session_start_ts
+        tests: [not_null]
+      - name: session_end_ts
+        tests: [not_null]
+      - name: session_duration_sec
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests: [not_null, unique]
+      - name: order_ts
+        tests: [not_null]
+      - name: order_total_amount
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+  - name: stg_order_items
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: product_id
+        tests: [not_null]
+      - name: quantity
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
