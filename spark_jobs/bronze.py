@@ -19,6 +19,8 @@ def get_spark(app_name: str):
         .appName(app_name)
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "4g")
     )
     return configure_spark_with_delta_pip(builder).getOrCreate()
 
@@ -55,6 +57,7 @@ def bronze_orders(spark):
         .write
         .format("delta")
         .mode("append")
+        .partitionBy("ingest_date")
         .save(str(BRONZE / "orders"))
     )
 

@@ -45,9 +45,13 @@ def main(
 
     spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
+    # recursiveFileLookup ensures all JSON files under path (including subdirs) are read;
+    # without it, very large directories or nested paths can miss files and lose rows.
     raw_orders = (
         spark.read
         .schema(ORDER_SCHEMA)
+        .option("recursiveFileLookup", "true")
+        .option("mode", "PERMISSIVE")  # keep rows with parse issues (field becomes null), don't drop
         .json(str(input_path))
     )
 
