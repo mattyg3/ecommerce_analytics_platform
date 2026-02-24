@@ -10,8 +10,12 @@ with events as (
     user_id,
     event_ts
   from {{ ref('stg_clickstream_events') }}
+
   {% if is_incremental() %}
-  where event_ts > (select max(session_end_ts) from {{ this }})
+    where event_ts >= (
+      select date_sub(max(session_end_ts), 1) --sliding window
+      from {{ this }}
+      )
   {% endif %}
 ),
 

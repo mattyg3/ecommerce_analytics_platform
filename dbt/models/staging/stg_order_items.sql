@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = 'order_id',
+    unique_key = ['order_id', 'product_id'],
     incremental_strategy = 'merge'
 ) }}
 
@@ -18,6 +18,8 @@ from {{ ref('stg_orders') }} o
 lateral view explode(o.items) as item
 
 {% if is_incremental() %}
-where pipeline_ingested_at >
-    (select max(pipeline_ingested_at) from {{ this }})
+where pipeline_ingested_at >= (
+    select coalesce(date_sub(max(pipeline_ingested_at), 1), timestamp('1900-01-01')) --sliding window
+    from {{ this }}
+    )
 {% endif %}

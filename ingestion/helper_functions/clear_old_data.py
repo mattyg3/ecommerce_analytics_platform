@@ -30,11 +30,14 @@ delete_folder(ORDERS_DIR)
 CLICKSTREAM_CHECKPOINT = Path("/home/surff/spark_data/checkpoints/clickstream_ingest") #WSL path
 delete_folder(CLICKSTREAM_CHECKPOINT)
 
-LANDING_OUTPUT = BASE_DIR / "data" / "landing"
+LANDING_OUTPUT = BASE_DIR / "data-lake" / "landing"
 delete_folder(LANDING_OUTPUT)
 
-BRONZE = BASE_DIR / "data" / "bronze"
+BRONZE = BASE_DIR / "data-lake" / "bronze"
 delete_folder(BRONZE)
 
-SILVER = BASE_DIR / "data" / "silver"
+SILVER = BASE_DIR / "data-lake" / "silver"
 delete_folder(SILVER)
+
+GOLD = BASE_DIR / "data-lake" / "gold"
+delete_folder(GOLD)

@@ -45,7 +45,7 @@ def save_to_json(products, filename="products.json"):
 
 
 if __name__ == "__main__":
-    SAVE_DIR = Path("data")
+    SAVE_DIR = Path("producers")
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
     products = generate_products()
     save_to_json(products)

@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(realpath "$SCRIPT_DIR/../..")"
 mkdir -p "$REPO_ROOT/logs"
-LOG_FILE=${2:-$REPO_ROOT/logs/silver_pipeline.log}
+LOG_FILE=${2:-$REPO_ROOT/logs/dbt_pipeline.log}
 exec > "$LOG_FILE" 2>&1
 
 # ----------------------------------------
@@ -31,18 +31,19 @@ source "$VENV_PATH/bin/activate"
 # ----------------------------------------
 # Safety checks
 # ----------------------------------------
-if [ ! -d "data/bronze" ]; then
+if [ ! -d "data-lake/bronze" ]; then
   echo "❌ Bronze data not found. Run ingestion and bronze layer first."
   exit 1
 fi
 
 # ----------------------------------------
-# Run Silver Spark job
+# Run DBT Spark job
 # ----------------------------------------
-echo "⚙️ Running silver.py..."
-python spark_jobs/silver.py
+echo "⚙️ Running dbt.py..."
+python spark_jobs/dbt.py
 
 # ----------------------------------------
 # Success
 # ----------------------------------------
 echo "✅ Silver layer completed successfully."
+echo "✅ Gold layer completed successfully."

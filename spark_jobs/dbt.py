@@ -9,9 +9,9 @@ from helper_functions import validate_delta
 BASE_DIR = Path(__file__).resolve().parents[1]
 DBT_DIR = BASE_DIR / "dbt"
 env_vars = os.environ.copy()
-env_vars["DBT_TARGET_PATH"] = str(BASE_DIR / "data" / "silver")
-env_vars["DBT_TARGET_SCHEMA"] = "silver"
-env_vars["DBT_BRONZE_PATH"] = str((BASE_DIR / "data" / "bronze").resolve())
+env_vars["DBT_GOLD_PATH"] = str(BASE_DIR / "data-lake" / "gold")
+env_vars["DBT_SILVER_PATH"] = str(BASE_DIR / "data-lake" / "silver")
+env_vars["DBT_BRONZE_PATH"] = str((BASE_DIR / "data-lake" / "bronze").resolve())
 
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
 os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")
@@ -51,29 +51,29 @@ def run_dbt(cmd: list[str]) -> None:
 
 
 def main():
-    print("🚀 Starting Silver layer build")
+    print("🚀 Starting Silver & Gold layer build")
 
-    spark = build_spark("SilverLayerBuild")
+    spark = build_spark("DBTLayerBuild")
 
     try:
         run_dbt(["dbt", "deps"])
         
         run_dbt([
             "dbt", "run",
-            "--select", "staging+"
+            "--select", "staging+", "--full-refresh" #only needed if first run, or want to refresh data completely
         ])
 
         run_dbt([
             "dbt", "test",
-            "--select", "staging"
+            "--select", "staging+"
         ])
 
         # Validate silver tables
 
-        validate_delta(spark, env_vars["DBT_TARGET_PATH"] + "/stg_clickstream_events", "Silver Clickstream Events")
-        validate_delta(spark, env_vars["DBT_TARGET_PATH"] + "/stg_clickstream_sessions", "Silver Clickstream Sessions")
-        validate_delta(spark, env_vars["DBT_TARGET_PATH"] + "/stg_orders", "Silver Orders")
-        validate_delta(spark, env_vars["DBT_TARGET_PATH"] + "/stg_order_items", "Silver Order Items")
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_clickstream_events", "Silver Clickstream Events")
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_clickstream_sessions", "Silver Clickstream Sessions")
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_orders", "Silver Orders")
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_order_items", "Silver Order Items")
 
     finally:
         spark.stop()
