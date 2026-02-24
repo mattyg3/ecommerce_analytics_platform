@@ -21,9 +21,6 @@ exposures:
       email: "analytics@example.com"
     url: ""
     maturity: high
-    freshness:
-      warn_after: {count: 1, period: day}   # warn if metrics are older than 1 day
-      error_after: {count: 2, period: day}  # error if metrics are older than 2 days
 
   # ============================================================
   # Funnel Dashboard
@@ -43,9 +40,6 @@ exposures:
       email: "growth@example.com"
     url: ""
     maturity: medium
-    freshness:
-      warn_after: {count: 1, period: day}
-      error_after: {count: 2, period: day}
 
   # ============================================================
   # User Lifecycle Dashboard
@@ -62,10 +56,6 @@ exposures:
       email: "retention@example.com"
     url: ""
     maturity: medium
-    freshness:
-      warn_after: {count: 1, period: day}
-      error_after: {count: 3, period: day}
-
   # ============================================================
   # Product Performance Dashboard
   # ============================================================
@@ -84,6 +74,3 @@ exposures:
       email: "merchandising@example.com"
     url: ""
     maturity: medium
-    freshness:
-      warn_after: {count: 1, period: day}
-      error_after: {count: 3, period: day}

@@ -1,13 +1,114 @@
 version: 2
 
 sources:
+  # ============================================================
+  # Bronze Layer
+  # ============================================================
   - name: bronze
     schema: bronze
     tables:
       - name: clickstream
         description: "Raw clickstream events from streaming ingest"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
       - name: orders
         description: "Raw orders from streaming ingest"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+  # ============================================================
+  # Silver Layer
+  # ============================================================
+  - name: silver
+    schema: silver
+    tables:
+      - name: stg_clickstream_events
+        description: "Silver-level cleaned clickstream events, deduplicated and normalized"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: stg_clickstream_sessions
+        description: "Aggregated session-level data derived from clickstream events"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: stg_orders
+        description: "Silver-level cleaned orders, flattened and normalized"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: stg_order_items
+        description: "Silver-level order items, exploded from orders array"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+  # ============================================================
+  # Gold Layer
+  # ============================================================
+  - name: gold
+    schema: gold
+    tables:
+      - name: fact_sessions
+        description: "Fact table at the session level with aggregated metrics, including has_order flag"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: fact_orders
+        description: "Fact table at the order level, includes all normalized metrics per order"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: fact_order_items
+        description: "Fact table at the order-item level, includes line_amount and product metrics"
+        loaded_at: pipeline_ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: metrics_daily_kpis
+        description: "Daily aggregated KPIs for executive dashboards"
+        loaded_at: date
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: metrics_daily_funnel
+        description: "Daily funnel metrics for user behavior stages"
+        loaded_at: date
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
+
+      - name: metrics_user_lifecycle
+        description: "Cohort-level user lifecycle metrics, including days_to_first_purchase"
+        loaded_at: date
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 3, period: day}
+
+      - name: metrics_product_performance_daily
+        description: "Daily product-level metrics for performance and revenue tracking"
+        loaded_at: date
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 3, period: day}
 
 models:
 
