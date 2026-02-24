@@ -4,10 +4,10 @@ import sys
 import os
 from delta import configure_spark_with_delta_pip # type: ignore
 from pyspark.sql import SparkSession # type: ignore
+from helper_functions import validate_delta
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 DBT_DIR = BASE_DIR / "dbt"
-print(f"DBT_DIR: {DBT_DIR}")
 env_vars = os.environ.copy()
 env_vars["DBT_GOLD_PATH"] = str(BASE_DIR / "data-lake" / "gold")
 env_vars["DBT_SILVER_PATH"] = str(BASE_DIR / "data-lake" / "silver")
@@ -51,22 +51,29 @@ def run_dbt(cmd: list[str]) -> None:
 
 
 def main():
-    print("🚀 Starting Gold layer build")
+    print("🚀 Starting Silver & Gold layer build")
 
-    spark = build_spark("GoldLayerBuild")
+    spark = build_spark("DBTLayerBuild")
 
     try:
         run_dbt(["dbt", "deps"])
         
         run_dbt([
             "dbt", "run",
-            "--select", "marts+", "--full-refresh" #only needed if first run, or want to refresh data completely
+            "--select", "staging+", "--full-refresh" #only needed if first run, or want to refresh data completely
         ])
 
         run_dbt([
             "dbt", "test",
-            "--select", "marts"
+            "--select", "staging+"
         ])
+
+        # Validate silver tables
+
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_clickstream_events", "Silver Clickstream Events")
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_clickstream_sessions", "Silver Clickstream Sessions")
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_orders", "Silver Orders")
+        validate_delta(spark, env_vars["DBT_SILVER_PATH"] + "/stg_order_items", "Silver Order Items")
 
     finally:
         spark.stop()
