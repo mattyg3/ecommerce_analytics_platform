@@ -28,7 +28,7 @@ models:
     staging:
       +materialized: incremental
       +schema: silver
-      +location_root: "{{ env_var('DBT_TARGET_PATH') }}"
+      +location_root: "{{ env_var('DBT_SILVER_PATH') }}"
       +file_format: delta
       +incremental_strategy: merge
       +on_schema_change: append_new_columns
@@ -36,7 +36,7 @@ models:
 
     marts:
       +schema: gold
-      +location_root: "{{ env_var('DBT_TARGET_PATH') }}"
+      +location_root: "{{ env_var('DBT_GOLD_PATH') }}"
       +tags: ["gold"]
 
       core:

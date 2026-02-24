@@ -9,7 +9,8 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 DBT_DIR = BASE_DIR / "dbt"
 print(f"DBT_DIR: {DBT_DIR}")
 env_vars = os.environ.copy()
-env_vars["DBT_TARGET_PATH"] = str(BASE_DIR / "data-lake" / "gold")
+env_vars["DBT_GOLD_PATH"] = str(BASE_DIR / "data-lake" / "gold")
+env_vars["DBT_SILVER_PATH"] = str(BASE_DIR / "data-lake" / "silver")
 env_vars["DBT_BRONZE_PATH"] = str((BASE_DIR / "data-lake" / "bronze").resolve())
 
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
