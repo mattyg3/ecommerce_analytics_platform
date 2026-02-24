@@ -220,7 +220,7 @@ nohup.out
 
 # dbt
 .user.yml
-profiles.yml
+# profiles.yml
 dbt_packages
 package-lock.yml
 
