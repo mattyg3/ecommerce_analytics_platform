@@ -1,6 +1,5 @@
 {{ config(
-    materialized='table',
-    unique_key='user_id'
+    materialized='table'
 ) }}
 
 with user_events as (

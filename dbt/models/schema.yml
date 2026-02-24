@@ -458,3 +458,231 @@ models:
 
       - name: source_system
         description: Originating system that produced the session data.
+
+  # ============================================================
+  # DAILY KPIs
+  # ============================================================
+
+  - name: metrics_daily_kpis
+    description: |
+      Daily business KPI rollups at a one-row-per-date grain.
+      This table is intended for executive dashboards and high-level monitoring.
+      Metrics are derived from session and order fact tables.
+
+      Grain: one row per date
+    columns:
+      - name: date
+        description: Calendar date
+        tests:
+          - not_null
+          - unique
+
+      - name: daily_active_users
+        description: Count of distinct users with at least one session on the date
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: sessions
+        description: Total number of sessions started on the date
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: orders
+        description: Number of completed orders placed on the date
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: revenue
+        description: Total gross revenue from orders placed on the date
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: avg_order_value
+        description: Average revenue per order on the date
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: conversion_rate
+        description: Orders divided by total sessions for the date
+
+      - name: sessions_with_order_pct
+        description: Percentage of sessions that resulted in at least one order
+
+
+  # ============================================================
+  # DAILY FUNNEL
+  # ============================================================
+
+  - name: metrics_daily_funnel
+    description: |
+      Daily session-level funnel metrics showing user progression
+      through key behavioral steps (view → add to cart → checkout → order).
+
+      Grain: one row per date
+    columns:
+      - name: date
+        description: Calendar date
+        tests:
+          - not_null
+          - unique
+
+      - name: sessions
+        description: Total number of sessions on the date
+        tests:
+          - not_null
+
+      - name: sessions_with_product_view
+        description: Sessions with at least one product view event
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: sessions_with_add_to_cart
+        description: Sessions with at least one add-to-cart event
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: sessions_with_checkout
+        description: Sessions that reached checkout
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: sessions_with_order
+        description: Sessions that resulted in at least one order
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+
+  # ============================================================
+  # USER LIFECYCLE
+  # ============================================================
+
+  - name: metrics_user_lifecycle
+    description: |
+      User-level lifecycle metrics capturing acquisition, conversion,
+      and lifetime value behavior.
+
+      Grain: one row per user
+    columns:
+      - name: user_id
+        description: Unique user identifier
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+
+      - name: first_seen_date
+        description: Date of the user's first recorded session
+        tests:
+          - not_null
+
+      - name: first_order_date
+        description: Date of the user's first completed order
+
+      - name: days_to_first_purchase
+        description: Number of days between first session and first order
+        tests:
+          - dbt_utils.expression_is_true:
+              column_name: days_to_first_purchase
+              expression: "is null or days_to_first_purchase >= 0"
+
+      - name: total_sessions
+        description: Total number of sessions across the user's lifetime
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: total_orders
+        description: Total number of completed orders placed by the user
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: lifetime_revenue
+        description: Total lifetime revenue generated by the user
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: avg_order_value
+        description: Average order value across the user's lifetime
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: is_repeat_buyer
+        description: True if the user has placed more than one order
+
+
+  # ============================================================
+  # PRODUCT PERFORMANCE (DAILY)
+  # ============================================================
+
+  - name: metrics_product_performance_daily
+    description: |
+      Daily product performance metrics combining sales and engagement data.
+      Used for merchandising analysis and product-level reporting.
+
+      Grain: one row per date per product
+    columns:
+      - name: date
+        description: Calendar date
+        tests:
+          - not_null
+
+      - name: product_id
+        description: Unique product identifier
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+
+      - name: units_sold
+        description: Total quantity of units sold for the product on the date
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: orders_with_product
+        description: Number of distinct orders containing the product
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: product_revenue
+        description: Total revenue generated by the product on the date
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: avg_price
+        description: Average selling price of the product on the date
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: product_conversion_rate
+        description: |
+          Orders containing the product divided by sessions that viewed
+          the product on the date

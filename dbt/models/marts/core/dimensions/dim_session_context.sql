@@ -1,6 +1,5 @@
 {{ config(
-    materialized='table',
-    unique_key='session_id'
+    materialized='table'
 ) }}
 
 with ranked_events as (

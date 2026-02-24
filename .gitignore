@@ -211,6 +211,7 @@ data-lake
 logs/*
 metastore_db
 dbt/spark-warehouse
+dbt/target
 
 # Controls
 checkpoints

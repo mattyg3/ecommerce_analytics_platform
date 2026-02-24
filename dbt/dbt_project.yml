@@ -54,5 +54,10 @@ models:
           +file_format: delta
           +tags: ["dimensions"]
 
+      metrics:
+        +materialized: table
+        +file_format: delta
+        +tags: ["metrics"]
+
 
     
