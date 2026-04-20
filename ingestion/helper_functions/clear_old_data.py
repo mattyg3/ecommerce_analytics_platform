@@ -21,13 +21,16 @@ def find_repo_root(start_path: Path = None) -> Path:
 
 BASE_DIR = find_repo_root()
 
-CLICKSTREAM_DIR = Path("/home/surff/spark_data/clickstream/raw") #WSL path
+# CLICKSTREAM_DIR = Path("/home/surff/spark_data/clickstream/raw") #WSL path
+CLICKSTREAM_DIR = BASE_DIR / "data-lake" / "raw" / "clickstream"
 delete_folder(CLICKSTREAM_DIR)
 
-ORDERS_DIR = Path("/home/surff/spark_data/orders/raw") #WSL path
+# ORDERS_DIR = Path("/home/surff/spark_data/orders/raw") #WSL path
+ORDERS_DIR = BASE_DIR / "data-lake" / "raw" / "orders"
 delete_folder(ORDERS_DIR)
 
-CLICKSTREAM_CHECKPOINT = Path("/home/surff/spark_data/checkpoints/clickstream_ingest") #WSL path
+# CLICKSTREAM_CHECKPOINT = Path("/home/surff/spark_data/checkpoints/clickstream_ingest") #WSL path
+CLICKSTREAM_CHECKPOINT = BASE_DIR / "data-lake" / "checkpoints" / "clickstream_ingest"
 delete_folder(CLICKSTREAM_CHECKPOINT)
 
 LANDING_OUTPUT = BASE_DIR / "data-lake" / "landing"

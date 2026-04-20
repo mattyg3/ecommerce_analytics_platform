@@ -1,44 +1,26 @@
-version: '3.8'
 
 services:
-  spark-master:
-    image: bitnami/spark:latest
-    environment:
-      - SPARK_MODE=master
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-    ports:
-      - "7077:7077"
-      - "8080:8080"
+  spark-dbt:
+    # user: "${UID}:${GID}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID}
+        GID: ${GID}
+
+    container_name: spark-dbt
+
     volumes:
+      - .:/app
       - ./data-lake:/data-lake
 
-  spark-worker:
-    image: bitnami/spark:latest
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-    depends_on:
-      - spark-master
-    ports:
-      - "8081:8081"
-    volumes:
-      - ./data-lake:/data-lake
+    working_dir: /app
 
-  thrift-server:
-    image: bitnami/spark:latest
-    command: >
-      start-thriftserver.sh
-      --master spark://spark-master:7077
-      --conf spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension
-      --conf spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog
-      --hiveconf hive.server2.thrift.port=10000
-      --hiveconf hive.server2.thrift.bind.host=0.0.0.0
-    ports:
-      - "10000:10000"
-    depends_on:
-      - spark-master
-      - spark-worker
-    volumes:
-      - ./data-lake:/data-lake
+    stdin_open: true
+    tty: true
+
+    environment:
+      - PYTHONUNBUFFERED=1
+
+    command: bash

@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    description: "Bronze layer data stored as Delta files"
+
+    tables:
+      - name: orders
+        description: "Orders from raw ingestion layer"
+        meta:
+          location: /app/data-lake/bronze/orders
+
+      - name: clickstream
+        description: "Clickstream from raw ingestion layer"
+        meta:
+          location: /app/data-lake/bronze/clickstream

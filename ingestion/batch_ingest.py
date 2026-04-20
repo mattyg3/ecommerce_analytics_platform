@@ -1,11 +1,13 @@
 from pathlib import Path
-import os
-import shutil
+# import os
+# import shutil
 BASE_DIR = Path(__file__).resolve().parents[1]
-os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
-os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
+DATA_LAKE = Path("/data-lake")
+# os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
+# os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
+# DATA_LAKE_ROOT = Path(os.getenv("DATA_LAKE_ROOT", "/data-lake"))
 
-from delta import configure_spark_with_delta_pip # type: ignore
+# from delta import configure_spark_with_delta_pip # type: ignore
 from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql.functions import col, to_date, current_timestamp, lit # type: ignore
 from pyspark.sql.types import ( # type: ignore
@@ -31,19 +33,24 @@ ORDER_SCHEMA = StructType([
 ])
 
 def main(
-        input_path  = Path("/home/surff/spark_data/orders/raw"),
-        output_path: Path = BASE_DIR / 'data-lake' / 'landing' / 'orders',
+        # input_path  = Path("/home/surff/spark_data/orders/raw"),
+        # output_path: Path = BASE_DIR / 'data-lake' / 'landing' / 'orders',
+        input_path =  DATA_LAKE / "raw" / "orders", #Path("/data-lake/raw/orders"),
+        output_path = DATA_LAKE / "landing" / "orders",
         source_system: str = "order_generator"
 ):
     
-    builder = (
+    spark = (
         SparkSession.builder
         .appName("BatchIngestOrders")
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+        # .config("spark.jars.packages", "io.delta:delta-spark_2.12:3.0.0")
+        .getOrCreate()
     )
+    spark.sparkContext.setLogLevel("ERROR")
 
-    spark = configure_spark_with_delta_pip(builder).getOrCreate()
+    # spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
     # recursiveFileLookup ensures all JSON files under path (including subdirs) are read;
     # without it, very large directories or nested paths can miss files and lose rows.

@@ -217,6 +217,7 @@ dbt/target
 checkpoints
 *.pid
 nohup.out
+.env
 
 # dbt
 .user.yml
@@ -226,3 +227,4 @@ package-lock.yml
 
 #Development Files
 DEV
+thrift

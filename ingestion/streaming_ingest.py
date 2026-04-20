@@ -1,19 +1,22 @@
 from pathlib import Path
-import os
+# import os
 import time
 import argparse
-from delta import configure_spark_with_delta_pip # type: ignore
+# from delta import configure_spark_with_delta_pip # type: ignore
 from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql.functions import col, to_date, current_timestamp, lit # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType # type: ignore
 from helper_functions.backfill_progress import log_backfill_progress
-os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
-os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")
-os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
-os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
+# os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
+# os.environ["PATH"] += ":" + str(Path(os.environ["JAVA_HOME"]) / "bin")
+# os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
+# os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-CLICKSTREAM_CHECKPOINT = Path("/home/surff/spark_data/checkpoints/clickstream_ingest") #WSL path
+DATA_LAKE = Path("/data-lake")
+# DATA_LAKE_ROOT = Path(os.getenv("DATA_LAKE_ROOT", "/data-lake"))
+# CLICKSTREAM_CHECKPOINT = Path("/home/surff/spark_data/checkpoints/clickstream_ingest") #WSL path
+CLICKSTREAM_CHECKPOINT = DATA_LAKE / "checkpoints" / "clickstream_ingest"
 
 STOP_FILE = BASE_DIR / "control" / "clickstream.stop"
 STOP_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -49,26 +52,32 @@ def parse_args():
 
 def main(
     mode: str,
-    input_path  = Path("/home/surff/spark_data/clickstream/raw"),
-    output_path: Path = BASE_DIR / "data-lake" / "landing" / "clickstream",
-    checkpoint_path = Path("/home/surff/spark_data/checkpoints/clickstream_ingest"),
+    # input_path  = Path("/home/surff/spark_data/clickstream/raw"),
+    # output_path: Path = BASE_DIR / "data-lake" / "landing" / "clickstream",
+    # checkpoint_path = Path("/home/surff/spark_data/checkpoints/clickstream_ingest"),
+    input_path =  DATA_LAKE / "raw" / "clickstream",
+    output_path = DATA_LAKE / "landing" / "clickstream",
+    checkpoint_path = CLICKSTREAM_CHECKPOINT,
     source_system: str = "clickstream_generator"
 ):
-    builder = (
+    spark = (
         SparkSession.builder
         .appName("StreamingIngestClickstream")
         .config("spark.master", "local[10]")
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+        # .config("spark.jars.packages", "io.delta:delta-spark_2.12:3.0.0")
         .config("spark.sql.shuffle.partitions", "10")
         .config("spark.default.parallelism", "10")
         .config("spark.hadoop.fs.defaultFS", "file:///")
         .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
         .config("spark.driver.memory", "4g")
         .config("spark.executor.memory", "4g")
+        .getOrCreate()
     )
+    spark.sparkContext.setLogLevel("ERROR")
 
-    spark = configure_spark_with_delta_pip(builder).getOrCreate()
+    # spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
     read_options = {
         "recursiveFileLookup": "true",  # include all JSON under path so no files (rows) are missed

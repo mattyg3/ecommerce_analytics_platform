@@ -1,0 +1,42 @@
+# clickstream:
+#   target: dev
+#   outputs:
+#     dev:
+#       type: spark
+#       method: thrift
+#       # host: 127.0.0.1
+#       host: spark-thrift-server
+#       port: 10000
+#       database: default
+#       schema: default
+#       file_format: delta
+#       location_root: /app/data-lake
+#       # auth: NOSASL
+#       threads: 8
+#       connect_retries: 5
+#       connect_timeout: 30
+#       server_side_parameters:
+#         hive.server2.authentication: "NOSASL"
+#         spark.sql.extensions: "io.delta.sql.DeltaSparkSessionExtension"
+#         spark.sql.catalog.spark_catalog: "org.apache.spark.sql.delta.catalog.DeltaCatalog"
+#         spark.sql.warehouse.dir: "/app/data-lake/warehouse"
+#         spark.driver.memory: "4g"
+#         spark.sql.shuffle.partitions: "50"
+
+clickstream:
+  target: dev
+  outputs:
+    dev:
+      type: spark
+      method: session
+      schema: default
+      file_format: delta
+      location_root: /data-lake
+      threads: 8
+
+      server_side_parameters:
+        spark.sql.extensions: "io.delta.sql.DeltaSparkSessionExtension"
+        spark.sql.catalog.spark_catalog: "org.apache.spark.sql.delta.catalog.DeltaCatalog"
+        spark.sql.warehouse.dir: "/data-lake/warehouse"
+        spark.driver.memory: "4g"
+        spark.sql.shuffle.partitions: "50"
