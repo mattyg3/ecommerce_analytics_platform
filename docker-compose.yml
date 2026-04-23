@@ -1,0 +1,60 @@
+
+# services:
+#   spark-dbt:
+#     # user: "${UID}:${GID}"
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       args:
+#         UID: ${UID}
+#         GID: ${GID}
+
+#     container_name: spark-dbt
+
+#     volumes:
+#       - .:/app
+#       - ./data-lake:/data-lake
+
+#     working_dir: /app
+
+#     stdin_open: true
+#     tty: true
+
+#     environment:
+#       - PYTHONUNBUFFERED=1
+
+#     command: bash
+
+# version: "3.9"
+
+# services:
+#   pipeline:
+#     build: .
+#     container_name: analytics_pipeline
+#     volumes:
+#       - ./data_lake:/app/data_lake   # persist data
+#     # command: python orchestration/run_pipeline.py
+
+
+services:
+  platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID}
+        GID: ${GID}
+    env_file:
+      - .env
+    container_name: analytics_platform
+    volumes:
+      - ./data-lake:/data-lake
+      - ./dbt_project:/app/dbt_project
+      - ./ingestion:/app/ingestion
+      - ./orchestration:/app/orchestration
+      - ./logs:/app/logs
+      - ./control:/app/control
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: bash

@@ -12,9 +12,12 @@ import signal
 # Configuration
 # ----------------------------------------
 BASE_DIR = Path(__file__).resolve().parents[1]
-CLICKSTREAM_DIR = Path("/home/surff/spark_data/clickstream/raw") #WSL path
+DATA_LAKE = Path("/data-lake")
+# CLICKSTREAM_DIR = BASE_DIR / "data-lake" / "raw" / "clickstream"
+CLICKSTREAM_DIR = DATA_LAKE / "raw" / "clickstream"
 CLICKSTREAM_DIR.mkdir(parents=True, exist_ok=True)
-ORDERS_DIR = Path("/home/surff/spark_data/orders/raw") #WSL path
+# ORDERS_DIR = BASE_DIR / "data-lake" / "raw" / "orders"
+ORDERS_DIR = DATA_LAKE / "raw" / "orders"
 ORDERS_DIR.mkdir(parents=True, exist_ok=True)
 PRODUCTS = BASE_DIR / "producers" / "products.json"
 STOP_FILE = BASE_DIR / "control" / "clickstream.stop"
@@ -29,8 +32,18 @@ def handle_stop_signal(signum, frame):
 signal.signal(signal.SIGINT, handle_stop_signal)
 signal.signal(signal.SIGTERM, handle_stop_signal)
 
+def parse_to_utc_timestamp(s: str) -> float:
+    dt = datetime.fromisoformat(s)
+    return dt.replace(tzinfo=timezone.utc).timestamp()
+
 BATCH_INTERVAL_SECONDS = 2         # interval between batches (simulated)
-SIMULATION_HOURS = int(os.getenv("SIMULATION_HOURS", 24))  # default 24h if not set
+SIMULATION_HOURS = int(os.getenv("SIMULATION_HOURS"))
+start_str = os.getenv("SIMULATION_START")
+SIMULATION_START = (
+    parse_to_utc_timestamp(start_str)
+    if start_str
+    else time.time()
+)
 TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
@@ -315,7 +328,8 @@ def sessions_per_batch(sim_hour):
 # MAIN
 # ----------------------------------------
 if __name__ == "__main__":
-    start_time = time.time()
+    # start_time = time.time()
+    start_time = SIMULATION_START
     end_time = start_time + SIMULATION_HOURS * 3600 / TIME_MULTIPLIER
     print(f"Starting simulated clickstream & orders for {SIMULATION_HOURS} hours...")
 

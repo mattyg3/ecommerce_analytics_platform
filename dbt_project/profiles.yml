@@ -1,0 +1,8 @@
+clickstream:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: /data-lake/warehouse.duckdb
+      threads: 8
+      # database: "warehouse"

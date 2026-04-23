@@ -1,5 +1,6 @@
-pandas==3.0.0
-pyarrow==23.0.0
-pyspark==4.1.1
-delta-spark==4.1.0
-dbt-spark==1.10.1
+pandas==2.2.2
+pyarrow==15.0.2
+dbt-core==1.8.0
+dbt-duckdb==1.8.1
+duckdb==0.10.2
+streamlit==1.33.0

@@ -1,0 +1,54 @@
+name: clickstream_analytics
+version: "1.0"
+config-version: 2
+
+profile: clickstream
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  clickstream_analytics:
+    +create_schema: true
+
+    # -------------------------
+    # SILVER = staging schema
+    # -------------------------
+    staging:
+      +schema: staging
+      +materialized: incremental
+      +on_schema_change: append_new_columns
+      +tags: ["silver", "staging"]
+
+    # -------------------------
+    # GOLD = marts schema
+    # -------------------------
+    marts:
+      +schema: marts
+      +tags: ["gold"]
+
+      core:
+        +tags: ["core"]
+
+        facts:
+          +materialized: incremental
+          +on_schema_change: append_new_columns
+          +tags: ["facts"]
+
+        dimensions:
+          +materialized: table
+          +tags: ["dimensions"]
+
+      metrics:
+        +materialized: table
+        +tags: ["metrics"]
+    

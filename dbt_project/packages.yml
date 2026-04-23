@@ -1,0 +1,5 @@
+# packages.yml
+packages:
+  # - package: dbt-labs/dbt_utils
+  - git: "https://github.com/dbt-labs/dbt-utils.git"
+    revision: 1.1.1

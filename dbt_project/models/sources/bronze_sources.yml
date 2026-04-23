@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    description: "Bronze layer, typed ingestion layer"
+
+    tables:
+      - name: clickstream
+        description: "Bronze clickstream events"
+        loaded_at_field: source_ingested_at
+
+      - name: orders
+        description: "Bronze orders data"
+        loaded_at_field: source_ingested_at

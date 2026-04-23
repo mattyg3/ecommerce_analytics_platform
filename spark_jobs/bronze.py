@@ -1,72 +1,90 @@
 from pathlib import Path
-import os
-from helper_functions import validate_delta
-from pyspark.sql import SparkSession # type: ignore
-from pyspark.sql.functions import to_timestamp, current_timestamp # type: ignore
-from delta import configure_spark_with_delta_pip # type: ignore
+import duckdb
+# from datetime import datetime
+from helper_functions import validate_table
 
-BASE_DIR = Path(__file__).resolve().parents[1]
+DATA_LAKE = Path("/data-lake")
+LANDING = DATA_LAKE / "landing"
+DUCKDB_PATH = DATA_LAKE / "warehouse.duckdb"
 
-LANDING = BASE_DIR / "data-lake" / "landing"
-BRONZE = BASE_DIR / "data-lake" / "bronze"
-# CHECKPOINTS = BASE_DIR / "checkpoints" / "bronze"
 
-# VALIDATE = os.getenv("BRONZE_VALIDATE", "true").lower() == "true"
+def build_duckdb():
+    con = duckdb.connect(str(DUCKDB_PATH))
+    # con = duckdb.connect("/app/data-lake/warehouse.duckdb")
 
-def build_spark(app_name: str):
-    builder = (
-        SparkSession.builder
-        .appName(app_name)
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
-        .config("spark.driver.memory", "4g")
-        .config("spark.executor.memory", "4g")
-    )
-    return configure_spark_with_delta_pip(builder).getOrCreate()
+    # Create schemas
+    con.execute("CREATE SCHEMA IF NOT EXISTS bronze")
 
-def bronze_clickstream(spark):
-    df = spark.read.format("delta").load(str(LANDING / "clickstream"))
+    return con
 
-    bronze_df = (
-        df
-        .withColumn("event_time", to_timestamp("event_time"))
-        .withColumn("source_ingested_at", to_timestamp("source_ingested_at"))
-        .withColumn("bronze_ingested_at", current_timestamp())
-    )
 
-    (
-        bronze_df
-        .write
-        .format("delta")
-        .mode("append")
-        .partitionBy("ingest_date")
-        .save(str(BRONZE / "clickstream"))
-    )
+def bronze_clickstream(con):
+    landing_path = LANDING / "clickstream" / "**" / "*.parquet"
 
-def bronze_orders(spark):
-    df = spark.read.format("delta").load(str(LANDING / "orders"))
+    query = f"""
+        INSERT INTO bronze.clickstream
+        SELECT
+            * EXCLUDE (event_time, source_ingested_at),
+            CAST(event_time AS TIMESTAMP) AS event_time,
+            CAST(source_ingested_at AS TIMESTAMP) AS source_ingested_at,
+            CURRENT_TIMESTAMP AS bronze_ingested_at
+        FROM read_parquet('{landing_path}', hive_partitioning=true)
+        WHERE ingest_date NOT IN (
+            SELECT DISTINCT ingest_date FROM bronze.clickstream
+        )
+    """
 
-    bronze_df = (
-        df
-        .withColumn("order_time", to_timestamp("order_time"))
-        .withColumn("bronze_ingested_at", current_timestamp())
-    )
+    # Create table if not exists
+    con.execute(f"""
+        CREATE TABLE IF NOT EXISTS bronze.clickstream AS
+        SELECT
+            * EXCLUDE (event_time, source_ingested_at),
+            CAST(event_time AS TIMESTAMP) AS event_time,
+            CAST(source_ingested_at AS TIMESTAMP) AS source_ingested_at,
+            CURRENT_TIMESTAMP AS bronze_ingested_at
+        FROM read_parquet('{landing_path}', hive_partitioning=true)
+        WHERE 1=0
+    """)
 
-    (
-        bronze_df
-        .write
-        .format("delta")
-        .mode("append")
-        .partitionBy("ingest_date")
-        .save(str(BRONZE / "orders"))
-    )
+    con.execute(query)
+
+
+def bronze_orders(con):
+    landing_path = LANDING / "orders" / "**" / "*.parquet"
+
+    query = f"""
+        INSERT INTO bronze.orders
+        SELECT
+            * EXCLUDE (order_time),
+            CAST(order_time AS TIMESTAMP) AS order_time,
+            CURRENT_TIMESTAMP AS bronze_ingested_at
+        FROM read_parquet('{landing_path}', hive_partitioning=true)
+        WHERE ingest_date NOT IN (
+            SELECT DISTINCT ingest_date FROM bronze.orders
+        )
+    """
+
+    # Create table if not exists
+    con.execute(f"""
+        CREATE TABLE IF NOT EXISTS bronze.orders AS
+        SELECT
+            * EXCLUDE (order_time),
+            CAST(order_time AS TIMESTAMP) AS order_time,
+            CURRENT_TIMESTAMP AS bronze_ingested_at
+        FROM read_parquet('{landing_path}', hive_partitioning=true)
+        WHERE 1=0
+    """)
+
+    con.execute(query)
+
 
 if __name__ == "__main__":
-    spark = build_spark("BronzeLayer")
+    con = build_duckdb()
 
-    bronze_clickstream(spark)
-    validate_delta(spark, str(BRONZE / "clickstream"), "Bronze Clickstream")
-    bronze_orders(spark)
-    validate_delta(spark, str(BRONZE / "orders"), "Bronze Orders")
+    bronze_clickstream(con)
+    validate_table(con, "bronze.clickstream", "Bronze Clickstream")
 
-    spark.stop()
+    bronze_orders(con)
+    validate_table(con, "bronze.orders", "Bronze Orders")
+
+    con.close()
