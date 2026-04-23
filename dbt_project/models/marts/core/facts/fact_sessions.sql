@@ -1,7 +1,7 @@
 {{ config(
     materialized='incremental',
     unique_key='session_id',
-    incremental_strategy='merge'
+    incremental_strategy='delete+insert'
 ) }}
 
 with sessions as (
@@ -16,7 +16,7 @@ with sessions as (
 
     {% if is_incremental() %}
     where session_start_ts >= (
-        select date_sub(max(session_start_ts), 1) 
+        select max(session_start_ts) - INTERVAL 1 DAY
         from {{ this }}
     )
     {% endif %}

@@ -25,21 +25,13 @@ orders as (
 select
     s.user_id,
 
-    date(s.first_session_ts) as first_seen_date,
-    date(o.first_order_ts) as first_order_date,
-
-    -- datediff(
-    --     date(o.first_order_ts),
-    --     date(s.first_session_ts)
-    -- ) as days_to_first_purchase,
+    cast(s.first_session_ts as date) as first_seen_date,
+    cast(o.first_order_ts as date) as first_order_date,
 
     case
         when o.first_order_ts is null then null
         when o.first_order_ts < s.first_session_ts then null
-        else datediff(
-            date(o.first_order_ts),
-            date(s.first_session_ts)
-        )
+        else datediff('day', cast(s.first_session_ts as date), cast(o.first_order_ts as date))
         end as days_to_first_purchase,
 
     s.total_sessions,

@@ -1,7 +1,7 @@
 {{ config(
     materialized='incremental',
     unique_key='event_id',
-    incremental_strategy='merge',
+    incremental_strategy='delete+insert',
     partition_by=['event_date']
 ) }}
 
@@ -22,7 +22,7 @@ from {{ ref('stg_clickstream_events') }}
 
 {% if is_incremental() %}
 where event_ts >= (
-    select date_sub(max(event_ts),1) 
+    select max(event_ts) - INTERVAL 1 DAY
     from {{ this }}
 )
 {% endif %}

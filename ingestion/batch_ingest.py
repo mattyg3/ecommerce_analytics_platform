@@ -1,82 +1,46 @@
 from pathlib import Path
-# import os
-# import shutil
-BASE_DIR = Path(__file__).resolve().parents[1]
+import duckdb
+
 DATA_LAKE = Path("/data-lake")
-# os.environ["PYSPARK_PYTHON"] = "/usr/bin/python3"
-# os.environ["PYSPARK_DRIVER_PYTHON"] = "/usr/bin/python3"
-# DATA_LAKE_ROOT = Path(os.getenv("DATA_LAKE_ROOT", "/data-lake"))
-
-# from delta import configure_spark_with_delta_pip # type: ignore
-from pyspark.sql import SparkSession # type: ignore
-from pyspark.sql.functions import col, to_date, current_timestamp, lit # type: ignore
-from pyspark.sql.types import ( # type: ignore
-    ArrayType, StructType, StructField, StringType, IntegerType, DoubleType, TimestampType 
-) 
-
-CART_SCHEMA = ArrayType(
-    StructType([
-        StructField("product_id", StringType(), False),
-        StructField("quantity", IntegerType(), False),
-        StructField("price", DoubleType(), False),
-    ])
-)
-
-ORDER_SCHEMA = StructType([
-    StructField("session_id", StringType(), False),
-    StructField("order_id", StringType(), False),
-    StructField("user_id", StringType(), False),
-    StructField("items", CART_SCHEMA, False),
-    StructField("order_status", StringType(), False),
-    StructField("order_time", TimestampType(), False),
-    StructField("ingest_time", TimestampType(), False),
-])
 
 def main(
-        # input_path  = Path("/home/surff/spark_data/orders/raw"),
-        # output_path: Path = BASE_DIR / 'data-lake' / 'landing' / 'orders',
-        input_path =  DATA_LAKE / "raw" / "orders", #Path("/data-lake/raw/orders"),
-        output_path = DATA_LAKE / "landing" / "orders",
-        source_system: str = "order_generator"
+    input_path = DATA_LAKE / "raw" / "orders",
+    output_path = DATA_LAKE / "landing" / "orders",
+    source_system: str = "order_generator"
 ):
-    
-    spark = (
-        SparkSession.builder
-        .appName("BatchIngestOrders")
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
-        # .config("spark.jars.packages", "io.delta:delta-spark_2.12:3.0.0")
-        .getOrCreate()
-    )
-    spark.sparkContext.setLogLevel("ERROR")
+    con = duckdb.connect()
 
-    # spark = configure_spark_with_delta_pip(builder).getOrCreate()
+    json_path = str(input_path / "**/*.json")
 
-    # recursiveFileLookup ensures all JSON files under path (including subdirs) are read;
-    # without it, very large directories or nested paths can miss files and lose rows.
-    raw_orders = (
-        spark.read
-        .schema(ORDER_SCHEMA)
-        .option("recursiveFileLookup", "true")
-        .option("mode", "PERMISSIVE")  # keep rows with parse issues (field becomes null), don't drop
-        .json(str(input_path))
-    )
+    output_path.mkdir(parents=True, exist_ok=True)
 
-    landed = (
-        raw_orders
-        .withColumnRenamed("ingest_time", "source_ingested_at")
-        .withColumn("pipeline_ingested_at", current_timestamp())
-        .withColumn("ingest_date", to_date(col("source_ingested_at")))
-        .withColumn("source_system", lit(source_system))
-    )
+    # DuckDB reads + transforms
+    df = con.execute(f"""
+        SELECT
+            CAST(session_id AS STRING) as session_id,
+            CAST(order_id AS STRING) as order_id, 
+            CAST(user_id AS STRING) as user_id,
+            items,
+            order_status,
+            CAST(order_time AS TIMESTAMP) AS order_time,
+            CAST(ingest_time AS TIMESTAMP) AS source_ingested_at,
+            CURRENT_TIMESTAMP AS pipeline_ingested_at,
+            strftime(CAST(ingest_time AS TIMESTAMP), '%Y-%m-%d') AS ingest_date,
+            '{source_system}' AS source_system
+        FROM read_json_auto('{json_path}')
+    """).df()
 
-    (
-        landed.write
-        .format("delta")
-        .mode("append")
-        .partitionBy("ingest_date")
-        .save(str(output_path))
-    )
+    # partitioned write
+    for ingest_date, partition_df in df.groupby("ingest_date"):
+
+        partition_dir = output_path / f"ingest_date={ingest_date}"
+        partition_dir.mkdir(parents=True, exist_ok=True)
+
+        file_path = partition_dir / "part.parquet"
+
+        partition_df.to_parquet(file_path, index=False)
+
+    # print(f"✅ Landing Orders written to {output_path}")
 
 if __name__ == "__main__":
     main()

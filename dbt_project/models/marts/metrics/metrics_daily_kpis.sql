@@ -4,7 +4,7 @@
 
 with sessions as (
     select
-        date(session_start_ts) as date,
+        cast(session_start_ts as date) as date,
         count(*) as sessions,
         count(distinct user_id) as daily_active_users
     from {{ ref('fact_sessions') }}
@@ -13,7 +13,7 @@ with sessions as (
 
 orders as (
     select
-        date(order_ts) as date,
+        cast(order_ts as date) as date,
         count(distinct order_id) as orders,
         sum(order_total_amount) as revenue,
         avg(order_total_amount) as avg_order_value
@@ -24,7 +24,7 @@ orders as (
 
 sessions_with_orders as (
     select
-        date(s.session_start_ts) as date,
+        cast(s.session_start_ts as date) as date,
         count(distinct s.session_id) as sessions_with_orders
     from {{ ref('fact_sessions') }} s
     join {{ ref('fact_orders') }} o

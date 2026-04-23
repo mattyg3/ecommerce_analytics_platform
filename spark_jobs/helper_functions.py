@@ -1,5 +1,7 @@
-def validate_delta(spark, path, name):
-    df = spark.read.format("delta").load(path)
-    print(f"\n📊 {name}")
-    df.printSchema()
-    print(f"Rows: {df.count()}")
+def validate_table(con, table_name: str, label: str):
+    try:
+        count = con.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
+        print(f"✅ {label}: {count} rows")
+    except Exception as e:
+        print(f"❌ Validation failed for {label}: {e}")
+        raise

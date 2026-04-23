@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     unique_key = 'order_id',
-    incremental_strategy = 'merge'
+    incremental_strategy = 'delete+insert'
 ) }}
 
 with ranked_orders as (
@@ -16,7 +16,10 @@ with ranked_orders as (
 
     {% if is_incremental() %}
         and pipeline_ingested_at >= (
-            select coalesce(date_sub(max(pipeline_ingested_at), 1), timestamp('1900-01-01')) --sliding window
+            select coalesce(
+                max(pipeline_ingested_at) - INTERVAL 1 DAY,
+                TIMESTAMP '1900-01-01'
+            ) --sliding window
             from {{ this }}
             )
     {% endif %}
@@ -35,12 +38,18 @@ select
   items,
   order_status,
   cast(order_time as timestamp) as order_ts,
-  size(items) as item_count,
-  aggregate(
-    items,
-    0D,
-    (acc, x) -> acc + (x.quantity * x.price)
-  ) as order_total_amount,
+  (
+        select count(*)
+        from (
+            select unnest(items) as item
+        ) t
+    ) as item_count,
+  (
+        select sum(t.item.quantity * t.item.price)
+        from (
+            select unnest(items) as item
+        ) t
+    ) as order_total_amount,
   source_system,
   pipeline_ingested_at
 from deduped

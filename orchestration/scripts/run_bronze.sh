@@ -23,17 +23,6 @@ command -v $PYTHON_BIN >/dev/null || {
 cd "$REPO_ROOT"
 echo "📂 Repo root: $REPO_ROOT"
 
-# ----------------------------------------
-# Activate Python environment
-# ----------------------------------------
-# VENV_PATH="$REPO_ROOT/.venv"
-
-# if [ ! -f "$VENV_PATH/bin/activate" ]; then
-#     echo "❌ .venv not found. Create it first with: python3 -m venv .venv && pip install -r requirements.txt"
-#     exit 1
-# fi
-
-# source "$VENV_PATH/bin/activate"
 
 # ----------------------------------------
 # Safety checks

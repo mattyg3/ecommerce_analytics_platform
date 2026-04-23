@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     unique_key = ['order_id', 'product_id'],
-    incremental_strategy = 'merge'
+    incremental_strategy = 'delete+insert'
 ) }}
 
 select
@@ -15,11 +15,14 @@ select
   o.order_ts,
   o.pipeline_ingested_at
 from {{ ref('stg_orders') }} o
-lateral view explode(o.items) as item
+cross join unnest(o.items) as t(item)
 
 {% if is_incremental() %}
 where pipeline_ingested_at >= (
-    select coalesce(date_sub(max(pipeline_ingested_at), 1), timestamp('1900-01-01')) --sliding window
+    select coalesce(
+                max(pipeline_ingested_at) - INTERVAL 1 DAY,
+                TIMESTAMP '1900-01-01'
+            )  --sliding window
     from {{ this }}
     )
 {% endif %}

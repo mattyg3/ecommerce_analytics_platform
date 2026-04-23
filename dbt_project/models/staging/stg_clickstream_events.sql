@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     unique_key = 'event_id',
-    incremental_strategy = 'merge',
+    incremental_strategy = 'delete+insert',
     on_schema_change='append_new_columns'
 ) }}
 
@@ -17,7 +17,10 @@ with ranked_events as (
 
     {% if is_incremental() %}
         and pipeline_ingested_at >= (
-            select coalesce(date_sub(max(pipeline_ingested_at), 1), timestamp('1900-01-01')) --sliding window
+            select select coalesce(
+                max(pipeline_ingested_at) - INTERVAL 1 DAY,
+                TIMESTAMP '1900-01-01'
+            )  --sliding window
             from {{ this }}
             )
     {% endif %}
@@ -36,7 +39,7 @@ select
   session_id,
   product_id,
   cast(event_time as timestamp) as event_ts,
-  date(event_time) as event_date,
+  cast(event_time as date) as event_date,
   upper(country) as country,
   device,
   experiment_id,

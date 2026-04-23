@@ -16,30 +16,24 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
-# # Register bronze Delta tables in Spark so source() can find them (dbt uses a fresh session)
-# on-run-start:
-#   - "CREATE SCHEMA IF NOT EXISTS bronze"
-#   # - "CREATE TABLE IF NOT EXISTS bronze.clickstream USING delta LOCATION '{{ env_var(\"DBT_BRONZE_PATH\") }}/clickstream'"
-#   -  "CREATE TABLE IF NOT EXISTS bronze.clickstream USING delta LOCATION '/data-lake/bronze/clickstream'"
-#   # - "CREATE TABLE IF NOT EXISTS bronze.orders USING delta LOCATION '{{ env_var(\"DBT_BRONZE_PATH\") }}/orders'"
-#   - "CREATE TABLE IF NOT EXISTS bronze.orders USING delta LOCATION '/data-lake/bronze/orders'"
-
 models:
   clickstream_analytics:
+    +create_schema: true
+
+    # -------------------------
+    # SILVER = staging schema
+    # -------------------------
     staging:
+      +schema: staging
       +materialized: incremental
-      +schema: silver
-      # +location_root: "{{ env_var('DBT_SILVER_PATH') }}"
-      # +location_root: /app/data-lake
-      +file_format: delta
-      +incremental_strategy: merge
       +on_schema_change: append_new_columns
       +tags: ["silver", "staging"]
 
+    # -------------------------
+    # GOLD = marts schema
+    # -------------------------
     marts:
-      +schema: gold
-      # +location_root: "{{ env_var('DBT_GOLD_PATH') }}"
-      # +location_root: /app/data-lake
+      +schema: marts
       +tags: ["gold"]
 
       core:
@@ -47,20 +41,14 @@ models:
 
         facts:
           +materialized: incremental
-          +file_format: delta
-          +incremental_strategy: merge
           +on_schema_change: append_new_columns
           +tags: ["facts"]
 
         dimensions:
           +materialized: table
-          +file_format: delta
           +tags: ["dimensions"]
 
       metrics:
         +materialized: table
-        +file_format: delta
         +tags: ["metrics"]
-
-
     

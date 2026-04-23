@@ -1,7 +1,7 @@
 {{ config(
     materialized='incremental',
     unique_key='order_id',
-    incremental_strategy='merge'
+    incremental_strategy='delete+insert'
 ) }}
 
 select
@@ -17,7 +17,7 @@ from {{ ref('stg_orders') }}
 
 {% if is_incremental() %}
 where order_ts > (
-    select date_sub(max(order_ts), 1) 
+    select max(order_ts) - INTERVAL 1 DAY
     from {{ this }}
 )
 {% endif %}

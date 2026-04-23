@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     unique_key = 'session_id',
-    incremental_strategy = 'merge'
+    incremental_strategy = 'delete+insert'
 ) }}
 
 with events as (
@@ -13,7 +13,7 @@ with events as (
 
   {% if is_incremental() %}
     where event_ts >= (
-      select date_sub(max(session_end_ts), 1) --sliding window
+      max(session_end_ts) - INTERVAL 1 DAY --sliding window
       from {{ this }}
       )
   {% endif %}
@@ -35,7 +35,6 @@ select
   user_id,
   session_start_ts,
   session_end_ts,
-  unix_timestamp(session_end_ts) - unix_timestamp(session_start_ts)
-    as session_duration_sec,
+  EXTRACT(EPOCH FROM (session_end_ts - session_start_ts)) as session_duration_sec,
   event_count
 from session_rollup

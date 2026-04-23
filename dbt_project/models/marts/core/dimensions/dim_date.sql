@@ -11,18 +11,18 @@ with bounds as (
 
 dates as (
     select
-        explode(
-            sequence(min_date, max_date, interval 1 day)
+        unnest(
+            generate_series(min_date, max_date, interval 1 day)
         ) as date
     from bounds
 )
 
 select
     date,
-    day(date) as day,
-    weekofyear(date) as week,
-    month(date) as month,
-    quarter(date) as quarter,
-    year(date) as year,
-    case when dayofweek(date) in (1, 7) then true else false end as is_weekend
+    extract(day from date) as day,
+    extract(week from date) as week,
+    extract(month from date) as month,
+    extract(quarter from date) as quarter,
+    extract(year from date) as year,
+    case when extract(dow from date) in (0, 6) then true else false end as is_weekend
 from dates

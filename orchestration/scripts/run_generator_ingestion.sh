@@ -3,9 +3,10 @@ set -euo pipefail
 
 # ----------------------------------------
 # Usage:
-#   ./run_pipeline.sh [SIM_HOURS]
+#   ./run_pipeline.sh [SIM_HOURS] [SIM_START]
 # ----------------------------------------
-SIM_HOURS=${1:-24}
+SIM_HOURS=${1:-24}   
+SIM_START=${2:-"`date "+%Y-%m-%d %H:%M:%S"`"}
 
 # ----------------------------------------
 # Paths
@@ -29,7 +30,8 @@ mkdir -p "$LOG_DIR" "$CONTROL_DIR"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "========================================"
-echo "🚀 Starting pipeline"
+echo "🚀 Starting generator & ingestion pipeline"
+echo "⏱️  Simulation start: $SIM_START"
 echo "⏱️  Simulation hours: $SIM_HOURS"
 echo "========================================"
 
@@ -54,22 +56,13 @@ fi
 
 echo $$ > "$PID_FILE"
 
-# # ----------------------------------------
-# # Activate virtualenv
-# # ----------------------------------------
-# if [[ ! -f "$VENV_PATH/bin/activate" ]]; then
-#   echo "❌ .venv not found. Create it first."
-#   exit 1
-# fi
-
-# source "$VENV_PATH/bin/activate"
-
 # ----------------------------------------
 # Cleanup control files
 # ----------------------------------------
 rm -f "$STOP_FILE"
 
 export SIMULATION_HOURS="$SIM_HOURS"
+export SIMULATION_START="$SIM_START"
 
 # ----------------------------------------
 # Graceful shutdown handler
@@ -89,12 +82,6 @@ cleanup() {
 }
 
 trap cleanup SIGINT SIGTERM
-
-# # ======================================================
-# # PHASE 0 — Full Refresh
-# # ======================================================
-# echo "🗑️ Full Refresh"
-# $PYTHON_BIN ingestion/helper_functions/clear_old_data.py
 
 # ======================================================
 # PHASE 1 — Start generator + STREAM ingest
@@ -156,5 +143,5 @@ echo "✅ PHASE 5: Batch ingest complete | Duration: $((PHASE_END - PHASE_START)
 rm -f "$STOP_FILE" "$PID_FILE"
 
 echo "========================================"
-echo "🎉 Pipeline completed successfully"
+echo "🎉 Generator & ingestion pipeline completed successfully"
 echo "========================================"

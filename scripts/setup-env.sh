@@ -7,7 +7,7 @@ if [ "$1" == "--full-refresh" ]; then
 fi
 
 if [ "$FULL_REFRESH" = true ]; then
-  echo "⚠️ This will DELETE data-lake completely!"
+  echo "⚠️ This will DELETE data-lake and logs completely!"
   read -p "Are you sure? (y/n): " confirm
 
   if [ "$confirm" != "y" ]; then
@@ -16,6 +16,8 @@ if [ "$FULL_REFRESH" = true ]; then
   fi
 
   rm -rf data-lake
+  rm logs/*
+  rm control/*
 fi
 
 # Prevent running inside Docker
@@ -49,16 +51,16 @@ fi
 # ----------------------------
 echo "📁 Creating data lake structure..."
 
-mkdir -p \
-  data-lake/raw/clickstream \
-  data-lake/raw/orders \
-  data-lake/landing/clickstream \
-  data-lake/landing/orders \
-  data-lake/bronze \
-  data-lake/silver \
-  data-lake/gold \
-  data-lake/warehouse \
-  data-lake/checkpoints/clickstream_ingest
+mkdir -p data-lake/raw/clickstream \
+         data-lake/raw/orders \
+         data-lake/landing/clickstream \
+         data-lake/landing/orders \
+         data-lake/checkpoints
+
+# touch data-lake/landing.duckdb
+# touch data-lake/bronze.duckdb
+# touch data-lake/staging.duckdb
+# touch data-lake/marts.duckdb
 
 # ----------------------------
 # Fix permissions

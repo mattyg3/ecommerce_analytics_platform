@@ -4,7 +4,7 @@
 
 with order_items as (
     select
-        date(o.order_ts) as date,
+        cast(o.order_ts as date) as date,
         oi.product_id,
         sum(oi.quantity) as units_sold,
         count(distinct o.order_id) as orders_with_product,
@@ -18,7 +18,7 @@ with order_items as (
 
 product_sessions as (
     select
-        date(e.event_ts) as date,
+        cast(e.event_ts as date) as date,
         e.product_id,
         count(distinct e.session_id) as sessions_viewed
     from {{ ref('fact_events') }} e

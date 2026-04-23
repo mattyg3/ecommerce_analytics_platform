@@ -4,7 +4,7 @@
 
 with session_events as (
     select
-        date(e.event_ts) as date,
+        cast(e.event_ts as date) as date,
         e.session_id,
 
         max(case when e.event_type = 'product_view' then 1 else 0 end) as viewed_product,
@@ -16,7 +16,7 @@ with session_events as (
 
 orders as (
     select
-        date(order_ts) as date,
+        cast(order_ts as date) as date,
         session_id
     from {{ ref('fact_orders') }}
 )
