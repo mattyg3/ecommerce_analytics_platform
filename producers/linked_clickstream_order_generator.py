@@ -36,7 +36,7 @@ def parse_to_utc_timestamp(s: str) -> float:
     dt = datetime.fromisoformat(s)
     return dt.replace(tzinfo=timezone.utc).timestamp()
 
-BATCH_INTERVAL_SECONDS = 2         # interval between batches (simulated)
+# BATCH_INTERVAL_SECONDS = 2         # interval between batches (simulated)
 SIMULATION_HOURS = int(os.getenv("SIMULATION_HOURS"))
 start_str = os.getenv("SIMULATION_START")
 SIMULATION_START = (
@@ -44,7 +44,7 @@ SIMULATION_START = (
     if start_str
     else time.time()
 )
-TIME_MULTIPLIER = 60               # 1 real second = 1 simulated minute
+TIME_MULTIPLIER = 60          
 
 EVENT_TYPES = ["page_view", "view_product", "add_to_cart", "checkout_start", "purchase"]
 ORDER_STATUSES = ["completed", "cancelled"] #"pending", 
@@ -172,7 +172,7 @@ def generate_session(simulated_now=None):
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
     user_id, is_returning = get_user_id()
-    session_time = simulated_now - timedelta(seconds=random.randint(30, 90))
+    session_time = simulated_now - timedelta(seconds=random.randint(5, 90))
     session_start = session_time
     device_type = random.choices(list(DEVICE_PROFILES.keys()), [0.7, 0.25, 0.05], k=1)[0] #mobile: 70%, desktop: 25%, tablet: 5%
     profile = DEVICE_PROFILES[device_type]
@@ -314,63 +314,79 @@ def write_events_counted(events, directory, filename_prefix):
     f.close()
     return written
 
+scaler = 40
 def sessions_per_batch(sim_hour):
     if 0 <= sim_hour < 6:
-        return random.randint(2, 5)
+        return random.randint(2*scaler, 5*scaler)
     elif 6 <= sim_hour < 12:
-        return random.randint(5, 15)
+        return random.randint(5*scaler, 15*scaler)
     elif 12 <= sim_hour < 18:
-        return random.randint(15, 30)
+        return random.randint(15*scaler, 30*scaler)
     else:
-        return random.randint(10, 20)
+        return random.randint(10*scaler, 20*scaler)
 
 # ----------------------------------------
 # MAIN
 # ----------------------------------------
 if __name__ == "__main__":
-    # start_time = time.time()
-    start_time = SIMULATION_START
-    end_time = start_time + SIMULATION_HOURS * 3600 / TIME_MULTIPLIER
+
+    sim_time = SIMULATION_START
+    sim_end = SIMULATION_START + (SIMULATION_HOURS * 3600)
+
     print(f"Starting simulated clickstream & orders for {SIMULATION_HOURS} hours...")
 
     last_printed_hour = None
     total_clickstream = 0
     total_orders = 0
-    while time.time() < end_time  and not stop_requested:
-        # Check for stop signal at the start of each loop
+
+    while sim_time < sim_end and not stop_requested:
+
         if STOP_FILE.exists():
             print("🛑 Stop file detected. Exiting generator gracefully.")
             break
 
-        simulated_seconds = (time.time() - start_time) * TIME_MULTIPLIER
-        simulated_now = datetime.now(timezone.utc) + timedelta(seconds=simulated_seconds)
-        current_hour = (simulated_now.date(), simulated_now.hour)  # tuple of (date, hour)
+        simulated_now = datetime.fromtimestamp(sim_time, tz=timezone.utc)
+
+        current_hour = (simulated_now.date(), simulated_now.hour)
         num_sessions = sessions_per_batch(simulated_now.hour)
 
         batch_clickstream = []
         batch_orders = []
+
         for _ in range(num_sessions):
             session_dict, session_events, order_generated, ordered_products, order_session_id = generate_session(simulated_now)
-            batch_clickstream.extend(session_events)
-            if order_generated:
-                batch_orders.append(generate_order(session_dict, ordered_products, order_session_id, simulated_now))
 
-        #Add duplicates
+            batch_clickstream.extend(session_events)
+
+            if order_generated:
+                batch_orders.append(
+                    generate_order(session_dict, ordered_products, order_session_id, simulated_now)
+                )
+
+        # Add duplicates
         if random.random() < 0.05 and batch_clickstream:
             batch_clickstream.append(random.choice(batch_clickstream))
+
         if random.random() < 0.02 and batch_orders:
             batch_orders.append(random.choice(batch_orders))
 
         written_clicks = write_events_counted(batch_clickstream, CLICKSTREAM_DIR, "clickstream")
         written_orders = write_events_counted(batch_orders, ORDERS_DIR, "orders")
-        # print(f"Wrote Clickstream: {len(batch_clickstream)} and Orders: {len(batch_orders)} for simulated {simulated_now.date()} {simulated_now.hour}:{simulated_now.minute}:{simulated_now.second}")
+
         if current_hour != last_printed_hour:
             print(f"🕒 New simulated hour: {simulated_now.strftime('%Y-%m-%d %H:00')}")
             last_printed_hour = current_hour
 
-        # Sleep scaled by TIME_MULTIPLIER
-        time.sleep(BATCH_INTERVAL_SECONDS / TIME_MULTIPLIER)
+        time.sleep(0.1)
         total_clickstream += written_clicks
         total_orders += written_orders
 
-    print(f"✅ Simulation complete!\nTotal Clickstreams: {total_clickstream}\nTotal Orders: {total_orders}")
+        # advance simulated time (NO real time dependency)
+        # sim_time += BATCH_INTERVAL_SECONDS * TIME_MULTIPLIER
+        sim_time += TIME_MULTIPLIER
+
+    print(
+        f"✅ Simulation complete!\n"
+        f"Total Clickstreams: {total_clickstream}\n"
+        f"Total Orders: {total_orders}"
+    )
