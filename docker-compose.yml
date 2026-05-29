@@ -46,6 +46,8 @@ services:
         GID: ${GID}
     env_file:
       - .env
+    ports:
+      - "8501:8501"
     container_name: analytics_platform
     volumes:
       - ./data-lake:/data-lake
@@ -58,3 +60,4 @@ services:
     stdin_open: true
     tty: true
     command: bash
+    
