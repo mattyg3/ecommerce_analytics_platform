@@ -8,6 +8,8 @@ The platform is designed to demonstrate the complete analytics lifecycle:
 
 **Data Generation → Ingestion → Data Lake → DuckDB Warehouse → dbt Transformations → Analytics Marts → Streamlit Dashboard**
 
+Dashboard Link: https://mattyg3-ecommerce-analytics-platform.streamlit.app/
+
 ---
 
 ## 📊 What This Project Demonstrates
