@@ -547,7 +547,7 @@ docker exec -it analytics_platform bash
 Then run the pipeline:
 
 ```bash
-bash orchestration/scripts/run_pipeline.sh [HOURS_TO_SIMULATE] [START_DATE: YYYY-MM-DD]
+bash orchestration/run_pipeline.sh [HOURS_TO_SIMULATE] [START_DATE: 'YYYY-MM-DD']
 ```
 
 The pipeline performs the core workflow:
