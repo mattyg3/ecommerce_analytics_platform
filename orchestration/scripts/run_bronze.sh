@@ -36,7 +36,7 @@ fi
 # Run Bronze Spark job
 # ----------------------------------------
 echo "⚙️ Running bronze.py..."
-$PYTHON_BIN spark_jobs/bronze.py
+$PYTHON_BIN data_pipelines/bronze.py
 
 # ----------------------------------------
 # Success
