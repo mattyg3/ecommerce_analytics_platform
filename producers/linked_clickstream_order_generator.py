@@ -84,8 +84,11 @@ LATE_EVENT_MAX_DELAY = 10 #minutes
 MAX_SESSION_SECONDS = 1800  # 30 minutes
 
 RETURNING_USER_PROB = 0.3
-MAX_KNOWN_USERS = 50000
+MAX_KNOWN_USERS = 50000000
 known_users = []
+# MIN_ORDER_GAP_SECONDS = 2 * 3600
+# MAX_ORDER_GAP_SECONDS = 7 * 24 * 3600
+next_order_allowed ={}
 
 SESSION_SPLIT_PROB = 0.2
 
@@ -95,6 +98,11 @@ def load_products(filename=PRODUCTS):
         return json.load(f)
 PRODUCTS = load_products()
 PRODUCT_INDEX = {p["product_id"]: p for p in PRODUCTS}
+
+PRODUCT_WEIGHTS = [
+    product["popularity_weight"]
+    for product in PRODUCTS
+]
 # ----------------------------------------
 # Helper Functions
 # ----------------------------------------
@@ -102,7 +110,8 @@ def get_user_id():
     global known_users
     # Returning user
     if known_users and random.random() < RETURNING_USER_PROB:
-        return random.choice(known_users), True
+        user_id = random.choice(known_users)
+        return user_id, True
     # New user
     user_id = str(uuid.uuid4())
     known_users.append(user_id)
@@ -115,6 +124,39 @@ def maybe_new_session(current_session_id):
     if random.random() < SESSION_SPLIT_PROB:
         return str(uuid.uuid4())
     return current_session_id
+
+def customer_can_order(user_id, simulated_now):
+    """
+    Determine whether a customer is currently eligible
+    to place an order.
+    """
+
+    allowed_time = next_order_allowed.get(user_id)
+
+    # Customer has never ordered
+    if allowed_time is None:
+        return True
+
+    # Customer's cooldown has expired
+    return simulated_now >= allowed_time
+
+def set_next_order_time(user_id, simulated_now):
+    """
+    Set the next time this customer is allowed to place an order.
+
+    Uses a log-normal distribution so most customers return
+    around the typical interval, while some return much sooner
+    or much later.
+    """
+
+    gap_seconds = random.lognormvariate(
+        mu=math.log(2 * 24 * 3600),
+        sigma=0.8
+    )
+
+    next_order_allowed[user_id] = (
+        simulated_now + timedelta(seconds=gap_seconds)
+    )
 
 def event_delay(scale=30, max_delay=14400):
     """
@@ -172,6 +214,10 @@ def generate_session(simulated_now=None):
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
     user_id, is_returning = get_user_id()
+    can_order = customer_can_order(
+        user_id,
+        simulated_now
+    )
     session_time = simulated_now - timedelta(seconds=random.randint(5, 90))
     session_start = session_time
     device_type = random.choices(list(DEVICE_PROFILES.keys()), [0.7, 0.25, 0.05], k=1)[0] #mobile: 70%, desktop: 25%, tablet: 5%
@@ -219,13 +265,39 @@ def generate_session(simulated_now=None):
             return 1.2
         return 1.0
     
+    def choose_products(num_products):
+        """
+        Select unique products using popularity weights.
+        """
+
+        available_products = PRODUCTS.copy()
+        selected_products = []
+
+        for _ in range(min(num_products, len(available_products))):
+            weights = [
+                p["popularity_weight"]
+                for p in available_products
+            ]
+
+            selected = random.choices(
+                available_products,
+                weights=weights,
+                k=1
+            )[0]
+
+            selected_products.append(selected)
+            available_products.remove(selected)
+
+        return selected_products
+    
     try:
         emit("page_view")
         # only attach referrer to initial page view
         if session_dict["version"] == 2:
             session_dict["referrer"] = None 
         num_products = random.randint(1,5)
-        products = random.sample(PRODUCTS, num_products)
+        # products = random.sample(PRODUCTS, num_products)
+        products = choose_products(num_products)
         order_generated = False
         ordered_products = []
         order_session_id = None
@@ -249,7 +321,7 @@ def generate_session(simulated_now=None):
             emit("checkout_start", product["product_id"])
             #Purchase with dynamic prob
             conversion_factor = conversion_multiplier(session_time.hour)
-            if random.random() < funnel_probs["purchase"] * conversion_factor:
+            if (can_order and random.random() < funnel_probs["purchase"] * conversion_factor):
                 session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait for purchase
                 true_event_time = maybe_force_late(session_time)
                 events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
@@ -314,16 +386,93 @@ def write_events_counted(events, directory, filename_prefix):
     f.close()
     return written
 
-scaler = 40
-def sessions_per_batch(sim_hour):
-    if 0 <= sim_hour < 6:
-        return random.randint(2*scaler, 5*scaler)
-    elif 6 <= sim_hour < 12:
-        return random.randint(5*scaler, 15*scaler)
-    elif 12 <= sim_hour < 18:
-        return random.randint(15*scaler, 30*scaler)
-    else:
-        return random.randint(10*scaler, 20*scaler)
+# scaler = 40
+# def sessions_per_batch(sim_hour):
+#     if 0 <= sim_hour < 6:
+#         return random.randint(2*scaler, 5*scaler)
+#     elif 6 <= sim_hour < 12:
+#         return random.randint(5*scaler, 15*scaler)
+#     elif 12 <= sim_hour < 18:
+#         return random.randint(15*scaler, 30*scaler)
+#     else:
+#         return random.randint(10*scaler, 20*scaler)
+
+BASE_SESSIONS_PER_HOUR = 30000
+
+DAY_MULTIPLIERS = {
+    0: 1.00,   # Monday
+    1: 1.10,   # Tuesday
+    2: 1.15,   # Wednesday
+    3: 1.10,   # Thursday
+    4: 0.85,   # Friday
+    5: 0.55,   # Saturday
+    6: 0.45,   # Sunday
+}
+
+HOURLY_MULTIPLIERS = {
+    0: 0.18,
+    1: 0.15,
+    2: 0.12,
+    3: 0.10,
+    4: 0.10,
+    5: 0.14,
+    6: 0.25,
+    7: 0.40,
+    8: 0.55,
+    9: 0.70,
+    10: 0.85,
+    11: 1.10,
+    12: 1.25,
+    13: 1.35,
+    14: 1.40,
+    15: 1.35,
+    16: 1.15,
+    17: 1.00,
+    18: 0.90,
+    19: 0.85,
+    20: 0.75,
+    21: 0.65,
+    22: 0.50,
+    23: 0.32,
+}
+
+
+def sessions_per_batch(simulated_datetime):
+
+    weekday = simulated_datetime.weekday()
+    hour = simulated_datetime.hour
+
+    expected_hourly = (
+        BASE_SESSIONS_PER_HOUR
+        * DAY_MULTIPLIERS[weekday]
+        * HOURLY_MULTIPLIERS[hour]
+    )
+
+    hour_variability = random.lognormvariate(
+        mu=0,
+        sigma=0.12
+    )
+
+    expected_hourly *= hour_variability
+
+    expected_per_minute = expected_hourly / 60
+
+    minute_variability = random.gauss(
+        1.0,
+        0.15
+    )
+
+    minute_variability = max(0.50, minute_variability)
+
+    expected_per_minute *= minute_variability
+
+    sessions = random.gauss(
+        expected_per_minute,
+        max(1, expected_per_minute * 0.08)
+    )
+
+    return max(1, round(sessions))
+
 
 # ----------------------------------------
 # MAIN
@@ -348,7 +497,7 @@ if __name__ == "__main__":
         simulated_now = datetime.fromtimestamp(sim_time, tz=timezone.utc)
 
         current_hour = (simulated_now.date(), simulated_now.hour)
-        num_sessions = sessions_per_batch(simulated_now.hour)
+        num_sessions = sessions_per_batch(simulated_now)
 
         batch_clickstream = []
         batch_orders = []
@@ -361,6 +510,10 @@ if __name__ == "__main__":
             if order_generated:
                 batch_orders.append(
                     generate_order(session_dict, ordered_products, order_session_id, simulated_now)
+                )
+                set_next_order_time(
+                    session_dict["user_id"],
+                    simulated_now
                 )
 
         # Add duplicates

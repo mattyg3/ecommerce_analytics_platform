@@ -30,7 +30,7 @@ command -v $PYTHON_BIN >/dev/null || {
 # Run DBT Spark job
 # ----------------------------------------
 echo "⚙️ Running dbt_runner.py..."
-$PYTHON_BIN spark_jobs/dbt_runner.py
+$PYTHON_BIN data_pipelines/dbt_runner.py
 
 # ----------------------------------------
 # Success
