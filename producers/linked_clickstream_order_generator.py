@@ -95,6 +95,11 @@ def load_products(filename=PRODUCTS):
         return json.load(f)
 PRODUCTS = load_products()
 PRODUCT_INDEX = {p["product_id"]: p for p in PRODUCTS}
+
+PRODUCT_WEIGHTS = [
+    product["popularity_weight"]
+    for product in PRODUCTS
+]
 # ----------------------------------------
 # Helper Functions
 # ----------------------------------------
@@ -219,13 +224,39 @@ def generate_session(simulated_now=None):
             return 1.2
         return 1.0
     
+    def choose_products(num_products):
+        """
+        Select unique products using popularity weights.
+        """
+
+        available_products = PRODUCTS.copy()
+        selected_products = []
+
+        for _ in range(min(num_products, len(available_products))):
+            weights = [
+                p["popularity_weight"]
+                for p in available_products
+            ]
+
+            selected = random.choices(
+                available_products,
+                weights=weights,
+                k=1
+            )[0]
+
+            selected_products.append(selected)
+            available_products.remove(selected)
+
+        return selected_products
+    
     try:
         emit("page_view")
         # only attach referrer to initial page view
         if session_dict["version"] == 2:
             session_dict["referrer"] = None 
         num_products = random.randint(1,5)
-        products = random.sample(PRODUCTS, num_products)
+        # products = random.sample(PRODUCTS, num_products)
+        products = choose_products(num_products)
         order_generated = False
         ordered_products = []
         order_session_id = None
