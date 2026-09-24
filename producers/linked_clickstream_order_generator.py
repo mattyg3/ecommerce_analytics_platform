@@ -86,6 +86,9 @@ MAX_SESSION_SECONDS = 1800  # 30 minutes
 RETURNING_USER_PROB = 0.3
 MAX_KNOWN_USERS = 50000000
 known_users = []
+# MIN_ORDER_GAP_SECONDS = 2 * 3600
+# MAX_ORDER_GAP_SECONDS = 7 * 24 * 3600
+next_order_allowed ={}
 
 SESSION_SPLIT_PROB = 0.2
 
@@ -107,7 +110,8 @@ def get_user_id():
     global known_users
     # Returning user
     if known_users and random.random() < RETURNING_USER_PROB:
-        return random.choice(known_users), True
+        user_id = random.choice(known_users)
+        return user_id, True
     # New user
     user_id = str(uuid.uuid4())
     known_users.append(user_id)
@@ -120,6 +124,39 @@ def maybe_new_session(current_session_id):
     if random.random() < SESSION_SPLIT_PROB:
         return str(uuid.uuid4())
     return current_session_id
+
+def customer_can_order(user_id, simulated_now):
+    """
+    Determine whether a customer is currently eligible
+    to place an order.
+    """
+
+    allowed_time = next_order_allowed.get(user_id)
+
+    # Customer has never ordered
+    if allowed_time is None:
+        return True
+
+    # Customer's cooldown has expired
+    return simulated_now >= allowed_time
+
+def set_next_order_time(user_id, simulated_now):
+    """
+    Set the next time this customer is allowed to place an order.
+
+    Uses a log-normal distribution so most customers return
+    around the typical interval, while some return much sooner
+    or much later.
+    """
+
+    gap_seconds = random.lognormvariate(
+        mu=math.log(2 * 24 * 3600),
+        sigma=0.8
+    )
+
+    next_order_allowed[user_id] = (
+        simulated_now + timedelta(seconds=gap_seconds)
+    )
 
 def event_delay(scale=30, max_delay=14400):
     """
@@ -177,6 +214,10 @@ def generate_session(simulated_now=None):
     if simulated_now is None:
         simulated_now = datetime.now(timezone.utc)
     user_id, is_returning = get_user_id()
+    can_order = customer_can_order(
+        user_id,
+        simulated_now
+    )
     session_time = simulated_now - timedelta(seconds=random.randint(5, 90))
     session_start = session_time
     device_type = random.choices(list(DEVICE_PROFILES.keys()), [0.7, 0.25, 0.05], k=1)[0] #mobile: 70%, desktop: 25%, tablet: 5%
@@ -280,7 +321,7 @@ def generate_session(simulated_now=None):
             emit("checkout_start", product["product_id"])
             #Purchase with dynamic prob
             conversion_factor = conversion_multiplier(session_time.hour)
-            if random.random() < funnel_probs["purchase"] * conversion_factor:
+            if (can_order and random.random() < funnel_probs["purchase"] * conversion_factor):
                 session_time = session_time + timedelta(seconds=random.randint(90, 220)) #extra long wait for purchase
                 true_event_time = maybe_force_late(session_time)
                 events.append(generate_event("purchase", session_dict, product["product_id"], simulated_now, true_event_time))
@@ -469,6 +510,10 @@ if __name__ == "__main__":
             if order_generated:
                 batch_orders.append(
                     generate_order(session_dict, ordered_products, order_session_id, simulated_now)
+                )
+                set_next_order_time(
+                    session_dict["user_id"],
+                    simulated_now
                 )
 
         # Add duplicates
