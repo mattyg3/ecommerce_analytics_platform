@@ -84,7 +84,7 @@ LATE_EVENT_MAX_DELAY = 10 #minutes
 MAX_SESSION_SECONDS = 1800  # 30 minutes
 
 RETURNING_USER_PROB = 0.3
-MAX_KNOWN_USERS = 50000
+MAX_KNOWN_USERS = 50000000
 known_users = []
 
 SESSION_SPLIT_PROB = 0.2
@@ -314,16 +314,93 @@ def write_events_counted(events, directory, filename_prefix):
     f.close()
     return written
 
-scaler = 40
-def sessions_per_batch(sim_hour):
-    if 0 <= sim_hour < 6:
-        return random.randint(2*scaler, 5*scaler)
-    elif 6 <= sim_hour < 12:
-        return random.randint(5*scaler, 15*scaler)
-    elif 12 <= sim_hour < 18:
-        return random.randint(15*scaler, 30*scaler)
-    else:
-        return random.randint(10*scaler, 20*scaler)
+# scaler = 40
+# def sessions_per_batch(sim_hour):
+#     if 0 <= sim_hour < 6:
+#         return random.randint(2*scaler, 5*scaler)
+#     elif 6 <= sim_hour < 12:
+#         return random.randint(5*scaler, 15*scaler)
+#     elif 12 <= sim_hour < 18:
+#         return random.randint(15*scaler, 30*scaler)
+#     else:
+#         return random.randint(10*scaler, 20*scaler)
+
+BASE_SESSIONS_PER_HOUR = 30000
+
+DAY_MULTIPLIERS = {
+    0: 1.00,   # Monday
+    1: 1.10,   # Tuesday
+    2: 1.15,   # Wednesday
+    3: 1.10,   # Thursday
+    4: 0.85,   # Friday
+    5: 0.55,   # Saturday
+    6: 0.45,   # Sunday
+}
+
+HOURLY_MULTIPLIERS = {
+    0: 0.18,
+    1: 0.15,
+    2: 0.12,
+    3: 0.10,
+    4: 0.10,
+    5: 0.14,
+    6: 0.25,
+    7: 0.40,
+    8: 0.55,
+    9: 0.70,
+    10: 0.85,
+    11: 1.10,
+    12: 1.25,
+    13: 1.35,
+    14: 1.40,
+    15: 1.35,
+    16: 1.15,
+    17: 1.00,
+    18: 0.90,
+    19: 0.85,
+    20: 0.75,
+    21: 0.65,
+    22: 0.50,
+    23: 0.32,
+}
+
+
+def sessions_per_batch(simulated_datetime):
+
+    weekday = simulated_datetime.weekday()
+    hour = simulated_datetime.hour
+
+    expected_hourly = (
+        BASE_SESSIONS_PER_HOUR
+        * DAY_MULTIPLIERS[weekday]
+        * HOURLY_MULTIPLIERS[hour]
+    )
+
+    hour_variability = random.lognormvariate(
+        mu=0,
+        sigma=0.12
+    )
+
+    expected_hourly *= hour_variability
+
+    expected_per_minute = expected_hourly / 60
+
+    minute_variability = random.gauss(
+        1.0,
+        0.15
+    )
+
+    minute_variability = max(0.50, minute_variability)
+
+    expected_per_minute *= minute_variability
+
+    sessions = random.gauss(
+        expected_per_minute,
+        max(1, expected_per_minute * 0.08)
+    )
+
+    return max(1, round(sessions))
+
 
 # ----------------------------------------
 # MAIN
@@ -348,7 +425,7 @@ if __name__ == "__main__":
         simulated_now = datetime.fromtimestamp(sim_time, tz=timezone.utc)
 
         current_hour = (simulated_now.date(), simulated_now.hour)
-        num_sessions = sessions_per_batch(simulated_now.hour)
+        num_sessions = sessions_per_batch(simulated_now)
 
         batch_clickstream = []
         batch_orders = []
