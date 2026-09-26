@@ -15,6 +15,7 @@ orders as (
     select
         user_id,
         min(order_ts) as first_order_ts,
+        max(order_ts) as last_order_ts,
         count(distinct order_id) as total_orders,
         sum(order_total_amount) as lifetime_revenue,
         avg(order_total_amount) as avg_order_value
@@ -26,7 +27,10 @@ select
     s.user_id,
 
     cast(s.first_session_ts as date) as first_seen_date,
-    cast(o.first_order_ts as date) as first_order_date,
+    -- cast(o.first_order_ts as date) as first_order_date,
+    -- cast(o.last_order_ts as date) as last_order_date,
+    o.first_order_ts as first_order_date,
+    o.last_order_ts as last_order_date,
 
     case
         when o.first_order_ts is null then null

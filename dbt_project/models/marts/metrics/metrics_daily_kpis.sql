@@ -18,7 +18,14 @@ orders as (
         sum(order_total_amount) as revenue,
         avg(order_total_amount) as avg_order_value
     from {{ ref('fact_orders') }}
-    -- from delta.`/data-lake/gold/fact_orders`
+    group by 1
+),
+
+customers as (
+    select
+        cast(order_ts as date) as date,
+        count(distinct user_id) as customers
+    from {{ ref('fact_orders') }}
     group by 1
 ),
 
@@ -40,18 +47,26 @@ select
     coalesce(o.orders, 0) as orders,
     coalesce(o.revenue, 0) as revenue,
     coalesce(o.avg_order_value, 0) as avg_order_value,
+    coalesce(c.customers, 0) as customers,
 
     case
-        when s.sessions > 0 then o.orders / s.sessions
+        when s.sessions > 0
+        then cast(o.orders as double) / s.sessions
         else 0
     end as conversion_rate,
 
     case
-        when s.sessions > 0 then swo.sessions_with_orders / s.sessions
+        when s.sessions > 0
+        then cast(swo.sessions_with_orders as double) / s.sessions
         else 0
     end as sessions_with_order_pct
 
 from {{ ref('dim_date') }} d
-left join sessions s on d.date = s.date
-left join orders o on d.date = o.date
-left join sessions_with_orders swo on d.date = swo.date
+left join sessions s
+    on d.date = s.date
+left join orders o
+    on d.date = o.date
+left join customers c
+    on d.date = c.date
+left join sessions_with_orders swo
+    on d.date = swo.date
