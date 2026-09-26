@@ -206,7 +206,7 @@ if start_date > end_date:
 
 
 date_filter = f"""
-WHERE order_date BETWEEN '{start_date}' AND '{end_date}'
+WHERE date BETWEEN '{start_date}' AND '{end_date}'
 """
 
 
@@ -217,13 +217,13 @@ st.title("🛒 Ecommerce Analytics Dashboard")
 
 if min_date and max_date:
     st.markdown(
-        f"**Data coverage:** "
+        f"**Total Data coverage:** "
         f"{min_date.strftime('%b %d, %Y')} – "
         f"{max_date.strftime('%b %d, %Y')}"
     )
 
 st.markdown(
-        f"**Data coverage:** "
+        f"**Filtered Data coverage:** "
         f"{start_date.strftime('%b %d, %Y')} – "
         f"{end_date.strftime('%b %d, %Y')}"
     )
@@ -246,6 +246,11 @@ with tab1:
 
     st.subheader("Executive Overview")
 
+    revenue_delta = None
+    orders_delta = None
+    customers_delta = None
+    aov_delta = None
+
     # -----------------------------------------------------
     # PERIOD COMPARISON
     # -----------------------------------------------------
@@ -256,54 +261,106 @@ with tab1:
 
     if previous_start is not None:
         previous_date_filter = f"""
-            WHERE order_date BETWEEN '{previous_start}' AND '{previous_end}'
+            WHERE date BETWEEN '{previous_start}' AND '{previous_end}'
         """
     else:
         previous_date_filter = None
 
 
-    # -----------------------------------------------------
+    # =====================================================
     # CURRENT PERIOD KPIs
-    # -----------------------------------------------------
+    # =====================================================
+
+    # Revenue and orders come from the daily dbt KPI model.
+    # Customers remain a DISTINCT user calculation because
+    # daily customer counts cannot be summed across days
+    # without double-counting repeat purchasers.
+
     kpi_query = f"""
         SELECT
-            COALESCE(SUM(order_total_amount), 0) AS revenue,
-            COUNT(DISTINCT order_id) AS orders,
-            COUNT(DISTINCT user_id) AS customers
-        FROM marts.fact_orders
+            COALESCE(SUM(revenue), 0) AS revenue,
+            COALESCE(SUM(orders), 0) AS orders
+        FROM marts.metrics_daily_kpis
         {date_filter}
     """
 
     kpis = run_query(kpi_query)
 
 
+    customer_query = f"""
+        SELECT
+            COUNT(DISTINCT user_id) AS customers
+        FROM marts.fact_orders
+        WHERE order_date BETWEEN '{start_date}' AND '{end_date}'
+    """
+
+    customer_df = run_query(customer_query)
+
+
     # -----------------------------------------------------
     # PREVIOUS PERIOD KPIs
     # -----------------------------------------------------
     if previous_date_filter is not None:
+
         previous_kpi_query = f"""
             SELECT
-                COALESCE(SUM(order_total_amount), 0) AS revenue,
-                COUNT(DISTINCT order_id) AS orders,
-                COUNT(DISTINCT user_id) AS customers
-            FROM marts.fact_orders
+                COALESCE(SUM(revenue), 0) AS revenue,
+                COALESCE(SUM(orders), 0) AS orders
+            FROM marts.metrics_daily_kpis
             {previous_date_filter}
         """
 
-        previous_kpis = run_query(previous_kpi_query)
+        previous_kpis = run_query(
+            previous_kpi_query
+        )
+
+
+        previous_customer_query = f"""
+            SELECT
+                COUNT(DISTINCT user_id) AS customers
+            FROM marts.fact_orders
+            WHERE order_date BETWEEN '{previous_start}' AND '{previous_end}'
+        """
+
+        previous_customer_df = run_query(
+            previous_customer_query
+        )
+
     else:
         previous_kpis = pd.DataFrame()
+        previous_customer_df = pd.DataFrame()
 
 
+    # -----------------------------------------------------
+    # CALCULATE KPI VALUES
+    # -----------------------------------------------------
     if not kpis.empty:
 
-        revenue = float(kpis.iloc[0]["revenue"] or 0)
-        orders = int(kpis.iloc[0]["orders"] or 0)
-        customers = int(kpis.iloc[0]["customers"] or 0)
+        revenue = float(
+            kpis.iloc[0]["revenue"] or 0
+        )
 
-        aov = revenue / orders if orders else 0
+        orders = int(
+            kpis.iloc[0]["orders"] or 0
+        )
+
+        if not customer_df.empty:
+            customers = int(
+                customer_df.iloc[0]["customers"] or 0
+            )
+        else:
+            customers = 0
+
+        aov = (
+            revenue / orders
+            if orders
+            else 0
+        )
 
 
+        # -------------------------------------------------
+        # PREVIOUS PERIOD VALUES
+        # -------------------------------------------------
         if not previous_kpis.empty:
 
             previous_revenue = float(
@@ -314,9 +371,12 @@ with tab1:
                 previous_kpis.iloc[0]["orders"] or 0
             )
 
-            previous_customers = int(
-                previous_kpis.iloc[0]["customers"] or 0
-            )
+            if not previous_customer_df.empty:
+                previous_customers = int(
+                    previous_customer_df.iloc[0]["customers"] or 0
+                )
+            else:
+                previous_customers = 0
 
             previous_aov = (
                 previous_revenue / previous_orders
@@ -325,12 +385,16 @@ with tab1:
             )
 
         else:
+
             previous_revenue = 0
             previous_orders = 0
             previous_customers = 0
             previous_aov = 0
 
 
+        # -------------------------------------------------
+        # KPI DELTAS
+        # -------------------------------------------------
         revenue_delta = pct_change(
             revenue,
             previous_revenue
@@ -395,22 +459,60 @@ with tab1:
         end_date
     )
 
-    time_expression = get_time_expression(
-        granularity
-    )
+    # metrics_daily_kpis is daily grain, so aggregate its
+    # daily revenue/orders according to the selected period.
 
-    trend_query = f"""
-        SELECT
-            {time_expression} AS period,
-            SUM(order_total_amount) AS revenue,
-            COUNT(DISTINCT order_id) AS orders
-        FROM marts.fact_orders
-        {date_filter}
-        GROUP BY 1
-        ORDER BY 1
-    """
+    if granularity == "hour":
+        # The dbt KPI model is daily, so hourly revenue cannot
+        # be reconstructed from this model.
+        time_expression = None
 
-    trend_df = run_query(trend_query)
+    elif granularity == "day":
+        time_expression = "date"
+
+    elif granularity == "week":
+        time_expression = "DATE_TRUNC('week', date)"
+
+    else:
+        time_expression = "DATE_TRUNC('month', date)"
+
+
+    if time_expression is not None:
+
+        trend_query = f"""
+            SELECT
+                {time_expression} AS period,
+                SUM(revenue) AS revenue,
+                SUM(orders) AS orders
+            FROM marts.metrics_daily_kpis
+            {date_filter}
+            GROUP BY 1
+            ORDER BY 1
+        """
+
+        trend_df = run_query(
+            trend_query
+        )
+
+    else:
+
+        # metrics_daily_kpis does not contain hourly metrics.
+        # Fall back to fact_orders only when the dashboard
+        # requests hourly granularity.
+        trend_query = f"""
+            SELECT
+                DATE_TRUNC('hour', order_ts) AS period,
+                SUM(order_total_amount) AS revenue,
+                COUNT(DISTINCT order_id) AS orders
+            FROM marts.fact_orders
+            WHERE order_date BETWEEN '{start_date}' AND '{end_date}'
+            GROUP BY 1
+            ORDER BY 1
+        """
+
+        trend_df = run_query(
+            trend_query
+        )
 
 
     if not trend_df.empty:
@@ -419,7 +521,9 @@ with tab1:
             trend_df["period"]
         )
 
-        trend_df = trend_df.set_index("period")
+        trend_df = trend_df.set_index(
+            "period"
+        )
 
         # Revenue chart
         st.line_chart(
@@ -439,7 +543,9 @@ with tab1:
         )
 
     else:
-        st.info("No revenue data available for this period.")
+        st.info(
+            "No revenue data available for this period."
+        )
 
 
     st.divider()
@@ -460,19 +566,25 @@ with tab1:
 
         st.markdown("#### Revenue by Day")
 
+        # metrics_daily_kpis already contains daily revenue
+        # and orders, so no need to query fact_orders here.
+
         dow_query = f"""
             SELECT
-                DAYNAME(order_ts) AS day_name,
-                DAYOFWEEK(order_ts) AS day_number,
-                SUM(order_total_amount) AS revenue,
-                COUNT(DISTINCT order_id) AS orders
-            FROM marts.fact_orders
+                DAYNAME(date) AS day_name,
+                DAYOFWEEK(date) AS day_number,
+                SUM(revenue) AS revenue,
+                SUM(orders) AS orders
+            FROM marts.metrics_daily_kpis
             {date_filter}
             GROUP BY 1, 2
             ORDER BY day_number
         """
 
-        dow_df = run_query(dow_query)
+        dow_df = run_query(
+            dow_query
+        )
+
 
         if not dow_df.empty:
 
@@ -493,11 +605,15 @@ with tab1:
                 ordered=True
             )
 
-            dow_df = dow_df.sort_values("day_name")
+            dow_df = dow_df.sort_values(
+                "day_name"
+            )
 
             chart_df = dow_df[
                 ["day_name", "revenue"]
-            ].set_index("day_name")
+            ].set_index(
+                "day_name"
+            )
 
             st.bar_chart(
                 chart_df,
@@ -505,7 +621,9 @@ with tab1:
             )
 
         else:
-            st.info("No daily revenue data available.")
+            st.info(
+                "No daily revenue data available."
+            )
 
 
     # -----------------------------------------------------
@@ -517,16 +635,35 @@ with tab1:
 
         order_metrics_query = f"""
             SELECT
-                COUNT(DISTINCT order_id) AS orders,
-                COUNT(DISTINCT order_date) AS active_days,
-                AVG(order_total_amount) AS avg_order_value,
-                MEDIAN(order_total_amount) AS median_order_value
-            FROM marts.fact_orders
+                COALESCE(SUM(orders), 0) AS orders,
+                COUNT(*) AS active_days,
+                CASE
+                    WHEN SUM(orders) > 0
+                    THEN SUM(revenue) / SUM(orders)
+                    ELSE 0
+                END AS avg_order_value
+            FROM marts.metrics_daily_kpis
             {date_filter}
+              AND orders > 0
         """
 
         order_metrics_df = run_query(
             order_metrics_query
+        )
+
+
+        # Median AOV is not available in metrics_daily_kpis,
+        # so calculate it from fact_orders.
+
+        median_query = f"""
+            SELECT
+                MEDIAN(order_total_amount) AS median_order_value
+            FROM marts.fact_orders
+            WHERE order_date BETWEEN '{start_date}' AND '{end_date}'
+        """
+
+        median_df = run_query(
+            median_query
         )
 
 
@@ -544,12 +681,23 @@ with tab1:
                 else 0
             )
 
+
+            if not median_df.empty:
+                median_order_value = float(
+                    median_df.iloc[0]["median_order_value"] or 0
+                )
+            else:
+                median_order_value = 0
+
+
             # Peak revenue day
             if not dow_df.empty:
+
                 peak_day = dow_df.loc[
                     dow_df["revenue"].idxmax(),
                     "day_name"
                 ]
+
             else:
                 peak_day = "N/A"
 
@@ -563,7 +711,7 @@ with tab1:
 
             metric_col2.metric(
                 "Median AOV",
-                f"${float(om['median_order_value'] or 0):,.2f}"
+                f"${median_order_value:,.2f}"
             )
 
             st.metric(
@@ -592,7 +740,7 @@ with tab1:
                 COUNT(DISTINCT order_id) AS order_count,
                 SUM(order_total_amount) AS revenue
             FROM marts.fact_orders
-            {date_filter}
+            WHERE order_date BETWEEN '{start_date}' AND '{end_date}'
             GROUP BY user_id
         )
 
@@ -618,10 +766,17 @@ with tab1:
             "revenue"
         ].sum()
 
-        customer_mix_df["percentage"] = (
-            customer_mix_df["revenue"]
-            / total_mix_revenue
-        )
+        if total_mix_revenue > 0:
+
+            customer_mix_df["percentage"] = (
+                customer_mix_df["revenue"]
+                / total_mix_revenue
+            )
+
+        else:
+
+            customer_mix_df["percentage"] = 0
+
 
         mix_col1, mix_col2 = st.columns([1.5, 1])
 
@@ -629,7 +784,9 @@ with tab1:
 
             chart_df = customer_mix_df[
                 ["customer_type", "revenue"]
-            ].set_index("customer_type")
+            ].set_index(
+                "customer_type"
+            )
 
             st.bar_chart(
                 chart_df,
@@ -662,7 +819,9 @@ with tab1:
     insights = []
 
 
-    # Revenue insight
+    # -----------------------------------------------------
+    # REVENUE INSIGHT
+    # -----------------------------------------------------
     if revenue_delta is not None:
 
         direction = (
@@ -678,7 +837,9 @@ with tab1:
         )
 
 
-    # AOV insight
+    # -----------------------------------------------------
+    # AOV INSIGHT
+    # -----------------------------------------------------
     if aov_delta is not None:
 
         direction = (
@@ -694,7 +855,9 @@ with tab1:
         )
 
 
-    # Peak day insight
+    # -----------------------------------------------------
+    # PEAK DAY INSIGHT
+    # -----------------------------------------------------
     if not dow_df.empty:
 
         peak_row = dow_df.loc[
@@ -716,7 +879,9 @@ with tab1:
         )
 
 
-    # Customer mix insight
+    # -----------------------------------------------------
+    # CUSTOMER MIX INSIGHT
+    # -----------------------------------------------------
     if not customer_mix_df.empty:
 
         repeat_rows = customer_mix_df[
@@ -735,13 +900,21 @@ with tab1:
             )
 
 
+    # -----------------------------------------------------
+    # DISPLAY INSIGHTS
+    # -----------------------------------------------------
     if insights:
 
         for insight in insights:
-            st.markdown(f"• {insight}")
+            st.markdown(
+                f"• {insight}"
+            )
 
     else:
-        st.info("Not enough data to generate insights.")
+
+        st.info(
+            "Not enough data to generate insights."
+        )
 
 
 # =========================================================
@@ -761,55 +934,16 @@ with tab2:
     # FUNNEL QUERY
     # -----------------------------------------------------
     funnel_query = f"""
-        WITH session_events AS (
-
-            SELECT
-                session_id,
-
-                MAX(
-                    CASE
-                        WHEN event_type = 'view_product'
-                        THEN 1 ELSE 0
-                    END
-                ) AS product_view,
-
-                MAX(
-                    CASE
-                        WHEN event_type = 'add_to_cart'
-                        THEN 1 ELSE 0
-                    END
-                ) AS add_to_cart,
-
-                MAX(
-                    CASE
-                        WHEN event_type = 'checkout_start'
-                        THEN 1 ELSE 0
-                    END
-                ) AS checkout_start,
-
-                MAX(
-                    CASE
-                        WHEN event_type = 'purchase'
-                        THEN 1 ELSE 0
-                    END
-                ) AS purchase
-
-            FROM bronze.clickstream
-
-            WHERE event_time >= TIMESTAMP '{start_date} 00:00:00'
-            AND event_time < TIMESTAMP '{end_date}' + INTERVAL '1 day'
-
-            GROUP BY session_id
-        )
-
         SELECT
-            COUNT(*) AS sessions,
-            SUM(product_view) AS product_views,
-            SUM(add_to_cart) AS add_to_carts,
-            SUM(checkout_start) AS checkouts,
-            SUM(purchase) AS purchases
+            SUM(sessions) AS sessions,
+            SUM(sessions_with_product_view) AS product_views,
+            SUM(sessions_with_add_to_cart) AS add_to_carts,
+            SUM(sessions_with_checkout) AS checkouts,
+            SUM(sessions_with_order) AS purchases
 
-        FROM session_events
+        FROM marts.metrics_daily_funnel
+
+        {date_filter}
     """
 
     funnel_df = run_query(funnel_query)
@@ -978,6 +1112,8 @@ with tab3:
 
     st.subheader("Customer Analytics")
 
+    st.caption("Customer behavior and lifetime value based on the complete customer history.")
+
     # st.caption(
     #     f"Customer behavior for "
     #     f"{start_date.strftime('%b %d, %Y')} – "
@@ -990,26 +1126,16 @@ with tab3:
     # =====================================================
 
     customer_kpi_query = f"""
-        WITH customer_orders AS (
-            SELECT
-                user_id,
-                COUNT(DISTINCT order_id) AS order_count,
-                SUM(order_total_amount) AS revenue
-            FROM marts.fact_orders
-            {date_filter}
-            GROUP BY user_id
-        )
-
         SELECT
             COUNT(*) AS customers,
-            SUM(revenue) AS revenue,
-            SUM(order_count) AS orders,
-            AVG(revenue) AS avg_customer_value,
-            MEDIAN(revenue) AS median_customer_value,
+            SUM(lifetime_revenue) AS revenue,
+            SUM(total_orders) AS orders,
+            AVG(lifetime_revenue) AS avg_customer_value,
+            MEDIAN(lifetime_revenue) AS median_customer_value,
             COUNT(*) FILTER (
-                WHERE order_count > 1
+                WHERE is_repeat_buyer
             ) AS repeat_customers
-        FROM customer_orders
+        FROM marts.metrics_user_lifecycle
     """
 
     customer_kpi_df = run_query(customer_kpi_query)
@@ -1066,10 +1192,9 @@ with tab3:
     ltv_query = f"""
         SELECT
             user_id,
-            SUM(order_total_amount) AS customer_value
-        FROM marts.fact_orders
-        {date_filter}
-        GROUP BY user_id
+            lifetime_revenue AS customer_value
+        FROM marts.metrics_user_lifecycle
+        WHERE total_orders > 0
         ORDER BY customer_value DESC
     """
 
@@ -1148,27 +1273,19 @@ with tab3:
     st.write("### New vs. Repeat Customers")
 
     repeat_query = f"""
-        WITH customer_orders AS (
-            SELECT
-                user_id,
-                COUNT(DISTINCT order_id) AS order_count,
-                SUM(order_total_amount) AS revenue
-            FROM marts.fact_orders
-            {date_filter}
-            GROUP BY user_id
-        )
-
         SELECT
             CASE
-                WHEN order_count = 1
-                    THEN 'One-Time'
-                ELSE 'Repeat'
+                WHEN is_repeat_buyer
+                    THEN 'Repeat'
+                ELSE 'One-Time'
             END AS customer_type,
 
             COUNT(*) AS customers,
-            SUM(revenue) AS revenue
+            SUM(lifetime_revenue) AS revenue
 
-        FROM customer_orders
+        FROM marts.metrics_user_lifecycle
+
+        WHERE total_orders > 0
 
         GROUP BY 1
 
@@ -1225,33 +1342,27 @@ with tab3:
     st.write("### Purchase Frequency")
 
     frequency_query = f"""
-        WITH customer_orders AS (
-            SELECT
-                user_id,
-                COUNT(DISTINCT order_id) AS order_count
-            FROM marts.fact_orders
-            {date_filter}
-            GROUP BY user_id
-        )
-
         SELECT
             CASE
-                WHEN order_count >= 4 THEN '4+ Orders'
-                ELSE CAST(order_count AS VARCHAR) || ' Order'
+                WHEN total_orders >= 4 THEN '4+ Orders'
+                ELSE CAST(total_orders AS VARCHAR)
+                    || ' Order'
                     || CASE
-                        WHEN order_count = 1 THEN ''
-                        ELSE 's'
-                       END
+                            WHEN total_orders = 1 THEN ''
+                            ELSE 's'
+                        END
             END AS purchase_frequency,
 
             CASE
-                WHEN order_count >= 4 THEN 4
-                ELSE order_count
+                WHEN total_orders >= 4 THEN 4
+                ELSE total_orders
             END AS sort_order,
 
             COUNT(*) AS customers
 
-        FROM customer_orders
+        FROM marts.metrics_user_lifecycle
+
+        WHERE total_orders > 0
 
         GROUP BY 1, 2
 
@@ -1274,7 +1385,176 @@ with tab3:
             height=300
         )
 
-    # # =====================================================
+
+    # =====================================================
+    # CUSTOMER REVENUE CONCENTRATION
+    # =====================================================
+
+    st.write("### Customer Revenue Concentration")
+
+    concentration_query = f"""
+        WITH ranked_customers AS (
+
+            SELECT
+                user_id,
+                lifetime_revenue AS revenue,
+
+                SUM(lifetime_revenue) OVER (
+                    ORDER BY lifetime_revenue DESC
+                    ROWS BETWEEN UNBOUNDED PRECEDING
+                    AND CURRENT ROW
+                ) AS cumulative_revenue,
+
+                SUM(lifetime_revenue) OVER () AS total_revenue
+
+            FROM marts.metrics_user_lifecycle
+
+            WHERE total_orders > 0
+        )
+
+        SELECT
+            user_id,
+            revenue,
+            cumulative_revenue
+                / NULLIF(total_revenue, 0)
+                AS cumulative_revenue_pct
+
+        FROM ranked_customers
+
+        ORDER BY revenue DESC
+    """
+
+    concentration_df = run_query(
+        concentration_query
+    )
+
+    if not concentration_df.empty:
+
+        total_revenue = concentration_df["revenue"].sum()
+
+        top_50_count = max(
+            1,
+            int(len(concentration_df) * 0.50)
+        )
+
+        top_50_revenue = (
+            concentration_df
+            .head(top_50_count)["revenue"]
+            .sum()
+        )
+
+        top_50_pct = (
+            top_50_revenue / total_revenue
+            if total_revenue > 0
+            else 0
+        )
+
+        top_10_count = max(
+            1,
+            int(len(concentration_df) * 0.10)
+        )
+
+        top_10_revenue = (
+            concentration_df
+            .head(top_10_count)["revenue"]
+            .sum()
+        )
+
+        top_10_pct = (
+            top_10_revenue / total_revenue
+            if total_revenue > 0
+            else 0
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.metric(
+                "Top 10% of Customers",
+                f"{top_10_pct:.1%} of Revenue"
+            )
+
+        with col2:
+
+            st.metric(
+                "Top 50% of Customers",
+                f"{top_50_pct:.1%} of Revenue"
+            )
+
+        concentration_chart = concentration_df[
+            ["cumulative_revenue_pct"]
+        ].copy()
+
+        concentration_chart.index = range(
+            1,
+            len(concentration_chart) + 1
+        )
+
+        concentration_chart.columns = [
+            "Cumulative Revenue Share"
+        ]
+
+        st.line_chart(
+            concentration_chart,
+            height=300
+        )
+
+
+    # =====================================================
+    # TOP CUSTOMERS
+    # =====================================================
+
+    st.write("### Top Customers")
+
+    top_customers_query = f"""
+        SELECT
+            user_id,
+            total_orders AS orders,
+            lifetime_revenue AS revenue,
+            avg_order_value,
+            cast(first_order_date as date) as first_order_date,
+            cast(last_order_date as date) as last_order_date
+        FROM marts.metrics_user_lifecycle
+        WHERE total_orders > 0
+        ORDER BY lifetime_revenue DESC
+        LIMIT 10
+    """
+
+    top_customers_df = run_query(
+        top_customers_query
+    )
+
+    if not top_customers_df.empty:
+
+        display_df = top_customers_df.copy()
+
+        display_df["revenue"] = (
+            display_df["revenue"]
+            .map(lambda x: f"${x:,.2f}")
+        )
+
+        display_df["avg_order_value"] = (
+            display_df["avg_order_value"]
+            .map(lambda x: f"${x:,.2f}")
+        )
+
+        display_df.columns = [
+            "Customer",
+            "Orders",
+            "Revenue",
+            "Avg Order Value",
+            "First Order",
+            "Last Order"
+        ]
+
+        st.dataframe(
+            display_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+
+     # # =====================================================
     # # COHORT RETENTION ANALYSIS
     # # =====================================================
 
@@ -1503,258 +1783,360 @@ with tab3:
     #         use_container_width=True
     #     )
 
-
     # =====================================================
-    # CUSTOMER REVENUE CONCENTRATION
+    # BEHAVIORAL ACQUISITION & CONVERSION
     # =====================================================
 
-    st.write("### Customer Revenue Concentration")
+    st.write("### Behavioral Acquisition & Conversion")
 
-    concentration_query = f"""
-        WITH customer_revenue AS (
-            SELECT
-                user_id,
-                SUM(order_total_amount) AS revenue
-            FROM marts.fact_orders
-            {date_filter}
-            GROUP BY user_id
-        ),
-
-        ranked_customers AS (
-            SELECT
-                user_id,
-                revenue,
-                SUM(revenue) OVER (
-                    ORDER BY revenue DESC
-                    ROWS BETWEEN UNBOUNDED PRECEDING
-                    AND CURRENT ROW
-                ) AS cumulative_revenue,
-
-                SUM(revenue) OVER () AS total_revenue
-
-            FROM customer_revenue
-        )
-
-        SELECT
-            user_id,
-            revenue,
-            cumulative_revenue / NULLIF(total_revenue, 0)
-                AS cumulative_revenue_pct
-
-        FROM ranked_customers
-
-        ORDER BY revenue DESC
-    """
-
-    concentration_df = run_query(
-        concentration_query
+    st.caption(
+        "Lifetime customer acquisition and conversion behavior "
+        "based on each user's complete history."
     )
 
-    if not concentration_df.empty:
+    lifecycle_query = """
+        SELECT
+            user_id,
+            first_seen_date,
+            first_order_date,
+            days_to_first_purchase,
+            total_sessions,
+            total_orders,
+            lifetime_revenue,
+            avg_order_value,
+            is_repeat_buyer
+        FROM marts.metrics_user_lifecycle
+    """
 
-        total_revenue = concentration_df["revenue"].sum()
+    lifecycle_df = run_query(
+        lifecycle_query
+    )
 
-        top_50_count = max(
-            1,
-            int(len(concentration_df) * 0.50)
-        )
 
-        top_50_revenue = (
-            concentration_df
-            .head(top_50_count)["revenue"]
-            .sum()
-        )
+    if not lifecycle_df.empty:
 
-        top_50_pct = (
-            top_50_revenue / total_revenue
-            if total_revenue > 0
-            else 0
-        )
+        # -------------------------------------------------
+        # LIFECYCLE METRICS
+        # -------------------------------------------------
 
-        top_10_count = max(
-            1,
-            int(len(concentration_df) * 0.10)
-        )
+        total_users = len(lifecycle_df)
 
-        top_10_revenue = (
-            concentration_df
-            .head(top_10_count)["revenue"]
-            .sum()
-        )
-
-        top_10_pct = (
-            top_10_revenue / total_revenue
-            if total_revenue > 0
-            else 0
-        )
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.metric(
-                "Top 10% of Customers",
-                f"{top_10_pct:.1%} of Revenue"
-            )
-
-        with col2:
-
-            st.metric(
-                "Top 50% of Customers",
-                f"{top_50_pct:.1%} of Revenue"
-            )
-
-        concentration_chart = concentration_df[
-            ["cumulative_revenue_pct"]
-        ].copy()
-
-        concentration_chart.index = range(
-            1,
-            len(concentration_chart) + 1
-        )
-
-        concentration_chart.columns = [
-            "Cumulative Revenue Share"
+        converted_df = lifecycle_df[
+            lifecycle_df["first_order_date"].notna()
         ]
 
-        st.line_chart(
-            concentration_chart,
+        converted_users = len(converted_df)
+
+        conversion_rate = (
+            converted_users / total_users
+            if total_users > 0
+            else 0
+        )
+
+        avg_days_to_purchase = (
+            converted_df["days_to_first_purchase"].mean()
+            if not converted_df.empty
+            else 0
+        )
+
+        median_days_to_purchase = (
+            converted_df["days_to_first_purchase"].median()
+            if not converted_df.empty
+            else 0
+        )
+
+        avg_sessions = (
+            lifecycle_df["total_sessions"].mean()
+            if total_users > 0
+            else 0
+        )
+
+        avg_sessions_to_conversion = (
+            converted_df["total_sessions"].mean()
+            if not converted_df.empty
+            else 0
+        )
+
+        repeat_buyers = lifecycle_df[
+            lifecycle_df["is_repeat_buyer"] == True
+        ]
+
+        repeat_rate = (
+            len(repeat_buyers) / converted_users
+            if converted_users > 0
+            else 0
+        )
+
+
+        # -------------------------------------------------
+        # KPI CARDS
+        # -------------------------------------------------
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        col1.metric(
+            "Lifetime Conversion Rate",
+            f"{conversion_rate:.1%}"
+        )
+
+        col2.metric(
+            "Avg Days to First Purchase",
+            f"{avg_days_to_purchase:.1f}"
+        )
+
+        col3.metric(
+            "Median Days to First Purchase",
+            f"{median_days_to_purchase:.1f}"
+        )
+
+        col4.metric(
+            "Repeat Buyer Rate",
+            f"{repeat_rate:.1%}"
+        )
+
+
+        # -------------------------------------------------
+        # CONVERSION FUNNEL
+        # -------------------------------------------------
+
+        st.write("#### Customer Acquisition Funnel")
+
+        funnel_df = pd.DataFrame({
+            "Stage": [
+                "Users Seen",
+                "First Purchase",
+                "Repeat Purchase"
+            ],
+            "Customers": [
+                total_users,
+                converted_users,
+                len(repeat_buyers)
+            ]
+        })
+
+        funnel_chart = funnel_df.set_index(
+            "Stage"
+        )
+
+        st.bar_chart(
+            funnel_chart,
             height=300
         )
 
 
-    # =====================================================
-    # TOP CUSTOMERS
-    # =====================================================
+        # -------------------------------------------------
+        # TIME TO FIRST PURCHASE
+        # -------------------------------------------------
 
-    st.write("### Top Customers")
+        if not converted_df.empty:
 
-    top_customers_query = f"""
-        SELECT
-            user_id,
-            COUNT(DISTINCT order_id) AS orders,
-            SUM(order_total_amount) AS revenue,
-            AVG(order_total_amount) AS avg_order_value,
-            MIN(order_ts) AS first_order,
-            MAX(order_ts) AS last_order
-        FROM marts.fact_orders
-        {date_filter}
-        GROUP BY user_id
-        ORDER BY revenue DESC
-        LIMIT 10
-    """
+            st.write("#### Time to First Purchase")
 
-    top_customers_df = run_query(
-        top_customers_query
-    )
+            conversion_days = (
+                converted_df[
+                    "days_to_first_purchase"
+                ]
+                .dropna()
+            )
 
-    if not top_customers_df.empty:
+            # Prevent negative or invalid values from
+            # appearing in the distribution.
+            conversion_days = conversion_days[
+                conversion_days >= 0
+            ]
 
-        display_df = top_customers_df.copy()
+            if not conversion_days.empty:
 
-        display_df["revenue"] = (
-            display_df["revenue"]
-            .map(lambda x: f"${x:,.2f}")
+                conversion_distribution = pd.cut(
+                    conversion_days,
+                    bins=[
+                        -1,
+                        0,
+                        1,
+                        3,
+                        7,
+                        14,
+                        30,
+                        60,
+                        90,
+                        float("inf")
+                    ],
+                    labels=[
+                        "Same Day",
+                        "1 Day",
+                        "2–3 Days",
+                        "4–7 Days",
+                        "8–14 Days",
+                        "15–30 Days",
+                        "31–60 Days",
+                        "61–90 Days",
+                        "90+ Days"
+                    ]
+                )
+
+                time_to_purchase_df = (
+                    conversion_distribution
+                    .value_counts(
+                        sort=False
+                    )
+                    .rename("customers")
+                    .to_frame()
+                )
+
+                st.bar_chart(
+                    time_to_purchase_df,
+                    height=300
+                )
+
+
+        # -------------------------------------------------
+        # SESSIONS & CONVERSION
+        # -------------------------------------------------
+
+        st.write("#### Engagement Before Conversion")
+
+        engagement_col1, engagement_col2 = st.columns(2)
+
+        with engagement_col1:
+
+            st.metric(
+                "Avg Lifetime Sessions",
+                f"{avg_sessions:,.1f}"
+            )
+
+        with engagement_col2:
+
+            st.metric(
+                "Avg Lifetime Sessions — Converted Users",
+                f"{avg_sessions_to_conversion:,.1f}"
+            )
+
+
+        # -------------------------------------------------
+        # CUSTOMER LIFECYCLE SUMMARY
+        # -------------------------------------------------
+
+        lifecycle_summary = pd.DataFrame({
+            "Customer Segment": [
+                "Users Seen",
+                "Purchased Once or More",
+                "Repeat Buyers",
+                "Never Purchased"
+            ],
+            "Customers": [
+                total_users,
+                converted_users,
+                len(repeat_buyers),
+                total_users - converted_users
+            ]
+        })
+
+        lifecycle_summary["Percentage"] = (
+            lifecycle_summary["Customers"]
+            / total_users
+            if total_users > 0
+            else 0
         )
 
-        display_df["avg_order_value"] = (
-            display_df["avg_order_value"]
-            .map(lambda x: f"${x:,.2f}")
+        st.write("#### Lifecycle Summary")
+
+        display_lifecycle = lifecycle_summary.copy()
+
+        display_lifecycle["Customers"] = (
+            display_lifecycle["Customers"]
+            .map(lambda x: f"{x:,}")
         )
 
-        display_df.columns = [
-            "Customer",
-            "Orders",
-            "Revenue",
-            "Avg Order Value",
-            "First Order",
-            "Last Order"
-        ]
+        display_lifecycle["Percentage"] = (
+            display_lifecycle["Percentage"]
+            .map(lambda x: f"{x:.1%}")
+        )
 
         st.dataframe(
-            display_df,
+            display_lifecycle,
             use_container_width=True,
             hide_index=True
         )
 
 
-    # =====================================================
-    # KEY CUSTOMER INSIGHTS
-    # =====================================================
+    # # =====================================================
+    # # KEY CUSTOMER INSIGHTS
+    # # =====================================================
 
-    st.write("### Key Customer Insights")
+    # st.write("### Key Customer Insights")
 
-    if (
-        not customer_kpi_df.empty
-        and not repeat_df.empty
-        and not ltv_df.empty
-    ):
+    # if (
+    #     not customer_kpi_df.empty
+    #     and not repeat_df.empty
+    #     and not ltv_df.empty
+    # ):
 
-        insights = []
+    #     insights = []
 
-        # Repeat customer insight
-        insights.append(
-            f"**{repeat_rate:.1%}** of customers placed more than "
-            f"one order during the selected period."
-        )
+    #     # Repeat customer insight
+    #     insights.append(
+    #         f"**{repeat_rate:.1%}** of customers placed more than "
+    #         f"one order during the selected period."
+    #     )
 
-        # Median vs average
-        if median_customer_value > 0:
+    #     # Median vs average
+    #     if median_customer_value > 0:
 
-            value_ratio = (
-                avg_customer_value /
-                median_customer_value
-            )
+    #         value_ratio = (
+    #             avg_customer_value /
+    #             median_customer_value
+    #         )
 
-            if value_ratio > 1.5:
-                insights.append(
-                    "Average customer value is substantially above "
-                    "the median, indicating that a smaller group of "
-                    "higher-value customers is pulling the average upward."
-                )
+    #         if value_ratio > 1.5:
+    #             insights.append(
+    #                 "Average customer value is substantially above "
+    #                 "the median, indicating that a smaller group of "
+    #                 "higher-value customers is pulling the average upward."
+    #             )
 
-        # Revenue concentration
-        if not concentration_df.empty:
+    #     # Revenue concentration
+    #     if not concentration_df.empty:
 
-            if top_10_pct >= 0.50:
-                insights.append(
-                    f"The top 10% of customers generated "
-                    f"**{top_10_pct:.1%}** of revenue during the "
-                    f"selected period."
-                )
-            else:
-                insights.append(
-                    f"The top 10% of customers generated "
-                    f"**{top_10_pct:.1%}** of revenue during the "
-                    f"selected period."
-                )
+    #         if top_10_pct >= 0.50:
+    #             insights.append(
+    #                 f"The top 10% of customers generated "
+    #                 f"**{top_10_pct:.1%}** of revenue during the "
+    #                 f"selected period."
+    #             )
+    #         else:
+    #             insights.append(
+    #                 f"The top 10% of customers generated "
+    #                 f"**{top_10_pct:.1%}** of revenue during the "
+    #                 f"selected period."
+    #             )
 
-        # Purchase frequency
-        if not frequency_df.empty:
+    #     # Purchase frequency
+    #     if not frequency_df.empty:
 
-            one_order_row = frequency_df[
-                frequency_df["purchase_frequency"] == "1 Order"
-            ]
+    #         one_order_row = frequency_df[
+    #             frequency_df["purchase_frequency"] == "1 Order"
+    #         ]
 
-            if not one_order_row.empty:
+    #         if not one_order_row.empty:
 
-                one_order_customers = int(
-                    one_order_row.iloc[0]["customers"]
-                )
+    #             one_order_customers = int(
+    #                 one_order_row.iloc[0]["customers"]
+    #             )
 
-                one_order_pct = (
-                    one_order_customers /
-                    total_customers
-                    if total_customers > 0
-                    else 0
-                )
+    #             one_order_pct = (
+    #                 one_order_customers /
+    #                 total_customers
+    #                 if total_customers > 0
+    #                 else 0
+    #             )
 
-                insights.append(
-                    f"**{one_order_pct:.1%}** of customers "
-                    f"placed only one order during the selected period."
-                )
+    #             insights.append(
+    #                 f"**{one_order_pct:.1%}** of customers "
+    #                 f"placed only one order during the selected period."
+    #             )
 
-        for insight in insights:
-            st.markdown(f"- {insight}")
+    #     for insight in insights:
+    #         st.markdown(f"- {insight}")
 
 # =========================================================
 # 🟡 TAB 4 — PRODUCTS
@@ -1763,42 +2145,203 @@ with tab4:
 
     st.subheader("Product Insights")
 
-    st.caption(
-        f"Product performance for "
-        f"{start_date.strftime('%b %d, %Y')} – "
-        f"{end_date.strftime('%b %d, %Y')}"
-    )
+    # st.caption(
+    #     f"Product performance for "
+    #     f"{start_date.strftime('%b %d, %Y')} – "
+    #     f"{end_date.strftime('%b %d, %Y')}"
+    # )
+
+    # =====================================================
+    # PRODUCT PERFORMANCE
+    # =====================================================
+
+    product_performance_query = f"""
+        SELECT
+            product_id,
+
+            SUM(units_sold) AS units_sold,
+
+            SUM(orders_with_product) AS orders,
+
+            SUM(product_revenue) AS revenue,
+
+            SUM(product_revenue)
+                / NULLIF(SUM(units_sold), 0)
+                AS realized_unit_price
+
+        FROM marts.metrics_product_performance_daily
+
+        {date_filter}
+
+        GROUP BY product_id
+    """
+
+    performance_df = run_query(product_performance_query)
+
+    # =====================================================
+    # PRODUCT FUNNEL
+    # =====================================================
+
+    product_funnel_query = f"""
+        SELECT
+            product_id,
+
+            SUM(product_views) AS product_views,
+
+            SUM(add_to_cart_sessions)
+                AS add_to_cart_sessions,
+
+            SUM(checkout_sessions)
+                AS checkout_sessions,
+
+            SUM(purchase_sessions)
+                AS purchase_sessions
+
+        FROM marts.metrics_daily_product_funnel
+
+        {date_filter}
+
+        GROUP BY product_id
+    """
+
+    product_funnel_df = run_query(product_funnel_query)
+
+    # =====================================================
+    # COMBINE PRODUCT PERFORMANCE + FUNNEL
+    # =====================================================
+
+    if not performance_df.empty and not product_funnel_df.empty:
+
+        product_df = performance_df.merge(
+            product_funnel_df,
+            on="product_id",
+            how="outer"
+        )
+
+    elif not performance_df.empty:
+
+        product_df = performance_df.copy()
+
+        for column in [
+            "product_views",
+            "add_to_cart_sessions",
+            "checkout_sessions",
+            "purchase_sessions"
+        ]:
+            product_df[column] = 0
+
+    elif not product_funnel_df.empty:
+
+        product_df = product_funnel_df.copy()
+
+        for column in [
+            "units_sold",
+            "orders",
+            "revenue",
+            "realized_unit_price"
+        ]:
+            product_df[column] = 0
+
+    else:
+
+        product_df = pd.DataFrame()
+
+    # =====================================================
+    # DERIVED PRODUCT METRICS
+    # =====================================================
+
+    if not product_df.empty:
+
+        numeric_columns = [
+            "units_sold",
+            "orders",
+            "revenue",
+            "realized_unit_price",
+            "product_views",
+            "add_to_cart_sessions",
+            "checkout_sessions",
+            "purchase_sessions"
+        ]
+
+        for column in numeric_columns:
+            if column in product_df.columns:
+                product_df[column] = (
+                    pd.to_numeric(
+                        product_df[column],
+                        errors="coerce"
+                    )
+                    .fillna(0)
+                )
+
+        product_df["cart_rate"] = (
+            product_df["add_to_cart_sessions"]
+            / product_df["product_views"].replace(0, pd.NA)
+        )
+
+        product_df["checkout_rate"] = (
+            product_df["checkout_sessions"]
+            / product_df["product_views"].replace(0, pd.NA)
+        )
+
+        product_df["purchase_rate"] = (
+            product_df["purchase_sessions"]
+            / product_df["product_views"].replace(0, pd.NA)
+        )
+
+        product_df["revenue_per_view"] = (
+            product_df["revenue"]
+            / product_df["product_views"].replace(0, pd.NA)
+        )
+
+        product_df["units_per_view"] = (
+            product_df["units_sold"]
+            / product_df["product_views"].replace(0, pd.NA)
+        )
+
+        product_df["revenue_per_order"] = (
+            product_df["revenue"]
+            / product_df["orders"].replace(0, pd.NA)
+        )
+
+        product_df["units_per_order"] = (
+            product_df["units_sold"]
+            / product_df["orders"].replace(0, pd.NA)
+        )
+
+        total_revenue = product_df["revenue"].sum()
+
+        product_df["revenue_share"] = (
+            product_df["revenue"]
+            / total_revenue
+            if total_revenue > 0
+            else 0
+        )
 
     # =====================================================
     # PRODUCT KPI SUMMARY
     # =====================================================
 
-    product_kpi_query = f"""
-        SELECT
-            COUNT(DISTINCT product_id) AS products,
-            COUNT(DISTINCT order_id) AS orders,
-            SUM(quantity) AS units_sold,
-            SUM(line_amount) AS revenue,
-            AVG(price) AS avg_unit_price
-        FROM marts.fact_order_items
-        {date_filter}
-    """
+    st.write("### Product KPI Summary")
 
-    product_kpi_df = run_query(product_kpi_query)
+    if not product_df.empty:
 
-    if not product_kpi_df.empty:
+        products = int(
+            (
+                product_df["units_sold"] > 0
+            ).sum()
+        )
 
-        row = product_kpi_df.iloc[0]
+        units_sold = int(
+            product_df["units_sold"].sum()
+        )
 
-        product_count = int(row["products"] or 0)
-        product_orders = int(row["orders"] or 0)
-        units_sold = int(row["units_sold"] or 0)
-        product_revenue = float(row["revenue"] or 0)
-        avg_unit_price = float(row["avg_unit_price"] or 0)
+        product_revenue = float(
+            product_df["revenue"].sum()
+        )
 
         revenue_per_product = (
-            product_revenue / product_count
-            if product_count > 0
+            product_revenue / products
+            if products > 0
             else 0
         )
 
@@ -1806,7 +2349,7 @@ with tab4:
 
         col1.metric(
             "Products Sold",
-            f"{product_count:,}"
+            f"{products:,}"
         )
 
         col2.metric(
@@ -1820,52 +2363,50 @@ with tab4:
         )
 
         col4.metric(
-            "Avg Unit Price",
-            f"${avg_unit_price:,.2f}"
+            "Revenue / Product",
+            f"${revenue_per_product:,.2f}"
         )
 
+    else:
+
+        st.info(
+            "No product data available for the selected period."
+        )
+
+    # =====================================================
+    # PRODUCT PERFORMANCE
+    # =====================================================
 
     st.divider()
 
+    st.write("### Product Performance")
 
-    # =====================================================
-    # TOP PRODUCTS
-    # =====================================================
-
-    st.write("### Top Products")
-
-    top_products_query = f"""
-        SELECT
-            product_id,
-            SUM(quantity) AS units_sold,
-            SUM(line_amount) AS revenue,
-            COUNT(DISTINCT order_id) AS orders,
-            AVG(price) AS avg_price
-        FROM marts.fact_order_items
-        {date_filter}
-        GROUP BY product_id
-        ORDER BY revenue DESC
-        LIMIT 10
-    """
-
-    top_products_df = run_query(
-        top_products_query
-    )
-
-    if not top_products_df.empty:
+    if not product_df.empty:
 
         top_col1, top_col2 = st.columns(2)
 
+        # -------------------------------------------------
+        # Revenue
+        # -------------------------------------------------
+
         with top_col1:
 
-            st.write("#### Revenue")
+            st.write("#### Top Products by Revenue")
 
             revenue_chart = (
-                top_products_df[
-                    ["product_id", "revenue"]
+                product_df[
+                    [
+                        "product_id",
+                        "revenue"
+                    ]
                 ]
-                .set_index("product_id")
+                .sort_values(
+                    "revenue",
+                    ascending=False
+                )
+                .head(10)
                 .sort_values("revenue")
+                .set_index("product_id")
             )
 
             st.bar_chart(
@@ -1873,16 +2414,28 @@ with tab4:
                 height=350
             )
 
+        # -------------------------------------------------
+        # Units
+        # -------------------------------------------------
+
         with top_col2:
 
-            st.write("#### Units Sold")
+            st.write("#### Top Products by Units")
 
             units_chart = (
-                top_products_df[
-                    ["product_id", "units_sold"]
+                product_df[
+                    [
+                        "product_id",
+                        "units_sold"
+                    ]
                 ]
-                .set_index("product_id")
+                .sort_values(
+                    "units_sold",
+                    ascending=False
+                )
+                .head(10)
                 .sort_values("units_sold")
+                .set_index("product_id")
             )
 
             st.bar_chart(
@@ -1890,196 +2443,223 @@ with tab4:
                 height=350
             )
 
+        # -------------------------------------------------
+        # Revenue vs Units
+        # -------------------------------------------------
+
+        st.write("#### Revenue vs. Unit Volume")
+
+        matrix_df = product_df[
+            [
+                "product_id",
+                "units_sold",
+                "revenue"
+            ]
+        ].copy()
+
+        st.scatter_chart(
+            matrix_df,
+            x="units_sold",
+            y="revenue",
+            size="revenue",
+            color="product_id",
+            height=400
+        )
+
+    # =====================================================
+    # PRODUCT EFFICIENCY
+    # =====================================================
+
+    st.write("### Product Efficiency")
+
+    if not product_df.empty:
+
+        efficiency_col1, efficiency_col2, efficiency_col3, efficiency_col4 = (
+            st.columns(4)
+        )
+
+        valid_views = product_df[
+            product_df["product_views"] > 0
+        ]
+
+        overall_purchase_rate = (
+            valid_views["purchase_sessions"].sum()
+            / valid_views["product_views"].sum()
+            if not valid_views.empty
+            and valid_views["product_views"].sum() > 0
+            else 0
+        )
+
+        overall_revenue_per_view = (
+            valid_views["revenue"].sum()
+            / valid_views["product_views"].sum()
+            if not valid_views.empty
+            and valid_views["product_views"].sum() > 0
+            else 0
+        )
+
+        overall_units_per_view = (
+            valid_views["units_sold"].sum()
+            / valid_views["product_views"].sum()
+            if not valid_views.empty
+            and valid_views["product_views"].sum() > 0
+            else 0
+        )
+
+        overall_revenue_per_order = (
+            product_df["revenue"].sum()
+            / product_df["orders"].sum()
+            if product_df["orders"].sum() > 0
+            else 0
+        )
+
+        efficiency_col1.metric(
+            "View → Purchase",
+            f"{overall_purchase_rate:.1%}"
+        )
+
+        efficiency_col2.metric(
+            "Revenue / View",
+            f"${overall_revenue_per_view:.2f}"
+        )
+
+        efficiency_col3.metric(
+            "Units / View",
+            f"{overall_units_per_view:.3f}"
+        )
+
+        efficiency_col4.metric(
+            "Revenue / Order",
+            f"${overall_revenue_per_order:,.2f}"
+        )
 
     # =====================================================
     # PRODUCT REVENUE CONCENTRATION
     # =====================================================
 
+    st.divider()
+
     st.write("### Product Revenue Concentration")
 
-    concentration_query = f"""
-        WITH product_revenue AS (
+    if not product_df.empty:
 
-            SELECT
-                product_id,
-                SUM(line_amount) AS revenue
-            FROM marts.fact_order_items
-            {date_filter}
-            GROUP BY product_id
-        ),
-
-        ranked_products AS (
-
-            SELECT
-                product_id,
-                revenue,
-
-                SUM(revenue) OVER (
-                    ORDER BY revenue DESC
-                    ROWS BETWEEN UNBOUNDED PRECEDING
-                    AND CURRENT ROW
-                ) AS cumulative_revenue,
-
-                SUM(revenue) OVER () AS total_revenue
-
-            FROM product_revenue
+        concentration_df = (
+            product_df[
+                [
+                    "product_id",
+                    "revenue"
+                ]
+            ]
+            .sort_values(
+                "revenue",
+                ascending=False
+            )
+            .copy()
         )
-
-        SELECT
-            product_id,
-            revenue,
-            cumulative_revenue
-                / NULLIF(total_revenue, 0)
-                AS cumulative_revenue_pct
-
-        FROM ranked_products
-
-        ORDER BY revenue DESC
-    """
-
-    concentration_df = run_query(
-        concentration_query
-    )
-
-    if not concentration_df.empty:
 
         total_product_revenue = (
             concentration_df["revenue"].sum()
         )
 
-        top_10_count = max(
-            1,
-            int(len(concentration_df) * 0.10)
-        )
+        if total_product_revenue > 0:
 
-        top_10_revenue = (
-            concentration_df
-            .head(top_10_count)["revenue"]
-            .sum()
-        )
-
-        top_10_pct = (
-            top_10_revenue / total_product_revenue
-            if total_product_revenue > 0
-            else 0
-        )
-
-        top_product_pct = (
-            concentration_df.iloc[0]["revenue"]
-            / total_product_revenue
-            if total_product_revenue > 0
-            else 0
-        )
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.metric(
-                "Top 10% of Products",
-                f"{top_10_pct:.1%} of Revenue"
+            concentration_df["revenue_share"] = (
+                concentration_df["revenue"]
+                / total_product_revenue
             )
 
-        with col2:
-            st.metric(
+            concentration_df["cumulative_revenue_share"] = (
+                concentration_df["revenue_share"]
+                .cumsum()
+            )
+
+            product_count = len(
+                concentration_df
+            )
+
+            top_10_count = max(
+                1,
+                int(product_count * 0.10)
+            )
+
+            top_20_count = max(
+                1,
+                int(product_count * 0.20)
+            )
+
+            top_50_count = max(
+                1,
+                int(product_count * 0.50)
+            )
+
+            top_10_pct = (
+                concentration_df
+                .head(top_10_count)["revenue"]
+                .sum()
+                / total_product_revenue
+            )
+
+            top_20_pct = (
+                concentration_df
+                .head(top_20_count)["revenue"]
+                .sum()
+                / total_product_revenue
+            )
+
+            top_50_pct = (
+                concentration_df
+                .head(top_50_count)["revenue"]
+                .sum()
+                / total_product_revenue
+            )
+
+            top_product_pct = (
+                concentration_df.iloc[0]["revenue"]
+                / total_product_revenue
+            )
+
+            col1, col2, col3, col4 = st.columns(4)
+
+            col1.metric(
                 "Top Product",
-                f"{top_product_pct:.1%} of Revenue"
+                f"{top_product_pct:.1%}"
             )
 
-        concentration_chart = (
-            concentration_df[
-                ["cumulative_revenue_pct"]
+            col2.metric(
+                "Top 10%",
+                f"{top_10_pct:.1%}"
+            )
+
+            col3.metric(
+                "Top 20%",
+                f"{top_20_pct:.1%}"
+            )
+
+            col4.metric(
+                "Top 50%",
+                f"{top_50_pct:.1%}"
+            )
+
+            concentration_chart = (
+                concentration_df[
+                    ["cumulative_revenue_share"]
+                ]
+                .copy()
+            )
+
+            concentration_chart.index = range(
+                1,
+                len(concentration_chart) + 1
+            )
+
+            concentration_chart.columns = [
+                "Cumulative Revenue Share"
             ]
-            .copy()
-        )
 
-        concentration_chart.index = range(
-            1,
-            len(concentration_chart) + 1
-        )
-
-        concentration_chart.columns = [
-            "Cumulative Revenue Share"
-        ]
-
-        st.line_chart(
-            concentration_chart,
-            height=300
-        )
-
-
-    # =====================================================
-    # PRODUCT PERFORMANCE TABLE
-    # =====================================================
-
-    st.write("### Product Performance")
-
-    performance_query = f"""
-        SELECT
-            product_id,
-
-            SUM(quantity)
-                AS units_sold,
-
-            COUNT(DISTINCT order_id)
-                AS orders,
-
-            SUM(line_amount)
-                AS revenue,
-
-            AVG(price)
-                AS avg_unit_price,
-
-            SUM(line_amount)
-                / NULLIF(SUM(quantity), 0)
-                AS realized_unit_price
-
-        FROM marts.fact_order_items
-
-        {date_filter}
-
-        GROUP BY product_id
-
-        ORDER BY revenue DESC
-    """
-
-    performance_df = run_query(
-        performance_query
-    )
-
-    if not performance_df.empty:
-
-        display_df = performance_df.copy()
-
-        display_df["revenue"] = (
-            display_df["revenue"]
-            .map(lambda x: f"${x:,.2f}")
-        )
-
-        display_df["avg_unit_price"] = (
-            display_df["avg_unit_price"]
-            .map(lambda x: f"${x:,.2f}")
-        )
-
-        display_df["realized_unit_price"] = (
-            display_df["realized_unit_price"]
-            .map(lambda x: f"${x:,.2f}")
-        )
-
-        display_df.columns = [
-            "Product",
-            "Units Sold",
-            "Orders",
-            "Revenue",
-            "Avg Unit Price",
-            "Realized Unit Price"
-        ]
-
-        st.dataframe(
-            display_df,
-            use_container_width=True,
-            hide_index=True
-        )
-
+            st.line_chart(
+                concentration_chart,
+                height=300
+            )
 
     # =====================================================
     # PRODUCT FUNNEL
@@ -2091,99 +2671,135 @@ with tab4:
 
     st.caption(
         "Product engagement and purchase behavior based on "
-        "clickstream activity."
+        "daily product-level clickstream metrics."
     )
 
-    product_funnel_query = f"""
-        SELECT
-            product_id,
+    if not product_df.empty:
 
-            COUNT(DISTINCT CASE
-                WHEN event_type = 'view_product'
-                THEN session_id
-            END) AS product_views,
-
-            COUNT(DISTINCT CASE
-                WHEN event_type = 'add_to_cart'
-                THEN session_id
-            END) AS add_to_cart_sessions,
-
-            COUNT(DISTINCT CASE
-                WHEN event_type = 'checkout_start'
-                THEN session_id
-            END) AS checkout_sessions,
-
-            COUNT(DISTINCT CASE
-                WHEN event_type = 'purchase'
-                THEN session_id
-            END) AS purchase_sessions
-
-        FROM bronze.clickstream
-
-        WHERE event_time >= TIMESTAMP '{start_date} 00:00:00'
-          AND event_time < TIMESTAMP '{end_date}'
-                + INTERVAL '1 day'
-
-          AND product_id IS NOT NULL
-
-        GROUP BY product_id
-
-        ORDER BY product_views DESC
-    """
-
-    product_funnel_df = run_query(
-        product_funnel_query
-    )
-
-    if not product_funnel_df.empty:
-
-        product_funnel_df["cart_rate"] = (
-            product_funnel_df["add_to_cart_sessions"]
-            / product_funnel_df["product_views"]
-            .replace(0, pd.NA)
+        total_views = (
+            product_df["product_views"].sum()
         )
 
-        product_funnel_df["checkout_rate"] = (
-            product_funnel_df["checkout_sessions"]
-            / product_funnel_df["product_views"]
-            .replace(0, pd.NA)
+        total_cart = (
+            product_df["add_to_cart_sessions"].sum()
         )
 
-        product_funnel_df["purchase_rate"] = (
-            product_funnel_df["purchase_sessions"]
-            / product_funnel_df["product_views"]
-            .replace(0, pd.NA)
+        total_checkout = (
+            product_df["checkout_sessions"].sum()
         )
 
-        funnel_display = product_funnel_df.copy()
+        total_purchase = (
+            product_df["purchase_sessions"].sum()
+        )
 
-        funnel_display["cart_rate"] = (
-            funnel_display["cart_rate"]
+        funnel_df = pd.DataFrame({
+            "Stage": [
+                "Product Views",
+                "Add to Cart",
+                "Checkout",
+                "Purchase"
+            ],
+            "Sessions": [
+                total_views,
+                total_cart,
+                total_checkout,
+                total_purchase
+            ]
+        })
+
+        st.bar_chart(
+            funnel_df.set_index("Stage"),
+            height=300
+        )
+
+        funnel_col1, funnel_col2, funnel_col3 = st.columns(3)
+
+        cart_rate = (
+            total_cart / total_views
+            if total_views > 0
+            else 0
+        )
+
+        checkout_rate = (
+            total_checkout / total_views
+            if total_views > 0
+            else 0
+        )
+
+        purchase_rate = (
+            total_purchase / total_views
+            if total_views > 0
+            else 0
+        )
+
+        funnel_col1.metric(
+            "View → Cart",
+            f"{cart_rate:.1%}"
+        )
+
+        funnel_col2.metric(
+            "View → Checkout",
+            f"{checkout_rate:.1%}"
+        )
+
+        funnel_col3.metric(
+            "View → Purchase",
+            f"{purchase_rate:.1%}"
+        )
+
+        # -------------------------------------------------
+        # Product Funnel Table
+        # -------------------------------------------------
+
+        st.write("#### Product Funnel Performance")
+
+        funnel_table = product_df[
+            [
+                "product_id",
+                "product_views",
+                "add_to_cart_sessions",
+                "checkout_sessions",
+                "purchase_sessions",
+                "cart_rate",
+                "checkout_rate",
+                "purchase_rate"
+            ]
+        ].copy()
+
+        funnel_table = funnel_table.sort_values(
+            "product_views",
+            ascending=False
+        )
+
+        display_funnel = funnel_table.copy()
+
+        display_funnel["cart_rate"] = (
+            display_funnel["cart_rate"]
             .map(
                 lambda x:
                 f"{x:.1%}" if pd.notna(x) else "—"
             )
         )
 
-        funnel_display["checkout_rate"] = (
-            funnel_display["checkout_rate"]
+        display_funnel["checkout_rate"] = (
+            display_funnel["checkout_rate"]
             .map(
                 lambda x:
                 f"{x:.1%}" if pd.notna(x) else "—"
             )
         )
 
-        funnel_display["purchase_rate"] = (
-            funnel_display["purchase_rate"]
+        display_funnel["purchase_rate"] = (
+            display_funnel["purchase_rate"]
             .map(
                 lambda x:
                 f"{x:.1%}" if pd.notna(x) else "—"
             )
         )
 
-        funnel_display.columns = [
+        display_funnel.columns = [
             "Product",
-            "Product Views",
+            "Views",
             "Add to Cart",
             "Checkout",
             "Purchases",
@@ -2193,11 +2809,10 @@ with tab4:
         ]
 
         st.dataframe(
-            funnel_display,
+            display_funnel,
             use_container_width=True,
             hide_index=True
         )
-
 
     # =====================================================
     # PRODUCT PERFORMANCE OPPORTUNITIES
@@ -2205,37 +2820,23 @@ with tab4:
 
     st.write("### Product Performance Opportunities")
 
-    if (
-        not product_funnel_df.empty
-        and not performance_df.empty
-    ):
+    if not product_df.empty:
 
-        opportunity_df = product_funnel_df.merge(
-            performance_df,
-            on="product_id",
-            how="left"
-        )
-
-        opportunity_df = opportunity_df[
-            opportunity_df["product_views"] >= 10
+        opportunity_df = product_df[
+            product_df["product_views"] >= 10
         ].copy()
 
         if not opportunity_df.empty:
 
-            opportunity_df["purchase_rate"] = (
-                opportunity_df["purchase_sessions"]
-                / opportunity_df["product_views"]
-            )
-
-            opportunity_df["cart_rate"] = (
-                opportunity_df["add_to_cart_sessions"]
-                / opportunity_df["product_views"]
-            )
-
             median_purchase_rate = (
                 opportunity_df["purchase_rate"]
+                .dropna()
                 .median()
             )
+
+            # -------------------------------------------------
+            # High Traffic / Low Conversion
+            # -------------------------------------------------
 
             low_conversion = (
                 opportunity_df[
@@ -2251,9 +2852,14 @@ with tab4:
 
             if not low_conversion.empty:
 
+                st.write(
+                    "#### High Traffic / Low Conversion"
+                )
+
                 st.caption(
-                    "Products receiving meaningful traffic but "
-                    "converting below the product median."
+                    "Products with meaningful product traffic "
+                    "but purchase conversion below the "
+                    "product-level median."
                 )
 
                 opportunity_display = low_conversion[
@@ -2274,12 +2880,18 @@ with tab4:
 
                 opportunity_display["cart_rate"] = (
                     opportunity_display["cart_rate"]
-                    .map(lambda x: f"{x:.1%}")
+                    .map(
+                        lambda x:
+                        f"{x:.1%}" if pd.notna(x) else "—"
+                    )
                 )
 
                 opportunity_display["purchase_rate"] = (
                     opportunity_display["purchase_rate"]
-                    .map(lambda x: f"{x:.1%}")
+                    .map(
+                        lambda x:
+                        f"{x:.1%}" if pd.notna(x) else "—"
+                    )
                 )
 
                 opportunity_display.columns = [
@@ -2297,6 +2909,181 @@ with tab4:
                     hide_index=True
                 )
 
+            # -------------------------------------------------
+            # High Conversion / Lower Traffic
+            # -------------------------------------------------
+
+            high_conversion = (
+                opportunity_df[
+                    opportunity_df["purchase_rate"]
+                    > median_purchase_rate
+                ]
+                .sort_values(
+                    "product_views",
+                    ascending=True
+                )
+                .head(5)
+            )
+
+            if not high_conversion.empty:
+
+                st.write(
+                    "#### Higher Conversion / Lower Traffic"
+                )
+
+                st.caption(
+                    "Products with above-median purchase "
+                    "conversion but comparatively lower "
+                    "product traffic."
+                )
+
+                high_conversion_display = high_conversion[
+                    [
+                        "product_id",
+                        "product_views",
+                        "purchase_rate",
+                        "revenue_per_view",
+                        "revenue"
+                    ]
+                ].copy()
+
+                high_conversion_display["purchase_rate"] = (
+                    high_conversion_display["purchase_rate"]
+                    .map(
+                        lambda x:
+                        f"{x:.1%}" if pd.notna(x) else "—"
+                    )
+                )
+
+                high_conversion_display["revenue_per_view"] = (
+                    high_conversion_display[
+                        "revenue_per_view"
+                    ]
+                    .map(
+                        lambda x:
+                        f"${x:.2f}" if pd.notna(x) else "—"
+                    )
+                )
+
+                high_conversion_display["revenue"] = (
+                    high_conversion_display["revenue"]
+                    .map(lambda x: f"${x:,.2f}")
+                )
+
+                high_conversion_display.columns = [
+                    "Product",
+                    "Views",
+                    "Purchase Rate",
+                    "Revenue / View",
+                    "Revenue"
+                ]
+
+                st.dataframe(
+                    high_conversion_display,
+                    use_container_width=True,
+                    hide_index=True
+                )
+
+    # =====================================================
+    # PRODUCT PERFORMANCE TABLE
+    # =====================================================
+
+    st.divider()
+
+    st.write("### Product Performance Table")
+
+    if not product_df.empty:
+
+        display_df = product_df[
+            [
+                "product_id",
+                "product_views",
+                "units_sold",
+                "orders",
+                "revenue",
+                "revenue_share",
+                "purchase_rate",
+                "revenue_per_view",
+                "realized_unit_price",
+                "revenue_per_order",
+                "units_per_order"
+            ]
+        ].copy()
+
+        display_df = display_df.sort_values(
+            "revenue",
+            ascending=False
+        )
+
+        display_df["revenue"] = (
+            display_df["revenue"]
+            .map(lambda x: f"${x:,.2f}")
+        )
+
+        display_df["revenue_share"] = (
+            display_df["revenue_share"]
+            .map(lambda x: f"{x:.1%}")
+        )
+
+        display_df["purchase_rate"] = (
+            display_df["purchase_rate"]
+            .map(
+                lambda x:
+                f"{x:.1%}" if pd.notna(x) else "—"
+            )
+        )
+
+        display_df["revenue_per_view"] = (
+            display_df["revenue_per_view"]
+            .map(
+                lambda x:
+                f"${x:.2f}" if pd.notna(x) else "—"
+            )
+        )
+
+        display_df["realized_unit_price"] = (
+            display_df["realized_unit_price"]
+            .map(
+                lambda x:
+                f"${x:.2f}" if pd.notna(x) else "—"
+            )
+        )
+
+        display_df["revenue_per_order"] = (
+            display_df["revenue_per_order"]
+            .map(
+                lambda x:
+                f"${x:,.2f}" if pd.notna(x) else "—"
+            )
+        )
+
+        display_df["units_per_order"] = (
+            display_df["units_per_order"]
+            .map(
+                lambda x:
+                f"{x:.2f}" if pd.notna(x) else "—"
+            )
+        )
+
+        display_df.columns = [
+            "Product",
+            "Views",
+            "Units Sold",
+            "Orders",
+            "Revenue",
+            "Revenue Share",
+            "Purchase Rate",
+            "Revenue / View",
+            "Realized Unit Price",
+            "Revenue / Order",
+            "Units / Order"
+        ]
+
+        st.dataframe(
+            display_df,
+            use_container_width=True,
+            hide_index=True
+        )
 
     # =====================================================
     # KEY PRODUCT INSIGHTS
@@ -2306,27 +3093,33 @@ with tab4:
 
     insights = []
 
-    if not top_products_df.empty:
+    if not product_df.empty:
 
-        top_product = top_products_df.iloc[0]
+        # -------------------------------------------------
+        # Top Revenue Product
+        # -------------------------------------------------
 
-        insights.append(
-            f"Product **{top_product['product_id']}** generated "
-            f"the most revenue during the selected period: "
-            f"**${top_product['revenue']:,.2f}**."
+        top_revenue_product = (
+            product_df
+            .sort_values(
+                "revenue",
+                ascending=False
+            )
+            .iloc[0]
         )
 
-    if not concentration_df.empty:
-
         insights.append(
-            f"The top 10% of products generated "
-            f"**{top_10_pct:.1%}** of product revenue."
+            f"Product **{top_revenue_product['product_id']}** "
+            f"generated the most revenue during the selected "
+            f"period: **${top_revenue_product['revenue']:,.2f}**."
         )
 
-    if not top_products_df.empty:
+        # -------------------------------------------------
+        # Top Units Product
+        # -------------------------------------------------
 
         top_units_product = (
-            top_products_df
+            product_df
             .sort_values(
                 "units_sold",
                 ascending=False
@@ -2337,30 +3130,56 @@ with tab4:
         insights.append(
             f"Product **{top_units_product['product_id']}** "
             f"had the highest unit volume with "
-            f"**{int(top_units_product['units_sold']):,} units sold."
+            f"**{int(top_units_product['units_sold']):,} units sold**."
         )
 
-    if not product_funnel_df.empty:
+        # -------------------------------------------------
+        # Revenue Concentration
+        # -------------------------------------------------
 
-        total_views = (
-            product_funnel_df["product_views"].sum()
-        )
+        if total_product_revenue > 0:
 
-        total_purchases = (
-            product_funnel_df["purchase_sessions"].sum()
-        )
+            insights.append(
+                f"The top 10% of products generated "
+                f"**{top_10_pct:.1%}** of product revenue."
+            )
 
-        overall_conversion = (
-            total_purchases / total_views
-            if total_views > 0
-            else 0
-        )
+        # -------------------------------------------------
+        # Overall Funnel
+        # -------------------------------------------------
 
-        insights.append(
-            f"Across tracked product sessions, the overall "
-            f"view-to-purchase conversion rate was "
-            f"**{overall_conversion:.1%}**."
-        )
+        if total_views > 0:
+
+            insights.append(
+                f"Across tracked product sessions, the overall "
+                f"view-to-purchase conversion rate was "
+                f"**{purchase_rate:.1%}**."
+            )
+
+        # -------------------------------------------------
+        # Highest Revenue / View
+        # -------------------------------------------------
+
+        revenue_view_df = product_df[
+            product_df["product_views"] > 0
+        ].copy()
+
+        if not revenue_view_df.empty:
+
+            best_revenue_view = (
+                revenue_view_df
+                .sort_values(
+                    "revenue_per_view",
+                    ascending=False
+                )
+                .iloc[0]
+            )
+
+            insights.append(
+                f"Product **{best_revenue_view['product_id']}** "
+                f"generated the highest revenue per product view "
+                f"at **${best_revenue_view['revenue_per_view']:.2f}**."
+            )
 
     if insights:
 
